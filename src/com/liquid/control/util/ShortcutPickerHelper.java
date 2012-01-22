@@ -55,7 +55,7 @@ public class ShortcutPickerHelper {
         bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
 
         ArrayList<ShortcutIconResource> shortcutIcons = new ArrayList<ShortcutIconResource>();
-        shortcutIcons.add(ShortcutIconResource.fromContext(mParent, R.drawable.ic_launcher_application));
+        shortcutIcons.add(ShortcutIconResource.fromContext(mParent, R.drawable.ic_launcher));
         bundle.putParcelableArrayList(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, shortcutIcons);
 
         Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);

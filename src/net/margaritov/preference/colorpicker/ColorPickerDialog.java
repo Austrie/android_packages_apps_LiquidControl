@@ -25,7 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.roman.romcontrol.R;
+import com.liquid.control.R;
 
 public class ColorPickerDialog
         extends

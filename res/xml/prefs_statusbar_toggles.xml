@@ -14,8 +14,8 @@
 
 		<intent
 			android:action="android.intent.action.MAIN"
-			android:targetClass="com.roman.romcontrol.activities.TogglesLayout"
-			android:targetPackage="com.roman.romcontrol" />
+			android:targetClass="com.liquid.control.activities.TogglesLayout"
+			android:targetPackage="com.liquid.control" />
 	</Preference>
 
 	<ListPreference

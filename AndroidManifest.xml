@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     coreApp="true"
-    package="com.roman.romcontrol"
+    package="com.liquid.control"
     android:sharedUserId="android.uid.system" >
 
-    <original-package android:name="com.roman.romcontrol" />
-
+    <original-package android:name="com.liquid.control" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
 
@@ -14,7 +13,7 @@
         android:label="@string/app_name" >
         <activity
             android:label="@string/app_name"
-            android:name=".ROMControlActivity"
+            android:name=".LiquidActivity"
             android:screenOrientation="portrait" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />

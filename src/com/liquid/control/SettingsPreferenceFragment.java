@@ -36,9 +36,11 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Di
     private static final String TAG = "SettingsPreferenceFragment";
 
     private SettingsDialogFragment mDialogFragment;
+    protected boolean mTablet;    
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        mTablet = Settings.System.getInt(getContentResolver(), Settings.System.IS_TABLET, 0) == 1;
         super.onActivityCreated(savedInstanceState);
     }
 

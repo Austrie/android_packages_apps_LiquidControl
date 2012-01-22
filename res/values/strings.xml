@@ -56,6 +56,9 @@
 	<string name="horizontal_recents_task_panel_title">Horizontal recents window</string>
 	<string name="horizontal_recents_task_panel_summary">Use WebOS style task switcher. Your UI will restart after changing this. It will come back in about 10 seconds. If it doesn\'t, just reboot the phone from the power menu.</string>
 
+    <string name="disable_bootanimation_title">Boot animation</string>
+    <string name="disable_bootanimation_summary">Toggle boot animation for faster boot time</string>
+
     <!-- CRT animations -->
 	<string name="crt_animations_header">CRT animations</string>
 	<string name="crt_on_title">CRT on animation</string>

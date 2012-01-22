@@ -1,6 +1,7 @@
 
 package com.liquid.control.fragments;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
@@ -20,6 +21,7 @@ import android.widget.EditText;
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.CMDProcessor;
+import com.roman.romcontrol.util.Helpers;    
 
 public class UserInterface extends SettingsPreferenceFragment implements
         OnPreferenceChangeListener {
@@ -40,6 +42,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     CheckBoxPreference mHorizontalAppSwitcher;
     Preference mCustomLabel;
     ListPreference mAnimationRotationDelay;
+    CheckBoxPreference mDisableBootAnimation;
     String mCustomLabelText = null;
 
     @Override
@@ -47,7 +50,6 @@ public class UserInterface extends SettingsPreferenceFragment implements
         super.onCreate(savedInstanceState);
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.prefs_ui);
-
         PreferenceScreen prefs = getPreferenceScreen();
 
         mCrtOffAnimation = (CheckBoxPreference) findPreference(PREF_CRT_OFF);
@@ -84,8 +86,17 @@ public class UserInterface extends SettingsPreferenceFragment implements
                 .getContentResolver(),
                 Settings.System.HORIZONTAL_RECENTS_TASK_PANEL, 0) == 1);
 
-        // can't get this working in ICS just yet
-        ((PreferenceGroup) findPreference("crt")).removePreference(mCrtOnAnimation);
+        mDisableBootAnimation = (CheckBoxPreference) findPreference("disable_bootanimation");
+        mDisableBootAnimation.setChecked(!new File("/system/media/bootanimation.zip").exists());
+        if (mDisableBootAnimation.isChecked())
+            mDisableBootAnimation.setSummary(R.string.disable_bootanimation_summary);
+
+        if (!getResources().getBoolean(com.android.internal.R.bool.config_enableCrtAnimations)) {
+            prefs.removePreference((PreferenceGroup) findPreference("crt"));
+        } else {
+            // can't get this working in ICS just yet
+            ((PreferenceGroup) findPreference("crt")).removePreference(mCrtOnAnimation);
+        }
     }
 
     private void updateCustomLabelTextSummary() {
@@ -103,28 +114,22 @@ public class UserInterface extends SettingsPreferenceFragment implements
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
             Preference preference) {
         if (preference == mCrtOffAnimation) {
-
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.CRT_OFF_ANIMATION, checked ? 1 : 0);
             return true;
-
         } else if (preference == mCrtOnAnimation) {
-
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.CRT_ON_ANIMATION, checked ? 1 : 0);
             return true;
         } else if (preference == mShowImeSwitcher) {
-
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.SHOW_STATUSBAR_IME_SWITCHER, checked ? 1 : 0);
             return true;
-
         } else if (preference == mCustomLabel) {
             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-
             alert.setTitle("Custom Carrier Label");
             alert.setMessage("Please enter a new one!");
 
@@ -150,29 +155,37 @@ public class UserInterface extends SettingsPreferenceFragment implements
 
             alert.show();
         } else if (preference == mLongPressToKill) {
-
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.Secure.putInt(getActivity().getContentResolver(),
                     Settings.Secure.KILL_APP_LONGPRESS_BACK, checked ? 1 : 0);
             return true;
-
         } else if (preference == mAllow180Rotation) {
-
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES, checked ? (1 | 2 | 4 | 8)
                             : (1 | 2 | 8));
             return true;
-
         } else if (preference == mHorizontalAppSwitcher) {
-
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.HORIZONTAL_RECENTS_TASK_PANEL, checked ? 1
                             : 0);
             new CMDProcessor().su.runWaitFor("pkill -TERM -f  com.android.systemui");
             return true;
-
+        } else if (preference == mDisableBootAnimation) {
+            boolean checked = ((CheckBoxPreference) preference).isChecked();
+            if (checked) {
+                Helpers.getMount("rw");
+                new CMDProcessor().su
+                        .runWaitFor("mv /system/media/bootanimation.zip /system/media/bootanimation.unicorn");
+                Helpers.getMount("ro");
+                preference.setSummary(R.string.disable_bootanimation_summary);
+            } else {
+                Helpers.getMount("rw");
+                new CMDProcessor().su
+                        .runWaitFor("mv /system/media/bootanimation.unicorn /system/media/bootanimation.zip");
+                Helpers.getMount("ro");
+            }
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -181,14 +194,11 @@ public class UserInterface extends SettingsPreferenceFragment implements
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference == mAnimationRotationDelay) {
-
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME,
                     Integer.parseInt((String) newValue));
-
             return true;
         }
-
         return false;
     }
 

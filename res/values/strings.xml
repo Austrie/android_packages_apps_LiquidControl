@@ -5,20 +5,20 @@
     <!-- Main -->
     <string name="user_interface">User Interface</string>
     <string name="general_ui">General UI</string>
-    <string name="lockscreen_options">Lockscreen options</string>
-    <string name="power_menu_optons">Power menu options</string>
+    <string name="lockscreen_options">Lockscreen</string>
+    <string name="power_menu_optons">Power Menu</string>
     <string name="functionality">Functionality</string>
-    <string name="power_saver">Power saver</string>
-    <string name="led_options">LED options</string>
+    <string name="power_saver">Power Saver</string>
+    <string name="led_options">LED Options</string>
     <string name="statusbar">Statusbar</string>
     <string name="general">General</string>
     <string name="toggles_layout">Toggles</string>
     <string name="clock">Clock</string>
     <string name="battery">Battery</string>
-    <string name="nav_bar">Navigation bar</string>
+    <string name="nav_bar">Navigation</string>
     <string name="tools">Tools</string>
     
-    <string name="advanced_settings">Advanced settings</string>
+    <string name="advanced_settings">Advanced</string>
     <string name="misc_short">Misc</string>
     
     <!-- Navigation Bar -->
@@ -55,7 +55,8 @@
 
 	<string name="horizontal_recents_task_panel_title">Horizontal recents window</string>
 	<string name="horizontal_recents_task_panel_summary">Use WebOS style task switcher. Your UI will restart after changing this. It will come back in about 10 seconds. If it doesn\'t, just reboot the phone from the power menu.</string>
-	<!-- CRT animations -->
+
+    <!-- CRT animations -->
 	<string name="crt_animations_header">CRT animations</string>
 	<string name="crt_on_title">CRT on animation</string>
 	<string name="crt_off_title">CRT off animation</string>
@@ -222,13 +223,13 @@
 	<string name="pt_enable_sysctl">Enable sysctl</string>
 	<string name="pt_enable_cron">Enable scheduled tasks</string>
 	<!-- Performance -->
-	<string name="pt_set_cpu_activity">Set cpu</string>
-	<string name="pt_free_memory">Free memory</string>
+	<string name="pt_set_cpu_activity">Set Cpu</string>
+	<string name="pt_free_memory">Free Memory</string>
 	<string name="pt_free_memory_boot">Set at boot</string>
 	<!-- Cpu -->
-	<string name="pt_set_max">Max cpu</string>
-	<string name="pt_set_min">Min cpu</string>
-	<string name="pt_set_gov">Scaling governor</string>
+	<string name="pt_set_max">Max Cpu</string>
+	<string name="pt_set_min">Min Cpu</string>
+	<string name="pt_set_gov">Scaling Governor</string>
 	<string name="pt_cpu_boot">Set at boot</string>
 
 	<!-- Preference Summaries -->

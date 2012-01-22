@@ -43,6 +43,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     Preference mCustomLabel;
     ListPreference mAnimationRotationDelay;
     CheckBoxPreference mDisableBootAnimation;
+    CheckBoxPreference mDisableBugMailer;
     String mCustomLabelText = null;
 
     @Override
@@ -88,6 +89,10 @@ public class UserInterface extends SettingsPreferenceFragment implements
 
         mDisableBootAnimation = (CheckBoxPreference) findPreference("disable_bootanimation");
         mDisableBootAnimation.setChecked(!new File("/system/media/bootanimation.zip").exists());
+
+        mDisableBugMailer = (CheckBoxPreference) findPreference("disable_bugmailer");
+        mDisableBugMailer.setChecked(!new File("/system/bin/bugmailer.sh").exists());
+
         if (mDisableBootAnimation.isChecked())
             mDisableBootAnimation.setSummary(R.string.disable_bootanimation_summary);
 
@@ -186,6 +191,20 @@ public class UserInterface extends SettingsPreferenceFragment implements
                         .runWaitFor("mv /system/media/bootanimation.unicorn /system/media/bootanimation.zip");
                 Helpers.getMount("ro");
             }
+        } else if (preference == mDisableBugMailer) {
+            boolean checked = ((CheckBoxPreference) preference).isChecked();
+            if (checked) {
+                Helpers.getMount("rw");
+                new CMDProcessor().su
+                        .runWaitFor("mv /system/bin/bugmailer.sh /system/bin/bugmailer.sh.liquid");
+                Helpers.getMount("ro");
+                preference.setSummary(R.string.disable_bootanimation_summary);
+            } else {
+                Helpers.getMount("rw");
+                new CMDProcessor().su
+                        .runWaitFor("mv /system/bin/bugmailer.sh.liquid /system/bin/bugmailer.sh");
+                Helpers.getMount("ro");
+            }
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -199,6 +218,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
                     Integer.parseInt((String) newValue));
             return true;
         }
+
         return false;
     }
 

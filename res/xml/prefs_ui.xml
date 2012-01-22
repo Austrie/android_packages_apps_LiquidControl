@@ -7,6 +7,11 @@
         android:title="@string/disable_bootanimation_title"
         android:summary="@string/disable_bootanimation_summary" />
 
+    <CheckBoxPreference
+        android:key="disable_bugmailer"
+        android:title="@string/disable_bugmailer_title"
+        android:summary="@string/disable_bugmailer_summary" />
+
 	<CheckBoxPreference
 		android:key="rotate_180"
 		android:title="@string/rotate_180_title"
@@ -57,5 +62,4 @@
 			android:summary="@string/rotation_animation_delay_summary" />
 
 	</PreferenceCategory>
-
 </PreferenceScreen>

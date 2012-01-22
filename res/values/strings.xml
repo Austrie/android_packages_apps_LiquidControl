@@ -59,6 +59,9 @@
     <string name="disable_bootanimation_title">Boot animation</string>
     <string name="disable_bootanimation_summary">Toggle boot animation for faster boot time</string>
 
+    <string name="disable_bugmailer_title">Android bugmailer</string>
+    <string name="disable_bugmailer_summary">Disable integrated bugmailer support</string>
+    
     <!-- CRT animations -->
 	<string name="crt_animations_header">CRT animations</string>
 	<string name="crt_on_title">CRT on animation</string>

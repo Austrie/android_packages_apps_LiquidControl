@@ -21,7 +21,7 @@ import android.widget.EditText;
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.CMDProcessor;
-import com.roman.romcontrol.util.Helpers;    
+import com.liquid.control.util.Helpers;    
 
 public class UserInterface extends SettingsPreferenceFragment implements
         OnPreferenceChangeListener {

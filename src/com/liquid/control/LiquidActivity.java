@@ -321,7 +321,7 @@ public class LiquidActivity extends PreferenceActivity implements ButtonBarHandl
         }
 
         public void resume() {
-            log.d(TAG, " ...LiquidActivity has RESUMED"); //debugging
+            Log.d(TAG, " ...LiquidActivity has RESUMED"); //debugging
         }
 
         public void pause() {

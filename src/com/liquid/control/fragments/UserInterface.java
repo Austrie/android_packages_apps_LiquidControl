@@ -28,22 +28,25 @@ public class UserInterface extends SettingsPreferenceFragment implements
 
     private static final String PREF_CRT_ON = "crt_on";
     private static final String PREF_CRT_OFF = "crt_off";
-    private static final String PREF_IME_SWITCHER = "ime_switcher";
     private static final String PREF_CUSTOM_CARRIER_LABEL = "custom_carrier_label";
+    private static final String PREF_IME_SWITCHER = "ime_switcher";
     private static final String PREF_LONGPRESS_TO_KILL = "longpress_to_kill";
+    private static final String PREF_LONGPRESS_APP_TASKER = "longpress_app_tasker";
     private static final String PREF_ROTATION_ANIMATION = "rotation_animation_delay";
     private static final String PREF_180 = "rotate_180";
 
-    CheckBoxPreference mCrtOnAnimation;
-    CheckBoxPreference mCrtOffAnimation;
-    CheckBoxPreference mShowImeSwitcher;
-    CheckBoxPreference mLongPressToKill;
     CheckBoxPreference mAllow180Rotation;
-    CheckBoxPreference mHorizontalAppSwitcher;
-    Preference mCustomLabel;
     ListPreference mAnimationRotationDelay;
+    CheckBoxPreference mCrtOffAnimation;
+    CheckBoxPreference mCrtOnAnimation;
+    Preference mCustomLabel;
     CheckBoxPreference mDisableBootAnimation;
     CheckBoxPreference mDisableBugMailer;
+    CheckBoxPreference mHorizontalAppSwitcher;
+    CheckBoxPreference mLongPressToKill;
+    CheckBoxPreference mShowImeSwitcher;
+    CheckBoxPreference mLongPressAppTasker;
+
     String mCustomLabelText = null;
 
     @Override
@@ -93,6 +96,14 @@ public class UserInterface extends SettingsPreferenceFragment implements
         mDisableBugMailer = (CheckBoxPreference) findPreference("disable_bugmailer");
         mDisableBugMailer.setChecked(!new File("/system/bin/bugmailer.sh").exists());
 
+        /* DISABLED TILL WE HAVE FRAMEWORKS SUPPORT
+        mLongPressAppTasker = (CheckBoxPreference) findPreference("longpress_app_tasker");
+        mLongPressAppTasker.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
+                Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
+        */
+
+        //TODO: summarys in ics shouldn't be dynamic; only exception is dialog input events
+        // summary should be true if checked and false if unchecked
         if (mDisableBootAnimation.isChecked())
             mDisableBootAnimation.setSummary(R.string.disable_bootanimation_summary);
 
@@ -206,6 +217,13 @@ public class UserInterface extends SettingsPreferenceFragment implements
                 Helpers.getMount("ro");
             }
         }
+        /* DISABLED TILL WE SUPPORT WITH FRAMEWORKS
+          else if (preference == mLongPressAppTasker) {
+            boolean checked = ((CheckBoxPreference) preference).isChecked();
+            Settings.Secure.putInt(getActivity().getContentResolver(),
+                    Settings.Secure.LONGPRESS_APP_TASKER_INTENT, checked ? 1 : 0);
+            return true;
+        } */
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }

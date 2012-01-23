@@ -104,6 +104,7 @@
     <!-- Power Menu -->
     <string name="title_show_power_saver">Show power saver</string>
     <string name="title_show_screenshot">Show screenshot</string>
+    <string name="title_show_easter_egg">Show hidden android easter egg</string>
     
     <!-- Power Saving -->
     <string name="title_pref_powersaving_pref_mode">Enable power saver</string>

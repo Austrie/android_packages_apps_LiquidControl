@@ -1,6 +1,7 @@
 
 package com.liquid.control;
 
+import java.lang.NullPointerException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,14 @@ public class LiquidActivity extends PreferenceActivity implements ButtonBarHandl
     public void onCreate(Bundle savedInstanceState) {
 
         mTablet = Settings.System.getInt(getContentResolver(), Settings.System.IS_TABLET, 0) == 1;
-        hasNotificationLed = getResources().getBoolean(R.bool.has_notification_led);
+
+        try {
+            hasNotificationLed = getResources().getBoolean(R.bool.has_notification_led);
+        } catch (NullPointerException ne) {
+            // because users change shit we always play it safe
+            // and attempt to handle gracefully without user involvement
+            hasNotificationLed = false;
+        }
 
         mInLocalHeaderSwitch = true;
         super.onCreate(savedInstanceState);
@@ -311,9 +319,11 @@ public class LiquidActivity extends PreferenceActivity implements ButtonBarHandl
         }
 
         public void resume() {
+            log.d(TAG, " ...LiquidActivity has RESUMED"); //debugging
         }
 
         public void pause() {
+            Log.d(TAG, " ...LiquidActivity has PAUSED"); //debugging
         }
     }
 

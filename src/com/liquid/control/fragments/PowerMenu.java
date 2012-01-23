@@ -36,7 +36,7 @@ public class PowerMenu extends PreferenceFragment {
                 .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_SCREENSHOT, 1) == 1);
 
         mShowEasterEgg = (CheckBoxPreference) findPreference(PREF_EASTER_EGG);
-        mShowEasterEgg.Settings.System.getInt(getActivity()
+        mShowEasterEgg.setChecked(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_EASTER_EGG, 0) == 1);
 
     }

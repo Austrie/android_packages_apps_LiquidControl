@@ -16,6 +16,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.IWindowManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 
 public class LiquidActivity extends PreferenceActivity implements ButtonBarHandler {
 
+    private static String TAG = "LiquidControl :LiquidActivity";
     private static boolean hasNotificationLed;
 
     protected HashMap<Integer, Integer> mHeaderIndexMap = new HashMap<Integer, Integer>();

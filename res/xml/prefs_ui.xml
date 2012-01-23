@@ -68,8 +68,8 @@
                     *-->
                 <CheckBoxPreference
                         android:key="longpress_app_tasker"
-                        android:title="@string/longpress_app_tasker"
-                        android:summary="@string/longpress_app_tasker"
+                        android:title="@string/longpress_app_tasker_title"
+                        android:summary="@string/longpress_app_tasker_summary"
                         android:visible="false" />
 
 	</PreferenceCategory>

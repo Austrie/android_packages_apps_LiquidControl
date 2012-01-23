@@ -295,5 +295,10 @@
 	<string name="error_values">Error getting values</string>
 	<string name="set_boot">Set On Boot</string>
 	<string name="apply_values">Apply Values</string>
+
+
+    <!-- Handle Longpress of app tasker (Recent virtual key) -->
+    <string name="longpress_app_tasker_title">Long press app tasker</string>
+    <string name="longpress_app_tasker_summary">New task to be launched</string>
     
 </resources>

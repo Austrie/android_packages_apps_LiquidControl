@@ -57,7 +57,7 @@ public class PowerMenu extends PreferenceFragment {
         } else if (preference == mShowEasterEgg) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.POWER_DIALOG_SHOW_EASTER_EGG,
-                    ((CheckBoxPreference) preference).isChecked() ? 0 : 0);
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);

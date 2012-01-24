@@ -11,6 +11,7 @@ import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.liquid.control.R;
 
@@ -21,6 +22,7 @@ public class ShortcutPickerHelper {
     private static final int REQUEST_PICK_SHORTCUT = 100;
     private static final int REQUEST_PICK_APPLICATION = 101;
     private static final int REQUEST_CREATE_SHORTCUT = 102;
+    private static final String TAG = "Liquid :ShortcutPickerHelper";
 
     public interface OnPickListener {
         void shortcutPicked(String uri, String friendlyName, boolean isApplication);
@@ -64,7 +66,7 @@ public class ShortcutPickerHelper {
         pickIntent.putExtras(bundle);
 
         mParent.startActivityForResult(pickIntent, REQUEST_PICK_SHORTCUT);
-        Log.e("LIQUID", "starting activity for result");
+        Log.e(TAG, "starting activity for result");
     }
 
     private void processShortcut(Intent intent, int requestCodeApplication, int requestCodeShortcut) {

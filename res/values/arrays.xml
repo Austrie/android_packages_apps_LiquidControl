@@ -7,18 +7,16 @@
 		<item>Both</item>
 	</string-array>
 
-	<!-- right is the default, easier to keep 0 as first index -->
-	<string-array name="pref_navigation_menu_values"
-		translatable="false">
+	<string-array name="pref_navigation_menu_values">
 		<item>0</item>
 		<item>1</item>
 		<item>2</item>
 	</string-array>
 
 	<string-array name="pref_powersaving_data_screen_off_entries_cdma">
-		<item>Do nothing</item>
-		<item>Turn LTE off</item>
-		<item>Turn data off</item>
+		<item>Do Nothing</item>
+		<item>LTE Off</item>
+		<item>Data Off</item>
 	</string-array>
 
 	<string-array name="pref_powersaving_data_screen_off_values_cdma">
@@ -28,9 +26,9 @@
 	</string-array>
 
 	<string-array name="pref_powersaving_data_screen_off_entries">
-		<item>Do nothing</item>
-		<item>Turn data off</item>
-		<item>Switch to 2G mode</item>
+		<item>Do Nothing</item>
+		<item>Data Off</item>
+		<item>2G Mode</item>
 	</string-array>
 
 	<string-array name="pref_powersaving_data_screen_off_values">
@@ -40,15 +38,15 @@
 	</string-array>
 
 	<string-array name="pref_powersaving_data_screen_off_delay_entries">
-		<item>Don\'t wait (immediate)</item>
-		<item>10 seconds</item>
-		<item>30 seconds</item>
-		<item>45 seconds</item>
-		<item>1 minute</item>
-		<item>5 minutes</item>
-		<item>10 minutes</item>
-		<item>15 minutes</item>
-		<item>30 minutes</item>
+		<item>Immediately</item>
+		<item>10 secs</item>
+		<item>30 secs</item>
+		<item>45 secs</item>
+		<item>1 mins</item>
+		<item>5 mins</item>
+		<item>10 mins</item>
+		<item>15 mins</item>
+		<item>30 mins</item>
 	</string-array>
 
 	<string-array name="pref_powersaving_data_screen_off_delay_values">
@@ -64,16 +62,16 @@
 	</string-array>
 
 	<string-array name="pref_powersaving_sync_screen_off_interval_entries">
-		<item>15 minutes</item>
-		<item>30 minutes</item>
-		<item>1 hour</item>
-		<item>2 hours</item>
-		<item>3 hours</item>
-		<item>4 hours</item>
-		<item>5 hours</item>
-		<item>6 hours</item>
-		<item>8 hours</item>
-		<item>12 hours</item>
+		<item>15 mins</item>
+		<item>30 mins</item>
+		<item>1 hrs</item>
+		<item>2 hrs</item>
+		<item>3 hrs</item>
+		<item>4 hrs</item>
+		<item>5 hrs</item>
+		<item>6 hrs</item>
+		<item>8 hrs</item>
+		<item>12 hrs</item>
 	</string-array>
 
 	<string-array name="pref_powersaving_sync_screen_off_interval_values">
@@ -89,11 +87,10 @@
 		<item>43200</item>
 	</string-array>
 
-
 	<string-array name="pref_powersaving_sync_screen_off_entries">
-		<item>Do nothing</item>
-		<item>Turn autosync off</item>
-		<item>Turn autosync off with delay</item>
+		<item>Do Nothing</item>
+		<item>Autosync Off</item>
+		<item>Autosync Off (Delayed)</item>
 	</string-array>
 
 	<string-array name="pref_powersaving_sync_screen_off_values">
@@ -103,9 +100,9 @@
 	</string-array>
 	
 	<string-array name="powersaving_screen_off_wifi_entries">
-		<item>Leave untouched</item>
-		<item>Turn Wi-Fi off</item>
-		<item>turn Wi-Fi on</item>
+		<item>Untouched</item>
+		<item>Wi-Fi Off</item>
+		<item>Wi-Fi On</item>
 	</string-array>
 	
 	<string-array name="powersaving_screen_off_wifi_values">
@@ -115,10 +112,10 @@
 	</string-array>
 	
 	<string-array name="powersaving_sync_data_mode_entries">
-		<item>Leave untouched</item>
+		<item>Untouched</item>
 		<item>Only Wi-Fi</item>
-		<item>Wi-Fi preferred</item>
-		<item>Data only</item>
+		<item>Prefer Wi-Fi</item>
+		<item>Data Only</item>
 	</string-array>
 	
 	<string-array name="powersaving_sync_data_mode_values">
@@ -129,7 +126,7 @@
 	</string-array>
 	
 	<string-array name="powersaving_sync_data_mobile_mode_entries">
-		<item>2G/1x only</item>
+		<item>2G/1X Only</item>
 		<item>Prefer 3G</item>
 	</string-array>
 	
@@ -139,25 +136,24 @@
 	</string-array>
 	
 	<string-array name="led_entries">
-		<item>.5 seconds</item>
-		<item>1 second</item>
-		<item>1.5 seconds</item>
-		<item>2 seconds</item>
-		<item>2.5 seconds</item>
-		<item>3 seconds</item>
-		<item>3.5 seconds</item>
-		<item>4 seconds</item>
-		<item>4.5 seconds</item>
-		<item>5 seconds</item>
-		<item>5.5 seconds</item>
-		<item>6 seconds</item>
-		<item>7 seconds</item>
-		<item>8 seconds</item>
-		<item>9 seconds</item>
-		<item>10 seconds</item>
+		<item>.5 secs</item>
+		<item>1 secs</item>
+		<item>1.5 secs</item>
+		<item>2 secs</item>
+		<item>2.5 secs</item>
+		<item>3 secs</item>
+		<item>3.5 secs</item>
+		<item>4 secs</item>
+		<item>4.5 secs</item>
+		<item>5 secs</item>
+		<item>5.5 secs</item>
+		<item>6 secs</item>
+		<item>7 secs</item>
+		<item>8 secs</item>
+		<item>9 secs</item>
+		<item>10 secs</item>
 	</string-array>
 
-	<!-- values must be in milliseconds!~@@#E!@ -->
 	<string-array name="led_values">
 		<item>500</item>
 		<item>1000</item>
@@ -178,10 +174,10 @@
 	</string-array>
 
 	<string-array name="pref_navigation_menu_display_entries">
-		<item>Default ICS behavior</item>
-		<item>Always show invisible icons</item>
-		<item>Always show</item>
-		<item>Default ICS with invisible icons when hidden</item>
+		<item>Default</item>
+		<item>Invisible Icons</item>
+		<item>Always Show</item>
+		<item>Both Behaviours</item>
 	</string-array>
 
 	<string-array name="pref_navigation_menu_display_values">
@@ -191,11 +187,10 @@
 		<item>3</item>
 	</string-array>
 
-	<!-- clock stuff -->
 	<string-array name="clock_style_entries">
-		<item>Right clock</item>
-		<item>Center clock</item>
-		<item>No clock</item>
+		<item>Right</item>
+		<item>Center</item>
+		<item>None</item>
 	</string-array>
 
 	<string-array name="clock_style_values">
@@ -205,9 +200,9 @@
 	</string-array>
 
 	<string-array name="clock_ampm_entries">
-		<item>Don\'t show</item>
+		<item>Don\'t Show</item>
 		<item>Small AM/PM</item>
-		<item>Regular AM/PM</item>
+		<item>Large AM/PM</item>
 	</string-array>
 
 	<string-array name="clock_ampm_values">
@@ -216,11 +211,9 @@
 		<item>0</item>
 	</string-array>
 
-	<!-- Toggles -->
-
 	<string-array name="brightness_location_entries">
-		<item>On top</item>
-		<item>On the bottom</item>
+		<item>On Top</item>
+		<item>On Bottom</item>
 		<item>Don\'t Show</item>
 	</string-array>
 
@@ -230,7 +223,6 @@
 		<item>3</item>
 	</string-array>
 
-	<!-- animation rotation -->
 	<string-array name="rotation_animation_delay_entries">
 		<item>10 ms</item>
 		<item>25 ms</item>
@@ -255,11 +247,10 @@
 		<item>300</item>
 	</string-array>
 
-	<!-- toggle style -->
 	<string-array name="toggle_style_entries">
-		<item>No icon, no text</item>
-		<item>Icon only</item>
-		<item>Text only</item>
+		<item>Show None</item>
+		<item>Icon Only</item>
+		<item>Text Only</item>
 	</string-array>
 
 	<string-array name="toggle_style_values">
@@ -268,10 +259,9 @@
 		<item>3</item>
 	</string-array>
 
-	<!-- long press home -->
 	<string-array name="long_press_home_entries">
-		<item>Do nothing</item>
-		<item>Show recents</item>
+		<item>Do Nothing</item>
+		<item>Show Recents</item>
 	</string-array>
 
 	<string-array name="long_press_home_values">
@@ -280,9 +270,9 @@
 	</string-array>
 
     <string-array name="pref_lockscreen_options_values">
-		<item>0</item>
-		<item>1</item>
-        <item>2</item>
+		<item>2</item>
+		<item>4</item>
+        <item>8</item>
 	</string-array>
 
         <string-array name="pref_lockscreen_options_entries">
@@ -292,11 +282,11 @@
 	</string-array>
 
 	<string-array name="minfree">
-		<item>25mb</item>
-		<item>50mb</item>
-		<item>75mb</item>
-		<item>80mb</item>
-		<item>100mb</item>
+		<item>25 mb</item>
+		<item>50 mb</item>
+		<item>75 mb</item>
+		<item>80 mb</item>
+		<item>100 mb</item>
 	</string-array>
 
 	<string-array name="minfree_values">
@@ -310,8 +300,8 @@
 	<string-array name="battery_bar_entries">
 		<item>Hide</item>
 		<item>Statusbar</item>
-		<item>Top of navbar</item>
-		<item>Bottom of navbar</item>
+		<item>Navbar Top</item>
+		<item>Navbar Bottom</item>
 	</string-array>
 	
 	<string-array name="battery_bar_values">
@@ -323,7 +313,7 @@
 	
 	<string-array name="battery_bar_style_entries">
 		<item>Regular</item>
-		<item>Center-mirrored</item>
+		<item>Center</item>
 	</string-array>
 	
 	<string-array name="battery_bar_style_values">
@@ -367,6 +357,24 @@
 		<item>Silent</item>
 		<item>Torch</item>
 		<item>Sync</item>
+	</string-array>
+
+	<string-array name="lockscreen_choice_entries">
+		<item>Unlock</item>
+		<item>Sound</item>
+		<item>Phone</item>
+		<item>Camera</item>
+		<item>Custom</item>
+		<item>Blank</item>
+	</string-array>
+	
+	<string-array name="lockscreen_choice_values">
+		<item>**unlock**</item>
+		<item>**sound**</item>
+		<item>**phone**</item>
+		<item>**camera**</item>
+		<item>**app**</item>
+		<item>**null**</item>
 	</string-array>
 
 </resources>

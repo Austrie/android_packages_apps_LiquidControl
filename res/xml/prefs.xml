@@ -35,16 +35,6 @@
 				android:targetClass="com.liquid.control.activities.Lockscreens"
 				android:targetPackage="com.liquid.control" />
 		</Preference>
-
-		<Preference
-			android:key="powermenu"
-			android:title="@string/power_menu_optons">
-
-			<intent
-				android:action="android.intent.action.MAIN"
-				android:targetClass="com.liquid.control.activities.PowerMenu"
-				android:targetPackage="com.liquid.control" />
-		</Preference>
 	</PreferenceCategory>
 
 	<PreferenceCategory

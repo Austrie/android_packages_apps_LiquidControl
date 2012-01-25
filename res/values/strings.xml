@@ -8,7 +8,6 @@
     <string name="general_ui">Controls</string>
     <string name="user_interface">Interface</string>
     <string name="lockscreen_options">Lockscreen</string>
-    <string name="power_menu_optons">Power Menu</string>
     <string name="functionality">Functionality</string>
     <string name="power_saver">Power Saver</string>
     <string name="led_options">LED Options</string>
@@ -83,11 +82,6 @@
     <string name="lockscreen_action_none">Nothing</string>
     <string name="lockscreen_landscape_title">Horizontal Lockscreen</string>
     <string name="lockscreen_landscape_summary">Whether horizontal lockscreen orientation will be enabled</string>
-
-    <!-- Power Menu -->
-    <string name="title_show_power_saver">Show Powersaver</string>
-    <string name="title_show_screenshot">Show Screenshot</string>
-    <string name="title_show_easter_egg">Show Hidden</string>
     
     <!-- Power Saving -->
     <string name="title_pref_powersaving_pref_mode">Enable Powersaver</string>

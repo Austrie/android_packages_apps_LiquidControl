@@ -20,11 +20,6 @@
 		android:title="@string/lockscreen_options" />
 
 	<header
-		android:id="@+id/power_menu"
-		android:fragment="com.liquid.control.fragments.PowerMenu"
-		android:title="@string/power_menu_optons" />
-
-	<header
 		android:title="@string/functionality" />
 
 	<header

@@ -71,11 +71,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.PowerMenu" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
         <activity android:name=".fragments.PowerSaver" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />

@@ -5,8 +5,8 @@
     <string name="app_name">Liquid Control</string>
 
     <!-- Main Menu -->
-    <string name="user_interface">User Interface</string>
-    <string name="general_ui">General UI</string>
+    <string name="general_ui">Controls</string>
+    <string name="user_interface">Interface</string>
     <string name="lockscreen_options">Lockscreen</string>
     <string name="power_menu_optons">Power Menu</string>
     <string name="functionality">Functionality</string>
@@ -217,10 +217,8 @@
 	<string name="pt_cpu_boot">Set On Boot</string>
 
 	<!-- Preference Summaries -->
-	<string name="ps_performance">Set cpu, free memory &amp; customize start-up
-		settings.</string>
-	<string name="ps_customization">Customize the lockscreen &amp; status bar. Install
-		blur/aosp apps with Customizer</string>
+	<string name="ps_performance">Set cpu, memory &amp; tweak start-up.</string>
+	<string name="ps_customization">Customize the lockscreen &amp; status bar.</string>
 	<string name="ps_tools">Various system tools and extras</string>
 
 	<!-- Customization -->

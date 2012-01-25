@@ -4,11 +4,11 @@
 
 	<PreferenceCategory
 		android:key="rom_ui"
-		android:title="@string/user_interface">
+		android:title="@string/general_ui">
 
 		<Preference
 			android:key="menu_pref"
-			android:title="@string/general_ui">
+			android:title="@string/user_interface">
 
 			<intent
 				android:action="android.intent.action.MAIN"

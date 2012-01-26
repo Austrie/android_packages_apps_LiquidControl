@@ -381,7 +381,7 @@
 
     <string-array name="glow_times_entries">
         <item>Off</item>
-        <item>Super quick</item>
+        <item>Fast</item>
         <item>Quick</item>
         <item>Normal</item>
     </string-array>

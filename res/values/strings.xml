@@ -243,10 +243,10 @@
 	<string name="ps_enable_cron">Enable scheduled cron jobs</string>
 
 	<!-- Overclocking -->
-	<string name="ps_set_max">Maxium\nCurrent: %s</string>
-	<string name="ps_set_min">Minium\nCurrent: %s</string>
+    <string name="ps_set_max">Maxium\nCurrent: %s</string>
+    <string name="ps_set_min">Minium\nCurrent: %s</string>
 	<string name="ps_set_gov">Governor\nCurrent: %s</string>
-	<string name="ps_cpu_boot">Set On Boot</string>
+    <string name="ps_cpu_boot">Set On Boot</string>
 
 	<!-- Performance -->
 	<string name="ps_set_cpu_activity">Set frequencies and current governor

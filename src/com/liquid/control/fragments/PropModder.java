@@ -1,4 +1,3 @@
-
 package com.liquid.control.fragments;
 
 import android.app.Activity;
@@ -17,7 +16,6 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
@@ -44,7 +42,6 @@ public class PropModder extends PreferenceFragment implements
         Preference.OnPreferenceChangeListener {
 
     private static final String TAG = "LiquidControl :PropModder";
-
     private static final String APPEND_CMD = "echo \"%s=%s\" >> /system/build.prop";
     private static final String KILL_PROP_CMD = "busybox sed -i \"/%s/D\" /system/build.prop";
     private static final String REPLACE_CMD = "busybox sed -i \"/%s/ c %<s=%s\" /system/build.prop";
@@ -55,7 +52,6 @@ public class PropModder extends PreferenceFragment implements
     private static final String PROP_EXISTS_CMD = "grep -q %s /system/build.prop";
     private static final String SDCARD_BUFFER_ON_THE_FLY_CMD = "echo %s > /sys/devices/virtual/bdi/179:0/read_ahead_kb";
     private static final String DISABLE = "disable";
-
     private static final String SHOWBUILD_PATH = "/system/tmp/showbuild";
     private static final String INIT_SCRIPT_PATH ="/system/etc/init.d/72propmodder_script";
     private static final String INIT_SCRIPT_TEMP_PATH = "/system/tmp/init_script";
@@ -185,9 +181,8 @@ public class PropModder extends PreferenceFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.propmodder);
-
         Log.d(TAG, "Loading prefs");
+        addPreferencesFromResource(R.xml.propmodder);
         PreferenceScreen prefSet = getPreferenceScreen();
 
         mWifiScanPref = (ListPreference) prefSet.findPreference(WIFI_SCAN_PREF);
@@ -277,7 +272,6 @@ public class PropModder extends PreferenceFragment implements
         mSdcardBufferPref.setOnPreferenceChangeListener(this);
 
         m3gSpeedPref = (CheckBoxPreference) prefSet.findPreference(THREE_G_PREF);
-
         boolean speed3g0 = cmd.su.runWaitFor(String.format(FIND_CMD, THREE_G_PROP_0)).success();
         boolean speed3g1 = cmd.su.runWaitFor(String.format(FIND_CMD, THREE_G_PROP_1)).success();
         boolean speed3g3 = cmd.su.runWaitFor(String.format(FIND_CMD, THREE_G_PROP_3)).success();
@@ -405,7 +399,8 @@ public class PropModder extends PreferenceFragment implements
             return doMod(VVMAIL_PERSIST_PROP, VVMAIL_PROP_0, String.valueOf(value ? true : DISABLE))
                 && doMod(null, VVMAIL_PROP_1, String.valueOf(value ? true : DISABLE));
         }
-    return false;
+
+        return false;
     }
 
     /* handle ListPreferences and EditTextPreferences */
@@ -443,6 +438,7 @@ public class PropModder extends PreferenceFragment implements
                             && mount("ro");
             }
         }
+
         return false;
     }
 
@@ -480,7 +476,8 @@ public class PropModder extends PreferenceFragment implements
         } finally {
             mount("ro");
         }
-    return success;
+
+        return success;
     }
 
     public boolean mount(String read_value) {
@@ -521,6 +518,7 @@ public class PropModder extends PreferenceFragment implements
             Log.e(TAG, "initScript install failed: " + e);
             e.printStackTrace();
         }
+
         return false;
     }
 
@@ -540,6 +538,7 @@ public class PropModder extends PreferenceFragment implements
             Log.e(TAG, "enableInit install failed: " + e);
             e.printStackTrace();
         }
+
         return false;
     }
 
@@ -553,3 +552,4 @@ public class PropModder extends PreferenceFragment implements
         return cmd.su.runWaitFor("cp /system/tmp/pm_build.prop /system/build.prop").success();
     }
 }
+

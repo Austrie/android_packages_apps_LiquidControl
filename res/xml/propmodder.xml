@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- General settings -->
     <PreferenceCategory android:key="general_category"
         android:title="@string/buildprop_title">
 
         <PreferenceScreen
-            android:key="propmodder"
+            android:key="showbuildprop"
             android:title="@string/showbuild_title"
             android:summary="@string/showbuild_label">
             <intent android:action="android.intent.action.MAIN"
@@ -126,3 +126,4 @@
     </PreferenceCategory>
 
 </PreferenceScreen>
+

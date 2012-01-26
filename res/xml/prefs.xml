@@ -17,22 +17,22 @@
 		</Preference>
 
 		<Preference
-			android:key="nav_bar"
-			android:title="@string/nav_bar">
-
-			<intent
-				android:action="android.intent.action.MAIN"
-				android:targetClass="com.liquid.control.activities.Navbar"
-				android:targetPackage="com.liquid.control" />
-		</Preference>
-
-		<Preference
 			android:key="lockscreen_pref"
 			android:title="@string/lockscreen_options">
 
 			<intent
 				android:action="android.intent.action.MAIN"
 				android:targetClass="com.liquid.control.activities.Lockscreens"
+				android:targetPackage="com.liquid.control" />
+		</Preference>
+
+		<Preference
+			android:key="nav_bar"
+			android:title="@string/nav_bar">
+
+			<intent
+				android:action="android.intent.action.MAIN"
+				android:targetClass="com.liquid.control.activities.Navbar"
 				android:targetPackage="com.liquid.control" />
 		</Preference>
 	</PreferenceCategory>
@@ -52,6 +52,16 @@
 		</Preference>
 
 		<Preference
+			android:key="propmodder"
+			android:title="@string/propmodder_title">
+
+			<intent
+				android:action="android.intent.action.MAIN"
+				android:targetClass="com.liquid.control.activities.PropModder"
+				android:targetPackage="com.liquid.control" />
+		</Preference>
+
+		<Preference
 			android:key="led_prefs"
 			android:title="@string/led_options">
 
@@ -60,8 +70,6 @@
 				android:targetClass="com.liquid.control.activities.LED"
 				android:targetPackage="com.liquid.control" />
 		</Preference>
-
-
 	</PreferenceCategory>
 
 	<PreferenceCategory
@@ -107,7 +115,6 @@
 				android:targetClass="com.liquid.control.activities.StatusBarBattery"
 				android:targetPackage="com.liquid.control" />
 		</Preference>
-
 	</PreferenceCategory>
 
 	<PreferenceCategory
@@ -132,5 +139,4 @@
 				android:targetClass="com.liquid.control.tools.InitD" />
 		</Preference>
 	</PreferenceCategory>
-
 </PreferenceScreen>

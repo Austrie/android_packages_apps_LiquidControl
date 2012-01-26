@@ -28,7 +28,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.liquid.control.R;
-import com.liquid.control.fragments.StatusBarToggles.TogglesLayout;
+import com.liquid.control.widgets.SeekBarPreference;
 import com.liquid.control.widgets.TouchInterceptor;
 
 public class Navbar extends PreferenceFragment implements
@@ -46,11 +46,13 @@ public class Navbar extends PreferenceFragment implements
     ListPreference menuDisplayLocation;
     ListPreference mNavBarMenuDisplay;
     ListPreference mHomeLongpress;
+    ListPreference mGlowTimes;
     Preference mNavBarEnabledButtons;
     Preference mLayout;
+    SeekBarPreference mButtonAlpha;
 
     private final String[] buttons = {
-            "HOME", "BACK", "TASKS", "SEARCH"
+            "HOME", "BACK", "TASKS", "SEARCH", "MENU_BIG"
     };
 
     @Override
@@ -82,7 +84,21 @@ public class Navbar extends PreferenceFragment implements
         mNavigationBarColor = (ColorPickerPreference) findPreference(PREF_NAV_COLOR);
         mNavigationBarColor.setOnPreferenceChangeListener(this);
 
+        mGlowTimes = (ListPreference) findPreference("glow_times");
+        mGlowTimes.setOnPreferenceChangeListener(this);
+        // mGlowTimes.setValue(Settings.System.getInt(getActivity()
+        // .getContentResolver(), Settings.System.NAVIGATION_BAR_HOME_LONGPRESS,
+        // 0) + "");
+
         mNavBarEnabledButtons = findPreference(PREF_EANBLED_BUTTONS);
+
+        float defaultAlpha = Settings.System.getFloat(getActivity()
+                .getContentResolver(), Settings.System.NAVIGATION_BAR_BUTTON_ALPHA,
+                0.6f);
+        mButtonAlpha = (SeekBarPreference) findPreference("button_transparency");
+        mButtonAlpha.setInitValue((int) (defaultAlpha * 100));
+        mButtonAlpha.setOnPreferenceChangeListener(this);
+
         mLayout = findPreference("buttons");
     }
 
@@ -168,6 +184,28 @@ public class Navbar extends PreferenceFragment implements
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.NAVIGATION_BAR_HOME_LONGPRESS,
                     Integer.parseInt((String) newValue));
+            return true;
+        } else if (preference == mGlowTimes) {
+            // format is (on|off) both in MS
+            int breakIndex = ((String) newValue).indexOf("|");
+            String value = (String) newValue;
+
+            int offTime = Integer.parseInt(value.substring(breakIndex + 1));
+            int onTime = Integer.parseInt(value.substring(0, breakIndex));
+
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_GLOW_DURATION[0],
+                    offTime);
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_GLOW_DURATION[1],
+                    onTime);
+            return true;
+        } else if (preference == mButtonAlpha) {
+            float val = Float.parseFloat((String) newValue);
+            Log.e("R", "value: " + val / 100);
+            Settings.System.putFloat(getActivity().getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_BUTTON_ALPHA,
+                    val / 100);
             return true;
         }
         return false;
@@ -364,3 +402,4 @@ public class Navbar extends PreferenceFragment implements
         return iloveyou;
     }
 }
+

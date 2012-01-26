@@ -17,6 +17,7 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
@@ -39,7 +40,7 @@ import java.io.FileWriter;
 import com.liquid.control.R;
 import com.liquid.control.util.CMDProcessor;
 
-public class PropModder extends PreferenceActivity implements
+public class PropModder extends PreferenceFragment implements
         Preference.OnPreferenceChangeListener {
 
     private static final String TAG = "LiquidControl :PropModder";
@@ -181,10 +182,9 @@ public class PropModder extends PreferenceActivity implements
     private final CMDProcessor cmd = new CMDProcessor();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTitle(R.string.propmodder_title);
         addPreferencesFromResource(R.xml.propmodder);
 
         Log.d(TAG, "Loading prefs");
@@ -337,24 +337,11 @@ public class PropModder extends PreferenceActivity implements
                 mount("ro");
             }
         }
-
-        // WARN THE MASSES THIS CAN BE DANGEROUS!!!
-        mAlertDialog = new AlertDialog.Builder(this).create();
-        mAlertDialog.setTitle(R.string.main_warning_title);
-        mAlertDialog.setMessage(getResources().getString(R.string.main_warning_summary));
-        mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Understood, my device my problem",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                });
-        mAlertDialog.show();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        setTitle(R.string.propmodder_title);
         addPreferencesFromResource(R.xml.propmodder);
     }
 
@@ -493,14 +480,6 @@ public class PropModder extends PreferenceActivity implements
         } finally {
             mount("ro");
         }
-        if (success) {
-            //quick notification when we are successfull
-            displayNotification("success", key, value);
-        }
-        if (!success) {
-            //quick notification when we are unsuccessfull
-            displayNotification("fail", key, value);
-        }
     return success;
     }
 
@@ -572,43 +551,5 @@ public class PropModder extends PreferenceActivity implements
     public boolean restoreBuildProp() {
         Log.d(TAG, "Restoring build.prop from /system/tmp/pm_build.prop");
         return cmd.su.runWaitFor("cp /system/tmp/pm_build.prop /system/build.prop").success();
-    }
-
-    /* Create menu hardkey press Menu */
-    public boolean onCreateOptionsMenu(Menu menu){
-        boolean result = super.onCreateOptionsMenu(menu);
-        menu.add(0, MENU_MARKET, 0, "Please Rate PropModder").setIcon(R.drawable.market);
-        menu.add(0, MENU_REBOOT, 0, "!!! REBOOT NOW !!!").setIcon(R.drawable.reboot);
-        return result;
-    }
- 
-    /* Handle the menu selection */
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case MENU_MARKET:
-            Intent PropModderMarket = null;
-            PropModderMarket = new Intent(Intent.ACTION_VIEW,Uri.parse("market://details?id=com.n00bware.propmodder"));
-            startActivity(PropModderMarket);
-            return true;
-        case MENU_REBOOT:
-            Toast.makeText(PropModder.this, "REBOOTING", Toast.LENGTH_SHORT).show();
-            return cmd.su.runWaitFor("reboot").success();
-        }
-        return false;
-    }
-
-    /* use status bar to notify users of success/failure */
-    public void displayNotification(String success, String prop, String value) {
-        mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        final Notification notifyDetails = new Notification(R.drawable.ic_launcher, String.format("%s: { %s to %s } reboot to apply", success, prop, value),System.currentTimeMillis());
-
-        Context context = getApplicationContext();
-        CharSequence contentTitle = "Rate PropModder";
-        CharSequence contentText = "show your support";
-        Intent notifyIntent = new Intent(android.content.Intent.ACTION_VIEW,Uri.parse("market://com.n00bware.propmodder"));
-        PendingIntent intent = PendingIntent.getActivity(PropModder.this, 0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-        notifyDetails.setLatestEventInfo(context, contentTitle, contentText, intent);
-        mNotificationManager.notify(NOTE_ID, notifyDetails);
-        mNotificationManager.cancel(NOTE_ID);
     }
 }

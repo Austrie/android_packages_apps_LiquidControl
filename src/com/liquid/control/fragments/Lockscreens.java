@@ -43,7 +43,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        keys.add("lockscreen_show_nav");
+        keys.add(Settings.System.LOCKSCREEN_HIDE_NAV);
         keys.add(Settings.System.LOCKSCREEN_LANDSCAPE);
 
         // Load the preferences from an XML resource
@@ -147,8 +147,9 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 .getContentResolver(),
                 Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[i]);
 
-        if(uri == null)
+        if (uri == null)
             return getResources().getString(R.string.lockscreen_action_none);
+
         if (uri.startsWith("**")) {
             if (uri.equals("**unlock**"))
                 return getResources().getString(R.string.lockscreen_action_unlock);

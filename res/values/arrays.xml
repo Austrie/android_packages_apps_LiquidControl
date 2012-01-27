@@ -5,12 +5,14 @@
 		<item>Right</item>
 		<item>Left</item>
 		<item>Both</item>
+        <item>Remove</item>
 	</string-array>
 
 	<string-array name="pref_navigation_menu_values">
 		<item>0</item>
 		<item>1</item>
 		<item>2</item>
+        <item>4</item>
 	</string-array>
 
 	<string-array name="pref_powersaving_data_screen_off_entries_cdma">
@@ -375,9 +377,23 @@
 		<item>**camera**</item>
 		<item>**app**</item>
 		<item>**null**</item>
+	</string-array>
+
+    <string-array name="glow_times_entries">
+        <item>Off</item>
+        <item>Fast</item>
+        <item>Quick</item>
+        <item>Normal</item>
     </string-array>
 
-    <string-array name="entries_wifi_scan" translatable="false">
+    <string-array name="glow_times_values">
+        <item>0|0</item>
+        <item>100|10</item>
+        <item>250|25</item>
+        <item>500|50</item>
+    </string-array>
+
+  <string-array name="entries_wifi_scan" translatable="false">
         <item>15</item>
         <item>30</item>
         <item>60</item>
@@ -392,7 +408,6 @@
         <item>360</item>
         <item>390</item>
         <item>420</item>
-
     </string-array>
 
     <string-array name="entries_lcd_density" translatable="false">
@@ -486,7 +501,7 @@
     </string-array>
 
     <string-array name="entries_usb_mode" translatable="true">
-        <item>Portal and Tools</item>
+        <item>Portal And Tools</item>
         <item>Windows Media Sync</item>
         <item>Memory Card Access</item>
         <item>Charge Only</item>
@@ -528,10 +543,10 @@
     </string-array>
 
     <string-array name="entries_fast_up_explain">
-        <item>Remove prop entirely</item>
-        <item>Stock HSUPA disabled (Upload speeds capped)</item>
-        <item>HSUPA enabled</item>
-        <item>HSUPA enabled (Upload speeds uncapped)</item>
+        <item>Remove Prop</item>
+        <item>HSUPA Disabled (Capped)</item>
+        <item>HSUPA Enabled</item>
+        <item>HSUPA Enabled (Uncapped)</item>
     </string-array>
 
     <string-array name="entries_fast_up" translatable="false">
@@ -542,14 +557,14 @@
     </string-array>
 
     <string-array name="entries_prox_delay_explain">
-        <item>Remove prop entirely</item>
+        <item>Remove Prop</item>
         <item>0</item>
         <item>75</item>
         <item>150</item>
         <item>225</item>
         <item>300</item>
         <item>375</item>
-        <item>450 -Stock</item>
+        <item>450 (Default)</item>
         <item>525</item>
         <item>600</item>
     </string-array>
@@ -568,9 +583,9 @@
     </string-array>
 
     <string-array name="entries_logcat_explain">
-        <item>Perminatly remove log (persists through reboot)</item>
-        <item>Remove log till reboot (will NOT persist through reboot)</item>
-        <item>Enable logging (requires reboot)</item>
+        <item>Perminatly Remove Log</item>
+        <item>Remove Log Till Reboot</item>
+        <item>Enable Logging</item>
     </string-array>
 
     <string-array name="entries_logcat">
@@ -582,10 +597,10 @@
     <string-array name="entries_sleep_explain">
         <item>Disable</item>
         <item>Power Collapse Suspend</item>
-        <item>Power Collapse (Provides best power savings)</item>
+        <item>Power Collapse (Best)</item>
         <item>Apps Sleep</item>
-        <item>Slow clock and wait for interrupt</item>
-        <item>Wait for Interrupt</item>
+        <item>Slow Clock</item>
+        <item>Wait For Interrupt</item>
     </string-array>
 
     <string-array name="entries_sleep">
@@ -600,7 +615,7 @@
     <string-array name="entries_sdcard_buffer_explain">
         <item>128 kb</item>
         <item>1024 kb</item>
-        <item>2048 kb (recommended)</item>
+        <item>2048 kb (Recommended)</item>
         <item>3072 kb</item>
         <item>4096 kb</item>
         <item>5120 kb</item>
@@ -616,6 +631,5 @@
         <item>5120</item>
         <item>6144</item>
     </string-array>
-
 
 </resources>

@@ -182,11 +182,8 @@ public class PropModder extends PreferenceFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-<<<<<<< HEAD
         addPreferencesFromResource(R.xml.propmodder);
 
-=======
->>>>>>> 5a6b04ea821a9893da84dc326d37e5a8cb6639d0
         Log.d(TAG, "Loading prefs");
         addPreferencesFromResource(R.xml.propmodder);
         PreferenceScreen prefSet = getPreferenceScreen();
@@ -476,12 +473,7 @@ public class PropModder extends PreferenceFragment implements
         } finally {
             mount("ro");
         }
-<<<<<<< HEAD
-    return success;
-=======
-
         return success;
->>>>>>> 5a6b04ea821a9893da84dc326d37e5a8cb6639d0
     }
 
     public boolean mount(String read_value) {

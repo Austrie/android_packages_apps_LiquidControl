@@ -340,12 +340,6 @@ public class PropModder extends PreferenceFragment implements
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        addPreferencesFromResource(R.xml.propmodder);
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         Log.d(TAG, "com.liquid.control.fragments.PropModder has been paused");

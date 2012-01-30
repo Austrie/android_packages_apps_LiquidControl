@@ -183,9 +183,6 @@ public class PropModder extends PreferenceFragment implements
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.propmodder);
-
-        Log.d(TAG, "Loading prefs");
-        addPreferencesFromResource(R.xml.propmodder);
         PreferenceScreen prefSet = getPreferenceScreen();
 
         mWifiScanPref = (ListPreference) prefSet.findPreference(WIFI_SCAN_PREF);

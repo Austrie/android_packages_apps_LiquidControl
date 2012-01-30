@@ -428,6 +428,9 @@ public class PropModder extends PreferenceFragment implements
             } else if (preference == mModVersionPref) {
                  return doMod(MOD_VERSION_PERSIST_PROP, MOD_VERSION_PROP,
                         newValue.toString());
+            } else if (preference == mSleepPref) {
+                 return doMod(SLEEP_PERSIST_PROP, SLEEP_PROP,
+                        newValue.toString());
             } else if (preference == mSdcardBufferPref) {
                  return mount("rw")
                             && cmd.su.runWaitFor(String.format(SDCARD_BUFFER_ON_THE_FLY_CMD, newValue.toString())).success()

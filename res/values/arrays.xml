@@ -304,6 +304,7 @@
         <item>Text</item>
         <item>Icon/Text</item>
         <item>Icon/Centered</item>
+        <item>Circle</item>
         <item>Hide</item>
     </string-array>
 
@@ -313,6 +314,7 @@
         <item>2</item>
         <item>3</item>
         <item>4</item>
+        <item>5</item>
     </string-array>
 
 	<string-array name="battery_bar_entries">
@@ -382,6 +384,7 @@
 		<item>Sound</item>
 		<item>Phone</item>
 		<item>Camera</item>
+        <item>Messaging</item>
 		<item>Custom</item>
 		<item>Blank</item>
 	</string-array>
@@ -391,6 +394,7 @@
 		<item>**sound**</item>
 		<item>**phone**</item>
 		<item>**camera**</item>
+        <item>**mms**</item>
 		<item>**app**</item>
 		<item>**null**</item>
 	</string-array>

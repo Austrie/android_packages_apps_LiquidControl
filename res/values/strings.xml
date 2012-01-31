@@ -35,7 +35,7 @@
     <string name="button_transparency_title">Button Transparency</string>
     <string name="long_press_home_title">Longpress Home</string>
     <string name="long_press_home_summary">What to do when long pressing the home softkey</string>
-    <string name="glow_times_title">Buttion Glow</string>
+    <string name="glow_times_title">Button Glow</string>
     <string name="glow_times_summary">Adjust how fast your buttons animate after you touch</string>
 
     <!-- User Interface -->

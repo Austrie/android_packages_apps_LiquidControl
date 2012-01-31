@@ -85,7 +85,9 @@
     <string name="lockscreen_action_none">Nothing</string>
     <string name="lockscreen_landscape_title">Horizontal Lockscreen</string>
     <string name="lockscreen_landscape_summary">Enable horizontal lockscreen orientation</string>
-    
+    <string name="lockscreen_quick_unlock_control_title">Quick Unlock</string>
+    <string name="lockscreen_quick_unlock_control_summary">Unlock password/pin lockscreen without pressing enter</string>
+
     <!-- Power Saving -->
     <string name="title_pref_powersaving_pref_mode">Enable Powersaver</string>
     <string name="summary_pref_powersaving_pref_mode">@null</string>

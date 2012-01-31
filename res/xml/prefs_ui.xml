@@ -2,6 +2,15 @@
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceScreen
+        android:key="light_levels"
+        android:title="@string/light_levels_title">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.liquid.control"
+            android:targetClass="com.liquid.control.fragments.LightLevels" />
+    </PreferenceScreen>
+
     <CheckBoxPreference
         android:key="disable_bootanimation"
         android:title="@string/disable_bootanimation_title"

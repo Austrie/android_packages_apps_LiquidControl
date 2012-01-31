@@ -45,6 +45,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
 
         keys.add(Settings.System.LOCKSCREEN_HIDE_NAV);
         keys.add(Settings.System.LOCKSCREEN_LANDSCAPE);
+        keys.add(Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL);
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.prefs_lockscreens);
@@ -81,6 +82,10 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             } catch (SettingNotFoundException e) {
             }
         }
+
+        ((PreferenceGroup) findPreference("advanced_cat"))
+                .removePreference(findPreference(Settings.System.LOCKSCREEN_HIDE_NAV));
+
         refreshSettings();
     }
 
@@ -121,9 +126,15 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         PreferenceGroup targetGroup = (PreferenceGroup) findPreference("lockscreen_targets");
         targetGroup.removeAll();
 
-        //quad only uses first 4, but we make the system think there's 6 for the alternate layout so only show 4
-        if(lockscreenTargets == 6)
+        // quad only uses first 4, but we make the system think there's 6 for the alternate layout
+        // so only show 4
+        if (lockscreenTargets == 6) {
+            Settings.System.putString(getContentResolver(),
+                    Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[4], "**null**");
+            Settings.System.putString(getContentResolver(),
+                    Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[5], "**null**");
             lockscreenTargets = 4;
+        }
 
         for (int i = 0; i < lockscreenTargets; i++) {
             ListPreference p = new ListPreference(getActivity());

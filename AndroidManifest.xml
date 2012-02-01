@@ -112,6 +112,12 @@
                 <action android:name="android.liquid.control.LIGHTLEVELS" />
             </intent-filter>
         </activity>
+        <activity android:name=".fragments.MemorySettings">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.liquid.control.MEMORY" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:enabled="true"

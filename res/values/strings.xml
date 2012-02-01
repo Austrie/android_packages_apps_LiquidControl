@@ -41,22 +41,22 @@
     <!-- User Interface -->
     <string name="rotation_animation_delay_title">Rotation Delay</string>
     <string name="rotation_animation_delay_summary">Time for which the device must be stable</string>
-	<string name="ime_switcher_title">IME Switcher</string>
-	<string name="ime_switcher_summary">In statusbar, while typing (requires reboot)</string>
-	<string name="custom_carrier_label_title">Carrier Label</string>
-	<string name="longpress_to_kill_title">Hold back to kill</string>
-	<string name="longpress_to_kill_summary">Holding back will kill the current activity</string>
-	<string name="rotate_180_title">180° Rotation</string>
-	<string name="rotate_180_summary">Allow your device to rotate upside down!</string>
-	<string name="horizontal_recents_task_panel_title">Horizontal Recents</string>
-	<string name="horizontal_recents_task_panel_summary">Use WebOS style task switcher</string>
+    <string name="ime_switcher_title">IME Switcher</string>
+    <string name="ime_switcher_summary">In statusbar, while typing (requires reboot)</string>
+    <string name="custom_carrier_label_title">Carrier Label</string>
+    <string name="longpress_to_kill_title">Hold back to kill</string>
+    <string name="longpress_to_kill_summary">Holding back will kill the current activity</string>
+    <string name="rotate_180_title">180° Rotation</string>
+    <string name="rotate_180_summary">Allow your device to rotate upside down!</string>
+    <string name="horizontal_recents_task_panel_title">Horizontal Recents</string>
+    <string name="horizontal_recents_task_panel_summary">Use WebOS style task switcher</string>
     <string name="disable_bootanimation_title">Boot Animation</string>
     <string name="disable_bootanimation_summary">Toggle boot animation for faster boot time</string>
     <string name="disable_bugmailer_title">Android Bugmailer</string>
     <string name="disable_bugmailer_summary">Disable integrated bugmailer support</string>
-	<string name="crt_animations_header">CRT Animations</string>
-	<string name="crt_on_title">CRT animation is now enabled</string>
-	<string name="crt_off_title">CRT animation is now disabled</string>
+    <string name="crt_animations_header">CRT Animations</string>
+    <string name="crt_on_title">CRT animation is now enabled</string>
+    <string name="crt_off_title">CRT animation is now disabled</string>
 
     <!-- Lockscreens -->
     <string name="title_pref_lockscreen_quad_targets">Quad Lockscreen</string>	
@@ -158,114 +158,114 @@
     
     <!-- Shortcut Picker -->
     <string name="use_custom_app_title">Custom App</string>
-	<string name="use_custom_app_summary">Use selected custom application</string>
-	<string name="select_custom_app_title">Select App</string>
-	<string name="group_applications">Applications</string>
-	
-	<!-- Dialog Titles -->
-	<string name="dt_free_memory">Memory Taskkiller</string>
+    <string name="use_custom_app_summary">Use selected custom application</string>
+    <string name="select_custom_app_title">Select App</string>
+    <string name="group_applications">Applications</string>
 
-	<!-- Preference Categories -->
-	<string name="prefcat_cpu">Overclocking</string>
-	<string name="prefcat_free_memory">Free Memory</string>
-	<string name="pc_tweaks">Tweaks</string>
-	<string name="pc_init_d">Enable/Disable Tweaks</string>
-	<string name="pc_init_d_tweaks">Customize Tweaks</string>
+    <!-- Dialog Titles -->
+    <string name="dt_free_memory">Memory Taskkiller</string>
 
-	<!-- Preference Titles -->
-	<string name="pt_performance">Performance</string>
-	<string name="pt_customization">Customization</string>
-	<string name="pt_tools">Goodies</string>
-	<string name="pt_mod_version">Mod Version</string>
+    <!-- Preference Categories -->
+    <string name="prefcat_cpu">Overclocking</string>
+    <string name="prefcat_free_memory">Free Memory</string>
+    <string name="pc_tweaks">Tweaks</string>
+    <string name="pc_init_d">Enable/Disable Tweaks</string>
+    <string name="pc_init_d_tweaks">Customize Tweaks</string>
 
-	<!-- Customization -->
-	<string name="pt_customizer">Customizer</string>
-	<string name="pt_lockscreen">Lockscreen</string>
-	<string name="pt_ui_status_bar">Statusbar</string>
-	<string name="pt_pulldown_text">Pulldown Text</string>
-	<string name="pt_theme_manager">Theme Manager</string>
+    <!-- Preference Titles -->
+    <string name="pt_performance">Performance</string>
+    <string name="pt_customization">Customization</string>
+    <string name="pt_tools">Goodies</string>
+    <string name="pt_mod_version">Mod Version</string>
 
-	<!-- Goodies -->
-	<string name="pt_spare_parts">Spare Parts</string>
-	<string name="pt_dev_tools">Dev Tools</string>
-	<string name="pt_dsp_manager">DSP Manager</string>
-	<string name="pt_testing_menu">Testing Menu</string>
+    <!-- Customization -->
+    <string name="pt_customizer">Customizer</string>
+    <string name="pt_lockscreen">Lockscreen</string>
+    <string name="pt_ui_status_bar">Statusbar</string>
+    <string name="pt_pulldown_text">Pulldown Text</string>
+    <string name="pt_theme_manager">Theme Manager</string>
 
-	<!-- Start Tweaks -->
-	<string name="pt_init_d">Startup Tweaks</string>
-	<string name="pt_enable_init_d">Enable Tweaks</string>
-	<string name="pt_zipalign">Zipalign Apks</string>
-	<string name="pt_enable_sd_boost">Sdcard Booster</string>
-	<string name="pt_sd_boost">Read Ahead Value</string>
-	<string name="pt_fix_permissions">Fix Permissions</string>
-	<string name="pt_clear_cache">Clear Cache</string>
-	<string name="pt_enable_sysctl">Enable Sysctl</string>
-	<string name="pt_enable_cron">Scheduled Tasks</string>
+    <!-- Goodies -->
+    <string name="pt_spare_parts">Spare Parts</string>
+    <string name="pt_dev_tools">Dev Tools</string>
+    <string name="pt_dsp_manager">DSP Manager</string>
+    <string name="pt_testing_menu">Testing Menu</string>
 
-	<!-- Performance -->
-	<string name="pt_set_cpu_activity">Overclocking</string>
-	<string name="pt_free_memory">Free Memory</string>
-	<string name="pt_free_memory_boot">Set On Boot</string>
+    <!-- Start Tweaks -->
+    <string name="pt_init_d">Startup Tweaks</string>
+    <string name="pt_enable_init_d">Enable Tweaks</string>
+    <string name="pt_zipalign">Zipalign Apks</string>
+    <string name="pt_enable_sd_boost">Sdcard Booster</string>
+    <string name="pt_sd_boost">Read Ahead Value</string>
+    <string name="pt_fix_permissions">Fix Permissions</string>
+    <string name="pt_clear_cache">Clear Cache</string>
+    <string name="pt_enable_sysctl">Enable Sysctl</string>
+    <string name="pt_enable_cron">Scheduled Tasks</string>
 
-	<!-- Overclocking -->
-	<string name="pt_set_max">Maximum</string>
-	<string name="pt_set_min">Minimum</string>
-	<string name="pt_set_gov">Governor</string>
-	<string name="pt_cpu_boot">Set On Boot</string>
+    <!-- Performance -->
+    <string name="pt_set_cpu_activity">Overclocking</string>
+    <string name="pt_free_memory">Free Memory</string>
+    <string name="pt_free_memory_boot">Set On Boot</string>
 
-	<!-- Preference Summaries -->
-	<string name="ps_performance">Set cpu, memory &amp; tweak startup</string>
-	<string name="ps_customization">Customize the lockscreen &amp; status bar</string>
-	<string name="ps_tools">Various system tools and extras</string>
+    <!-- Overclocking -->
+    <string name="pt_set_max">Maximum</string>
+    <string name="pt_set_min">Minimum</string>
+    <string name="pt_set_gov">Governor</string>
+    <string name="pt_cpu_boot">Set On Boot</string>
 
-	<!-- Customization -->
-	<string name="ps_customizer">Customize the ROM to your liking</string>
-	<string name="ps_lockscreen">Change lockscreen styles and manage widgets</string>
-	<string name="ps_ui_status_bar">Customize the statusbar presentation</string>
-	<string name="ps_pulldown_text">Change the carrier text in the pulldown</string>
-	<string name="ps_theme_manager">Install custom themes for this ROM</string>
+    <!-- Preference Summaries -->
+    <string name="ps_performance">Set cpu, memory &amp; tweak startup</string>
+    <string name="ps_customization">Customize the lockscreen &amp; status bar</string>
+    <string name="ps_tools">Various system tools and extras</string>
 
-	<!-- Tools -->
-	<string name="ps_spare_parts">Various tweaks and customization</string>
-	<string name="ps_dev_tools">Tools for developers and advanced users</string>
-	<string name="ps_dsp_manager">Stand alone equalizer and bass booster</string>
-	<string name="ps_testing_menu">Phone info, battery info, usage statistics</string>
+    <!-- Customization -->
+    <string name="ps_customizer">Customize the ROM to your liking</string>
+    <string name="ps_lockscreen">Change lockscreen styles and manage widgets</string>
+    <string name="ps_ui_status_bar">Customize the statusbar presentation</string>
+    <string name="ps_pulldown_text">Change the carrier text in the pulldown</string>
+    <string name="ps_theme_manager">Install custom themes for this ROM</string>
 
-	<!-- Startup Tweaks -->
-	<string name="ps_init_d">Configure tweaks that are run at boot</string>
-	<string name="ps_enable_init_d">Enable/disabe startup tweaks</string>
-	<string name="ps_zipalign">Zipalign any unaligned apps on each boot</string>
-	<string name="ps_enable_sd_boost">Enable/disable SD card speed boost</string>
-	<string name="ps_sd_boost">Set value of read ahead in kb</string>
-	<string name="ps_fix_permissions">Fix permissions for apps on each boot</string>
-	<string name="ps_clear_cache">Clear data cache on each boot</string>
-	<string name="ps_enable_sysctl">Enable sysctl tweaks on boot</string>
-	<string name="ps_enable_cron">Enable scheduled cron jobs</string>
+    <!-- Tools -->
+    <string name="ps_spare_parts">Various tweaks and customization</string>
+    <string name="ps_dev_tools">Tools for developers and advanced users</string>
+    <string name="ps_dsp_manager">Stand alone equalizer and bass booster</string>
+    <string name="ps_testing_menu">Phone info, battery info, usage statistics</string>
 
-	<!-- Overclocking -->
+    <!-- Startup Tweaks -->
+    <string name="ps_init_d">Configure tweaks that are run at boot</string>
+    <string name="ps_enable_init_d">Enable/disabe startup tweaks</string>
+    <string name="ps_zipalign">Zipalign any unaligned apps on each boot</string>
+    <string name="ps_enable_sd_boost">Enable/disable SD card speed boost</string>
+    <string name="ps_sd_boost">Set value of read ahead in kb</string>
+    <string name="ps_fix_permissions">Fix permissions for apps on each boot</string>
+    <string name="ps_clear_cache">Clear data cache on each boot</string>
+    <string name="ps_enable_sysctl">Enable sysctl tweaks on boot</string>
+    <string name="ps_enable_cron">Enable scheduled cron jobs</string>
+
+    <!-- Overclocking -->
     <string name="ps_set_max">Maxium\nCurrent: %s</string>
     <string name="ps_set_min">Minium\nCurrent: %s</string>
     <string name="ps_set_gov">Governor\nCurrent: %s</string>
     <string name="ps_cpu_boot">Set On Boot</string>
 
-	<!-- Performance -->
+    <!-- Performance -->
     <string name="ps_set_cpu_activity">Set frequencies and current governor</string>
-	<string name="ps_free_memory">Amount of ram the taskkiller will keep | Current: %s</string>
-	<string name="ps_free_memory_boot">Apply the amount above at boot</string>
+    <string name="ps_free_memory">Amount of ram the taskkiller will keep | Current: %s</string>
+    <string name="ps_free_memory_boot">Apply the amount above at boot</string>
 
-	<!-- Toast Messages -->
-	<string name="toast_min_max_error01">Frequency cannot be lower than minmium</string>
-	<string name="toast_min_max_error02">Frequency cannot be higher than maximum</string>
+    <!-- Toast Messages -->
+    <string name="toast_min_max_error01">Frequency cannot be lower than minmium</string>
+    <string name="toast_min_max_error02">Frequency cannot be higher than maximum</string>
 
-	<!-- List_Voltage -->
-	<string name="freq">Frequency</string>
-	<string name="current">mV Current</string>
-	<string name="saved">mV Saved</string>
+    <!-- List_Voltage -->
+    <string name="freq">Frequency</string>
+    <string name="current">mV Current</string>
+    <string name="saved">mV Saved</string>
 
-	<!-- Read Voltage -->
-	<string name="error_values">Error Getting Values</string>
-	<string name="set_boot">Set On Boot</string>
-	<string name="apply_values">Apply Values</string>
+    <!-- Read Voltage -->
+    <string name="error_values">Error Getting Values</string>
+    <string name="set_boot">Set On Boot</string>
+    <string name="apply_values">Apply Values</string>
 
     <!-- Longpress Apptasker -->
     <string name="longpress_app_tasker_title">Longpress Apptasker</string>
@@ -309,6 +309,37 @@
     <string name="ll_bad_levels">Levels must be increasing</string>
     <string name="ll_num_levels">Set number of levels</string>
 
+    <!-- Memory Management -->
+    <string name="memory_settings_title">Memory Settings</string>
+    <string name="memory_settings_summary">Customize your memory management</string>
+    <string name="performance_settings_title">Performance</string>
+    <string name="performance_settings_warning_title">Proceed with Caution</string>
+    <string name="performance_settings_warning">These settings are included for experimentation and any changes made to them have the potential to cause instability, crashes, data loss or hardware failures.\n\nWe request you do not file bug reports if any of these settings have been changed from the defaults.</string>
+    <string name="processor_title">Processor</string>
+    <string name="processor_summary">Change CPU governor and clock speed</string>
+    <string name="cpu_cur_freq_title">Current CPU frequency</string>
+    <string name="cpu_governors_title">CPU governor</string>
+    <string name="cpu_governors_summary">%S</string>
+    <string name="cpu_min_freq_title">Minimum CPU frequency</string>
+    <string name="cpu_min_freq_summary">%s</string>
+    <string name="cpu_max_freq_title">Maximum CPU frequency</string>
+    <string name="cpu_max_freq_summary">%s</string>
+    <string name="cpu_set_on_boot">Set on boot</string>
+    <string name="cpu_set_on_boot_summary">Restore the processor settings on boot</string>
+    <string name="pref_disable_bootanimation_title">Disable boot animation</string>
+    <string name="pref_disable_bootanimation_summary">Don\'t show the boot animation for faster boot</string>
+    <string name="memory_management_title">Memory management</string>
+    <string name="memory_management_summary">Customize the usage of memory to alter system performance</string>
+    <string name="pref_zram_title">zRam</string>
+    <string name="pref_zram_summary">Compress memory for increased virtual capacity (requires reboot)</string>
+    <string name="pref_heapsize_title">VM heap size</string>
+    <string name="pref_heapsize_summary">Maximum amount of memory per VM heap (requires reboot)</string>
+    <string name="pref_purgeable_assets_title">Allow purging of assets</string>
+    <string name="pref_purgeable_assets_summary">Purging of bitmap memory assets allows the freeing of more RAM when needed (requires reboot)</string>
+    <string name="pref_use_dithering_title">Surface dithering</string>
+    <string name="pref_use_dithering_summary">Dithering improves image quality on some displays at the cost of performance (requires reboot)</string>
+    <string name="pref_use_16bpp_alpha_title">16bit transparency</string>
+    <string name="pref_use_16bpp_alpha_summary">Better graphics performance, but lower quality and may cause visual artifacts (requires reboot)</string>
 
     <!-- PropModder -->
     <string name="propmodder_title">PropModder</string>

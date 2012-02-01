@@ -30,7 +30,14 @@ public class ShowBuildProp extends AlertActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            ShowMe();
+        } else {
+            Log.d(TAG, "orientation change detected not reloading webview");
+        }
+    }
 
+    public void ShowMe() {
         Reader reader = null;
         StringBuilder data = null;
 

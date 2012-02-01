@@ -75,6 +75,8 @@
         <activity android:name=".fragments.PowerSaver" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.action.SHORTCUT" />
+                <category android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".fragments.Lockscreens" >
@@ -104,9 +106,9 @@
         </activity>
         <activity android:name=".fragments.PropModder">
             <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
-                <action android:name="android.intent.action.DEFAULT" />
                 <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.action.SHORTCUT" />
+                <category android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".fragments.LightLevels">
@@ -119,12 +121,16 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.liquid.control.MEMORY" />
+                <category android:name="android.intent.action.SHORTCUT" />
+                <category android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".fragments.ProcessingSettings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.liquid.control.PROCESSOR" />
+                <category android:name="android.intent.action.SHORTCUT" />
+                <category android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
 

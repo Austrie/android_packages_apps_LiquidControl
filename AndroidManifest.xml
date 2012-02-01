@@ -26,6 +26,7 @@
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.liquid.CONTROL" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -104,6 +105,7 @@
         <activity android:name=".fragments.PropModder">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
         </activity>
         <activity android:name=".fragments.LightLevels">
@@ -116,6 +118,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.liquid.control.MEMORY" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".fragments.ProcessingSettings">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.liquid.control.PROCESSOR" />
             </intent-filter>
         </activity>
 

@@ -20,6 +20,7 @@
     <string name="tools">Goodies</string>
     <string name="advanced_settings">Advanced</string>
     <string name="misc_short">Misc</string>
+    <string name="system">System</string>
     
     <!-- Navigation -->
     <string name="title_pref_menu_display">Menu Location</string>
@@ -395,5 +396,8 @@
     <string name="pref_gpu_summary">To enable hardware acceleration where the GPU controls the UI instead of the CPU</string>
     <string name="pref_vvmail_title">VVMail (Sense ROMs ONLY)</string>
     <string name="pref_vvmail_summary">force Sense ROMS compatibility with VVMail</string>
-    
+
+    <!-- Processer settings -->
+    <string name="processor_settings_title">Processor Settings</string>
+    <string name="processor_settings_summary">Graphic processing options</string>
 </resources>

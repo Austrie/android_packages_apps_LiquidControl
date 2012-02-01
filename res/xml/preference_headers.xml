@@ -71,9 +71,18 @@
         android:fragment="com.liquid.control.fragments.PropModder" />
 
     <header
+        android:title="@string/system" />
+
+    <header
         android:id="@+id/memory_settings"
         android:title="@string/memory_settings_title"
         android:summary="@string/memory_settings_summary"
         android:fragment="com.liquid.control.fragments.MemorySettings" />
+
+    <header
+        android:id="@+id/processor_settings"
+        android:title="@string/processor_settings_title"
+        android:summary="@string/processor_settings_summary"
+        android:fragment="com.liquid.control.fragments.ProcessingSettings" />
 
 </preference-headers>

@@ -1,38 +1,38 @@
 
 package com.liquid.control.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import java.io.File;
+
 import android.os.Bundle;
 import android.os.SystemProperties;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
 import com.liquid.control.R;
 
-/**
- * Memory Settings
- */
 public class MemorySettings extends PreferenceFragment implements
-        Preference.OnPreferenceChangeListener {
+        OnPreferenceChangeListener {
 
-    private static final String TAG = "MemorySettings";
-    private static final String PROCESSOR = "processor";
-    private static final String MEMORY_MANAGEMENT = "memory_management";
-    private static final String USE_DITHERING_PREF = "pref_use_dithering";
-    private static final String USE_DITHERING_PERSIST_PROP = "persist.sys.use_dithering";
-    private static final String USE_DITHERING_DEFAULT = "1";
-    private static final String USE_16BPP_ALPHA_PREF = "pref_use_16bpp_alpha";
-    private static final String USE_16BPP_ALPHA_PROP = "persist.sys.use_16bpp_alpha";
-    private static final String DISABLE_BOOTANIMATION_DEFAULT = "0";
+    private static final String ZRAM_PREF = "pref_zram_size";
+    private static final String ZRAM_PERSIST_PROP = "persist.service.zram"; // was compcache
+    private static final String ZRAM_DEFAULT = SystemProperties.get("ro.zram.default"); // was compcache
+    private static final String HEAPSIZE_PREF = "pref_heapsize";
+    private static final String HEAPSIZE_PROP = "dalvik.vm.heapsize";
+    private static final String HEAPSIZE_PERSIST_PROP = "persist.sys.vm.heapsize";
+    private static final String HEAPSIZE_DEFAULT = "16m";
+    private static final String PURGEABLE_ASSETS_PREF = "pref_purgeable_assets";
+    private static final String PURGEABLE_ASSETS_PERSIST_PROP = "persist.sys.purgeable_assets";
+    private static final String PURGEABLE_ASSETS_DEFAULT = "0";
 
-    private CheckBoxPreference mUseDitheringPref;
-    private CheckBoxPreference mUse16bppAlphaPref;
-    private PreferenceScreen mProcessor;
-    private PreferenceScreen mMemoryManagement;
-    private AlertDialog alertDialog;
+    private ListPreference mzRAM;
+    private CheckBoxPreference mPurgeableAssetsPref;
+    private ListPreference mHeapsizePref;
+
+    private int swapAvailable = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,45 +42,62 @@ public class MemorySettings extends PreferenceFragment implements
             addPreferencesFromResource(R.xml.memory_management);
             PreferenceScreen prefSet = getPreferenceScreen();
 
-            mProcessor = (PreferenceScreen) prefSet.findPreference(PROCESSOR);
-            mMemoryManagement = (PreferenceScreen) prefSet.findPreference(MEMORY_MANAGEMENT);
-            mUseDitheringPref = (CheckBoxPreference) prefSet.findPreference(USE_DITHERING_PREF);
-            mUse16bppAlphaPref = (CheckBoxPreference) prefSet.findPreference(USE_16BPP_ALPHA_PREF);
+            mzRAM = (ListPreference) prefSet.findPreference(ZRAM_PREF);
+            mPurgeableAssetsPref = (CheckBoxPreference) prefSet.findPreference(PURGEABLE_ASSETS_PREF);
+            mHeapsizePref = (ListPreference) prefSet.findPreference(HEAPSIZE_PREF);
 
-            String useDithering = SystemProperties.get(USE_DITHERING_PERSIST_PROP, USE_DITHERING_DEFAULT);
-            mUseDitheringPref.setChecked("1".equals(useDithering));
+            if (isSwapAvailable()) {
+                if (SystemProperties.get(ZRAM_PERSIST_PROP) == "1") SystemProperties.set(ZRAM_PERSIST_PROP, ZRAM_DEFAULT);
+                mzRAM.setValue(SystemProperties.get(ZRAM_PERSIST_PROP, ZRAM_DEFAULT));
+                mzRAM.setOnPreferenceChangeListener(this);
+            } else {
+                prefSet.removePreference(mzRAM);
+            }
 
-            String use16bppAlpha = SystemProperties.get(USE_16BPP_ALPHA_PROP, "0");
-            mUse16bppAlphaPref.setChecked("1".equals(use16bppAlpha));
+            String purgeableAssets = SystemProperties.get(PURGEABLE_ASSETS_PERSIST_PROP, PURGEABLE_ASSETS_DEFAULT);
+            mPurgeableAssetsPref.setChecked("1".equals(purgeableAssets));
 
-            /* Display the warning dialog */
-            alertDialog = new AlertDialog.Builder(getActivity()).create();
-            alertDialog.setTitle(R.string.performance_settings_warning_title);
-            alertDialog.setMessage(getResources().getString(R.string.performance_settings_warning));
-            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
-                    getResources().getString(com.android.internal.R.string.ok), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            return;
-                        }
-                    });
-            alertDialog.show();
+            mHeapsizePref.setValue(SystemProperties.get(HEAPSIZE_PERSIST_PROP, SystemProperties.get(HEAPSIZE_PROP, HEAPSIZE_DEFAULT)));
+            mHeapsizePref.setOnPreferenceChangeListener(this);
         }
     }
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        if (preference == mUseDitheringPref) {
-            SystemProperties.set(USE_DITHERING_PERSIST_PROP, mUseDitheringPref.isChecked() ? "1" : "0");
-        } else if (preference == mUse16bppAlphaPref) {
-            SystemProperties.set(USE_16BPP_ALPHA_PROP, mUse16bppAlphaPref.isChecked() ? "1" : "0");
-        } else {
-            // If we didn't handle it, let preferences handle it.
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
+
+        if (preference == mPurgeableAssetsPref) {
+            SystemProperties.set(PURGEABLE_ASSETS_PERSIST_PROP,
+                    mPurgeableAssetsPref.isChecked() ? "1" : "0");
+            return true;
         }
-        return true;
+        return false;
     }
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if (preference == mHeapsizePref) {
+            if (newValue != null) {
+                SystemProperties.set(HEAPSIZE_PERSIST_PROP, (String) newValue);
+                return true;
+            }
+        }
+
+        if (preference == mzRAM) {
+            if (newValue != null) {
+                SystemProperties.set(ZRAM_PERSIST_PROP, (String) newValue);
+                return true;
+            }
+        }
+
         return false;
+    }
+
+    /**
+     * Check if swap support is available on the system
+     */
+    private boolean isSwapAvailable() {
+        if (swapAvailable < 0) {
+            swapAvailable = new File("/proc/swaps").exists() ? 1 : 0;
+        }
+        return swapAvailable > 0;
     }
 }

@@ -326,8 +326,6 @@
     <string name="cpu_max_freq_summary">%s</string>
     <string name="cpu_set_on_boot">Set on boot</string>
     <string name="cpu_set_on_boot_summary">Restore the processor settings on boot</string>
-    <string name="pref_disable_bootanimation_title">Disable boot animation</string>
-    <string name="pref_disable_bootanimation_summary">Don\'t show the boot animation for faster boot</string>
     <string name="memory_management_title">Memory management</string>
     <string name="memory_management_summary">Customize the usage of memory to alter system performance</string>
     <string name="pref_zram_title">zRam</string>

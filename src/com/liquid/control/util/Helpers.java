@@ -226,11 +226,8 @@ public class Helpers {
      * @returns String value of @param:prop
      */
     public static String findBuildPropValueOf(String prop) {
-        Log.d(TAG, "Helpers:findBuildPropValueOf is looking for the value of { " + prop + " }");
         String mBuildPath = "/system/build.prop";
-        String mTempPath = "/system/tmp/build_tmp";
         String DISABLE = "disable";
-
         String value = null;
         try {
             //create properties construct and load build.prop
@@ -238,6 +235,7 @@ public class Helpers {
             mProps.load(new FileInputStream(mBuildPath));
             //get the property
             value = mProps.getProperty(prop, DISABLE);
+            Log.d(TAG, String.format("Helpers:findBuildPropValueOf found {%s} with the value (%s)", prop, value));
         } catch (IOException ioe) {
             Log.d(TAG, "failed to load input stream");
         } catch (NullPointerException npe) {

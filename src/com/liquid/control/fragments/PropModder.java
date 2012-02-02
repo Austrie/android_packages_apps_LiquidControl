@@ -49,6 +49,7 @@ public class PropModder extends PreferenceFragment implements
     private static final String REPLACE_CMD = "busybox sed -i \"/%s/ c %<s=%s\" /system/build.prop";
     private static final String LOGCAT_CMD = "busybox sed -i \"/log/ c %s\" /system/etc/init.d/72propmodder_script";
     private static final String SDCARD_BUFFER_CMD = "busybox sed -i \"/179:0/ c echo %s > /sys/devices/virtual/bdi/179:0/read_ahead_kb\" /system/etc/init.d/72propmodder_script";
+    private static final String REBOOT_PREF = "reboot";
     private static final String FIND_CMD = "grep -q \"%s\" /system/build.prop";
     private static final String REMOUNT_CMD = "busybox mount -o %s,remount -t yaffs2 /dev/block/mtdblock1 /system";
     private static final String PROP_EXISTS_CMD = "grep -q %s /system/build.prop";
@@ -155,6 +156,7 @@ public class PropModder extends PreferenceFragment implements
     private final int MENU_REBOOT = 2;
     private int NOTE_ID;
 
+    private PreferenceScreen mRebootMsg;
     private ListPreference mWifiScanPref;
     private ListPreference mLcdDensityPref;
     private ListPreference mMaxEventsPref;
@@ -185,6 +187,8 @@ public class PropModder extends PreferenceFragment implements
 
         addPreferencesFromResource(R.xml.propmodder);
         PreferenceScreen prefSet = getPreferenceScreen();
+
+        mRebootMsg = (PreferenceScreen) prefSet.findPreference(REBOOT_PREF);
 
         mWifiScanPref = (ListPreference) prefSet.findPreference(WIFI_SCAN_PREF);
         String wifi = Helpers.findBuildPropValueOf(WIFI_SCAN_PROP);
@@ -539,6 +543,10 @@ public class PropModder extends PreferenceFragment implements
         } finally {
             mount("ro");
         }
+
+        mRebootMsg.setTitle("Reboot required");
+        mRebootMsg.setSummary("values will take effect on next boot");
+        mRebootMsg.setEnabled(true);
         return success;
     }
 

@@ -191,117 +191,37 @@ public class PropModder extends PreferenceFragment implements
         mRebootMsg = (PreferenceScreen) prefSet.findPreference(REBOOT_PREF);
 
         mWifiScanPref = (ListPreference) prefSet.findPreference(WIFI_SCAN_PREF);
-        String wifi = Helpers.findBuildPropValueOf(WIFI_SCAN_PROP);
-        if (!wifi.equals(DISABLE)) {
-            mWifiScanPref.setValue(wifi);
-            mWifiScanPref.setSummary(String.format(getString(R.string.pref_wifi_scan_alt_summary), wifi));
-        } else {
-            mWifiScanPref.setValue(WIFI_SCAN_DEFAULT);
-        }
         mWifiScanPref.setOnPreferenceChangeListener(this);
 
         mLcdDensityPref = (ListPreference) prefSet.findPreference(LCD_DENSITY_PREF);
-        String lcd = Helpers.findBuildPropValueOf(LCD_DENSITY_PROP);
-        if (!lcd.equals(DISABLE)) {
-            mLcdDensityPref.setValue(lcd);
-            mLcdDensityPref.setSummary(String.format(getString(R.string.pref_lcd_density_alt_summary), lcd));
-        } else {
-            mLcdDensityPref.setValue(LCD_DENSITY_DEFAULT);
-        }
         mLcdDensityPref.setOnPreferenceChangeListener(this);
 
         mMaxEventsPref = (ListPreference) prefSet.findPreference(MAX_EVENTS_PREF);
-        String maxE = Helpers.findBuildPropValueOf(MAX_EVENTS_PROP);
-        if (!maxE.equals(DISABLE)) {
-            mMaxEventsPref.setValue(maxE);
-            mMaxEventsPref.setSummary(String.format(getString(R.string.pref_max_events_alt_summary), maxE));
-        } else {
-            mMaxEventsPref.setValue(MAX_EVENTS_DEFAULT);
-        }
         mMaxEventsPref.setOnPreferenceChangeListener(this);
 
         mRingDelayPref = (ListPreference) prefSet.findPreference(RING_DELAY_PREF);
-        String ring = Helpers.findBuildPropValueOf(RING_DELAY_PROP);
-        if (!ring.equals(DISABLE)) {
-            mRingDelayPref.setValue(ring);
-            mRingDelayPref.setSummary(String.format(getString(R.string.pref_ring_delay_alt_summary), ring));
-        } else {
-            mRingDelayPref.setValue(RING_DELAY_DEFAULT);
-        }
         mRingDelayPref.setOnPreferenceChangeListener(this);
 
         mVmHeapsizePref = (ListPreference) prefSet.findPreference(VM_HEAPSIZE_PREF);
-        String vm = Helpers.findBuildPropValueOf(VM_HEAPSIZE_PROP);
-        if (!vm.equals(DISABLE)) {
-            mVmHeapsizePref.setValue(vm);
-            mVmHeapsizePref.setSummary(String.format(getString(R.string.pref_vm_heapsize_alt_summary), vm));
-        } else {
-            mVmHeapsizePref.setValue(VM_HEAPSIZE_DEFAULT);
-        }
         mVmHeapsizePref.setOnPreferenceChangeListener(this);
 
         mFastUpPref = (ListPreference) prefSet.findPreference(FAST_UP_PREF);
-        String fast = Helpers.findBuildPropValueOf(FAST_UP_PROP);
-        if (!fast.equals(DISABLE)) {
-            mFastUpPref.setValue(fast);
-            mFastUpPref.setSummary(String.format(getString(R.string.pref_fast_up_alt_summary), fast));
-        } else {
-            mFastUpPref.setValue(FAST_UP_DEFAULT);
-        }
         mFastUpPref.setOnPreferenceChangeListener(this);
 
         mDisableBootAnimPref = (CheckBoxPreference) prefSet.findPreference(DISABLE_BOOT_ANIM_PREF);
-        String ba1 = Helpers.findBuildPropValueOf(DISABLE_BOOT_ANIM_PROP_1);
-        String ba2 = Helpers.findBuildPropValueOf(DISABLE_BOOT_ANIM_PROP_2);
-        if (ba1.equals("0") && ba2.equals("1")) {
-            Log.d(TAG, "bootanimation is disabled");
-            mDisableBootAnimPref.setChecked(false);
-        } else {
-            Log.d(TAG, "bootanimation is enabled");
-            mDisableBootAnimPref.setChecked(true);
-        }
 
         mProxDelayPref = (ListPreference) prefSet.findPreference(PROX_DELAY_PREF);
-        String prox = Helpers.findBuildPropValueOf(PROX_DELAY_PROP);
-        if (!prox.equals(DISABLE)) {
-            mProxDelayPref.setValue(prox);
-            mProxDelayPref.setSummary(String.format(getString(R.string.pref_prox_delay_alt_summary), prox));
-        } else {
-            mProxDelayPref.setValue(PROX_DELAY_DEFAULT);
-        }
         mProxDelayPref.setOnPreferenceChangeListener(this);
 
         //we may need a new method of detection here
         mLogcatPref = (CheckBoxPreference) prefSet.findPreference(LOGCAT_PREF);
-        //rmLogging returns true is the command is found commented out #rm -f /dev/log/main
-        boolean rmLogging = cmd.su.runWaitFor(String.format("grep -q \"#rm -f /dev/log/main\" %s", INIT_SCRIPT_PATH)).success();
-        mLogcatPref.setChecked(rmLogging);
 
         mSleepPref = (ListPreference) prefSet.findPreference(SLEEP_PREF);
-        String sleep = Helpers.findBuildPropValueOf(SLEEP_PROP);
-        if (!sleep.equals(DISABLE)) {
-            mSleepPref.setValue(sleep);
-            mSleepPref.setSummary(String.format(getString(R.string.pref_sleep_alt_summary), sleep));
-        } else {
-            mSleepPref.setValue(SLEEP_DEFAULT);
-        }
         mSleepPref.setOnPreferenceChangeListener(this);
 
         mTcpStackPref = (CheckBoxPreference) prefSet.findPreference(TCP_STACK_PREF);
-        String tcp = Helpers.findBuildPropValueOf(TCP_STACK_PROP_0);
-        if (tcp.equals(TCP_STACK_BUFFER)) {
-            mTcpStackPref.setChecked(true);
-        } else {
-            mTcpStackPref.setChecked(false);
-        }
 
         mJitPref = (CheckBoxPreference) prefSet.findPreference(JIT_PREF);
-        String jit = Helpers.findBuildPropValueOf(JIT_PROP);
-        if (jit.equals("int:jit")) {
-            mJitPref.setChecked(true);
-        } else {
-            mJitPref.setChecked(false);
-        }
 
         mModVersionPref = (EditTextPreference) prefSet.findPreference(MOD_VERSION_PREF);
         String mod = Helpers.findBuildPropValueOf(MOD_VERSION_PROP);
@@ -319,12 +239,6 @@ public class PropModder extends PreferenceFragment implements
         mModVersionPref.setOnPreferenceChangeListener(this);
 
         mCheckInPref = (CheckBoxPreference) prefSet.findPreference(CHECK_IN_PREF);
-        String chk = Helpers.findBuildPropValueOf(CHECK_IN_PROP);
-        if (!chk.equals(DISABLE)) {
-            mCheckInPref.setChecked(true);
-        } else {
-            mCheckInPref.setChecked(false);
-        }
 
         //TODO check all init.d scripts for buffer values to display in summary
         //     for now we will just let it go with a generic summary displayed
@@ -332,32 +246,12 @@ public class PropModder extends PreferenceFragment implements
         mSdcardBufferPref.setOnPreferenceChangeListener(this);
 
         m3gSpeedPref = (CheckBoxPreference) prefSet.findPreference(THREE_G_PREF);
-        String g0 = Helpers.findBuildPropValueOf(THREE_G_PROP_0);
-        String g3 = Helpers.findBuildPropValueOf(THREE_G_PROP_3);
-        String g6 = Helpers.findBuildPropValueOf(THREE_G_PROP_6);
-        if (g0.equals("1") && g3.equals("1") && g6.equals("1")) {
-            m3gSpeedPref.setChecked(true);
-        } else {
-            m3gSpeedPref.setChecked(false);
-        }
 
         mGpuPref = (CheckBoxPreference) prefSet.findPreference(GPU_PREF);
-        String gpu = Helpers.findBuildPropValueOf(GPU_PROP);
-        if (!gpu.equals(DISABLE)) {
-            mGpuPref.setChecked(true);
-        } else {
-            mGpuPref.setChecked(false);
-        }
 
         mVvmailPref = (CheckBoxPreference) prefSet.findPreference(VVMAIL_PREF);
-        String vvmail0 = Helpers.findBuildPropValueOf(VVMAIL_PROP_0);
-        String vvmail1 = Helpers.findBuildPropValueOf(VVMAIL_PROP_1);
-        if (!vvmail0.equals(DISABLE) && !vvmail1.equals(DISABLE)) {
-            mVvmailPref.setChecked(true);
-        } else {
-            mVvmailPref.setChecked(false);
-        }
 
+        updateScreen();
         /*
          * we have some requirements so we check
          * and create if needed
@@ -540,6 +434,8 @@ public class PropModder extends PreferenceFragment implements
             }
             if (!success) {
                 restoreBuildProp();
+            } else {
+                updateScreen();
             }
         } finally {
             mount("ro");
@@ -621,6 +517,121 @@ public class PropModder extends PreferenceFragment implements
     public boolean restoreBuildProp() {
         Log.d(TAG, "Restoring build.prop from /system/tmp/pm_build.prop");
         return cmd.su.runWaitFor("cp /system/tmp/pm_build.prop /system/build.prop").success();
+    }
+
+    public void updateScreen() {
+        //update all the summaries
+        String wifi = Helpers.findBuildPropValueOf(WIFI_SCAN_PROP);
+        if (!wifi.equals(DISABLE)) {
+            mWifiScanPref.setValue(wifi);
+            mWifiScanPref.setSummary(String.format(getString(R.string.pref_wifi_scan_alt_summary), wifi));
+        } else {
+            mWifiScanPref.setValue(WIFI_SCAN_DEFAULT);
+        }
+        String lcd = Helpers.findBuildPropValueOf(LCD_DENSITY_PROP);
+        if (!lcd.equals(DISABLE)) {
+            mLcdDensityPref.setValue(lcd);
+            mLcdDensityPref.setSummary(String.format(getString(R.string.pref_lcd_density_alt_summary), lcd));
+        } else {
+            mLcdDensityPref.setValue(LCD_DENSITY_DEFAULT);
+        }
+        String maxE = Helpers.findBuildPropValueOf(MAX_EVENTS_PROP);
+        if (!maxE.equals(DISABLE)) {
+            mMaxEventsPref.setValue(maxE);
+            mMaxEventsPref.setSummary(String.format(getString(R.string.pref_max_events_alt_summary), maxE));
+        } else {
+            mMaxEventsPref.setValue(MAX_EVENTS_DEFAULT);
+        }
+        String ring = Helpers.findBuildPropValueOf(RING_DELAY_PROP);
+        if (!ring.equals(DISABLE)) {
+            mRingDelayPref.setValue(ring);
+            mRingDelayPref.setSummary(String.format(getString(R.string.pref_ring_delay_alt_summary), ring));
+        } else {
+            mRingDelayPref.setValue(RING_DELAY_DEFAULT);
+        }
+        String vm = Helpers.findBuildPropValueOf(VM_HEAPSIZE_PROP);
+        if (!vm.equals(DISABLE)) {
+            mVmHeapsizePref.setValue(vm);
+            mVmHeapsizePref.setSummary(String.format(getString(R.string.pref_vm_heapsize_alt_summary), vm));
+        } else {
+            mVmHeapsizePref.setValue(VM_HEAPSIZE_DEFAULT);
+        }
+        String fast = Helpers.findBuildPropValueOf(FAST_UP_PROP);
+        if (!fast.equals(DISABLE)) {
+            mFastUpPref.setValue(fast);
+            mFastUpPref.setSummary(String.format(getString(R.string.pref_fast_up_alt_summary), fast));
+        } else {
+            mFastUpPref.setValue(FAST_UP_DEFAULT);
+        }
+        String ba1 = Helpers.findBuildPropValueOf(DISABLE_BOOT_ANIM_PROP_1);
+        String ba2 = Helpers.findBuildPropValueOf(DISABLE_BOOT_ANIM_PROP_2);
+        if (ba1.equals("0") && ba2.equals("1")) {
+            Log.d(TAG, "bootanimation is disabled");
+            mDisableBootAnimPref.setChecked(false);
+        } else {
+            Log.d(TAG, "bootanimation is enabled");
+            mDisableBootAnimPref.setChecked(true);
+        }
+        String prox = Helpers.findBuildPropValueOf(PROX_DELAY_PROP);
+        if (!prox.equals(DISABLE)) {
+            mProxDelayPref.setValue(prox);
+            mProxDelayPref.setSummary(String.format(getString(R.string.pref_prox_delay_alt_summary), prox));
+        } else {
+            mProxDelayPref.setValue(PROX_DELAY_DEFAULT);
+        }
+        boolean rmLogging = cmd.su.runWaitFor(String.format("grep -q \"#rm -f /dev/log/main\" %s", INIT_SCRIPT_PATH)).success();
+        mLogcatPref.setChecked(rmLogging);
+        String sleep = Helpers.findBuildPropValueOf(SLEEP_PROP);
+        if (!sleep.equals(DISABLE)) {
+            mSleepPref.setValue(sleep);
+            mSleepPref.setSummary(String.format(getString(R.string.pref_sleep_alt_summary), sleep));
+        } else {
+            mSleepPref.setValue(SLEEP_DEFAULT);
+        }
+        String tcp = Helpers.findBuildPropValueOf(TCP_STACK_PROP_0);
+        if (tcp.equals(TCP_STACK_BUFFER)) {
+            mTcpStackPref.setChecked(true);
+        } else {
+            mTcpStackPref.setChecked(false);
+        }
+        String jit = Helpers.findBuildPropValueOf(JIT_PROP);
+        if (jit.equals("int:jit")) {
+            mJitPref.setChecked(true);
+        } else {
+            mJitPref.setChecked(false);
+        }
+        String mod = Helpers.findBuildPropValueOf(MOD_VERSION_PROP);
+        mModVersionPref.setSummary(String.format(getString(R.string.pref_mod_version_alt_summary), mod));
+        String chk = Helpers.findBuildPropValueOf(CHECK_IN_PROP);
+        if (!chk.equals(DISABLE)) {
+            mCheckInPref.setChecked(true);
+        } else {
+            mCheckInPref.setChecked(false);
+        }
+        String g0 = Helpers.findBuildPropValueOf(THREE_G_PROP_0);
+        String g3 = Helpers.findBuildPropValueOf(THREE_G_PROP_3);
+        String g6 = Helpers.findBuildPropValueOf(THREE_G_PROP_6);
+        if (g0.equals("1") && g3.equals("1") && g6.equals("1")) {
+            m3gSpeedPref.setChecked(true);
+        } else {
+            m3gSpeedPref.setChecked(false);
+        }
+        String gpu = Helpers.findBuildPropValueOf(GPU_PROP);
+        if (!gpu.equals(DISABLE)) {
+            mGpuPref.setChecked(true);
+        } else {
+            mGpuPref.setChecked(false);
+        }
+        String vvmail0 = Helpers.findBuildPropValueOf(VVMAIL_PROP_0);
+        String vvmail1 = Helpers.findBuildPropValueOf(VVMAIL_PROP_1);
+        if (!vvmail0.equals(DISABLE) && !vvmail1.equals(DISABLE)) {
+            mVvmailPref.setChecked(true);
+        } else {
+            mVvmailPref.setChecked(false);
+        }
+
+
+
     }
 }
 

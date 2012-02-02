@@ -254,15 +254,15 @@ public class PropModder extends PreferenceFragment implements
         String ba1 = Helpers.findBuildPropValueOf(DISABLE_BOOT_ANIM_PROP_1);
         String ba2 = Helpers.findBuildPropValueOf(DISABLE_BOOT_ANIM_PROP_2);
         if (ba1.equals("0") && ba2.equals("1")) {
-            Log.d(TAG, "bootanimation is enabled");
+            Log.d(TAG, "bootanimation is disabled");
             mDisableBootAnimPref.setChecked(false);
         } else {
-            Log.d(TAG, "bootanimation is disabled");
+            Log.d(TAG, "bootanimation is enabled");
             mDisableBootAnimPref.setChecked(true);
         }
 
         mProxDelayPref = (ListPreference) prefSet.findPreference(PROX_DELAY_PREF);
-        String prox = Helpers.findBuildPropValueOf(PROX_DELAY_DEFAULT);
+        String prox = Helpers.findBuildPropValueOf(PROX_DELAY_PROP);
         if (!prox.equals(DISABLE)) {
             mProxDelayPref.setValue(prox);
             mProxDelayPref.setSummary(String.format(getString(R.string.pref_prox_delay_alt_summary), prox));

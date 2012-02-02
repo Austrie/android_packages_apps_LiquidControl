@@ -207,7 +207,7 @@ public class Helpers {
     /*
      * Mount System partition
      *
-     * @param r ro for ReadOnly and rw for Read/Write
+     * @param read_value ro for ReadOnly and rw for Read/Write
      *
      * @returns true for successful mount
      */
@@ -228,21 +228,27 @@ public class Helpers {
     public static String findBuildPropValueOf(String prop) {
         Log.d(TAG, "Helpers:findBuildPropValueOf is looking for the value of { " + prop + " }");
         String mBuildPath = "/system/build.prop";
+        String mTempPath = "/system/tmp/build_tmp";
         String DISABLE = "disable";
 
         if (!Helpers.mountSystem("rw")) {
-            throw new RuntimeException("Could not remount /system rw");
+            throw new RuntimeException("Could not remount /system READ/WRITE");
         }
 
         String value = null;
         try {
+            new CMDProcessor().su.runWaitFor(String.format("cp %s %s", mBuildPath, mTempPath));
             //create properties construct and load build.prop
             Properties mProps = new Properties();
-            mProps.load(new FileInputStream(mBuildPath));
+            mProps.load(new FileInputStream(mTempPath));
             //get the property
             value = mProps.getProperty(prop, DISABLE);
         } catch (IOException ioe) {
             Log.d(TAG, "failed to load input stream");
+        }
+
+        if (!Helpers.mountSystem("ro")) {
+            throw new RuntimeException("Could not remount /system READ ONLY");
         }
 
         if (value != null) {

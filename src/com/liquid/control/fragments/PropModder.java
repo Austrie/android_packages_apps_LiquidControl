@@ -273,8 +273,9 @@ public class PropModder extends PreferenceFragment implements
 
         //we may need a new method of detection here
         mLogcatPref = (CheckBoxPreference) prefSet.findPreference(LOGCAT_PREF);
+        //rmLogging returns true is the command is found commented out #rm -f /dev/log/main
         boolean rmLogging = cmd.su.runWaitFor(String.format("grep -q \"#rm -f /dev/log/main\" %s", INIT_SCRIPT_PATH)).success();
-        mLogcatPref.setChecked(!rmLogging);
+        mLogcatPref.setChecked(rmLogging);
 
         mSleepPref = (ListPreference) prefSet.findPreference(SLEEP_PREF);
         String sleep = Helpers.findBuildPropValueOf(SLEEP_PROP);
@@ -312,7 +313,7 @@ public class PropModder extends PreferenceFragment implements
                 modET.setFilters(new InputFilter[]{lengthFilter});
                 modET.setSingleLine(true);
             }
-            mModVersionPref.setSummary(String.format(getString(R.string.pref_mod_version_alt_summary), modET));
+            mModVersionPref.setSummary(String.format(getString(R.string.pref_mod_version_alt_summary), mod));
         }
         Log.d(TAG, String.format("ModPrefHoler = '%s' found build number = '%s'", ModPrefHolder, mod));
         mModVersionPref.setOnPreferenceChangeListener(this);

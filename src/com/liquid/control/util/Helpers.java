@@ -219,7 +219,7 @@ public class Helpers {
     }
 
     /*
-     * Find value of build.prop item
+     * Find value of build.prop item (/system can be ro or rw)
      *
      * @param prop /system/build.prop property name to find value of
      *
@@ -231,24 +231,17 @@ public class Helpers {
         String mTempPath = "/system/tmp/build_tmp";
         String DISABLE = "disable";
 
-        if (!Helpers.mountSystem("rw")) {
-            throw new RuntimeException("Could not remount /system READ/WRITE");
-        }
-
         String value = null;
         try {
-            new CMDProcessor().su.runWaitFor(String.format("cp %s %s", mBuildPath, mTempPath));
             //create properties construct and load build.prop
             Properties mProps = new Properties();
-            mProps.load(new FileInputStream(mTempPath));
+            mProps.load(new FileInputStream(mBuildPath));
             //get the property
             value = mProps.getProperty(prop, DISABLE);
         } catch (IOException ioe) {
             Log.d(TAG, "failed to load input stream");
-        }
-
-        if (!Helpers.mountSystem("ro")) {
-            throw new RuntimeException("Could not remount /system READ ONLY");
+        } catch (NullPointerException npe) {
+            //swallowed thrown by ill formatted requests
         }
 
         if (value != null) {

@@ -1,18 +1,20 @@
 package com.liquid.control.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Properties;
 
 public class Helpers {
 
@@ -200,5 +202,53 @@ public class Helpers {
             return false;
         }       
         return true;
+    }
+
+    /*
+     * Mount System partition
+     *
+     * @param r ro for ReadOnly and rw for Read/Write
+     *
+     * @returns true for successful mount
+     */
+    public static boolean mountSystem(String read_value) {
+        String REMOUNT_CMD = "busybox mount -o %s,remount -t yaffs2 /dev/block/mtdblock1 /system";
+        final CMDProcessor cmd = new CMDProcessor();
+        Log.d(TAG, "Remounting /system " + read_value);
+        return cmd.su.runWaitFor(String.format(REMOUNT_CMD, read_value)).success();
+    }
+
+    /*
+     * Find value of build.prop item
+     *
+     * @param prop /system/build.prop property name to find value of
+     *
+     * @returns String value of @param:prop
+     */
+    public static String findBuildPropValueOf(String prop) {
+        Log.d(TAG, "Helpers:findBuildPropValueOf is looking for the value of { " + prop + " }");
+        String mBuildPath = "/system/build.prop";
+        String DISABLE = "disable";
+
+        if (!Helpers.mountSystem("rw")) {
+            throw new RuntimeException("Could not remount /system rw");
+        }
+
+        String value = null;
+        try {
+            //create properties construct and load build.prop
+            Properties mProps = new Properties();
+            mProps.load(new FileInputStream(mBuildPath));
+            //get the property
+            value = mProps.getProperty(prop, DISABLE);
+        } catch (IOException ioe) {
+            Log.d(TAG, "failed to load input stream");
+        }
+
+        if (value != null) {
+            return value;
+        } else {
+            return DISABLE;
+        }
     }
 }

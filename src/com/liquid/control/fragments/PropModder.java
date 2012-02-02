@@ -357,6 +357,8 @@ public class PropModder extends PreferenceFragment implements
             value = mVvmailPref.isChecked();
             return doMod(VVMAIL_PERSIST_PROP, VVMAIL_PROP_0, String.valueOf(value ? true : DISABLE))
                 && doMod(null, VVMAIL_PROP_1, String.valueOf(value ? true : DISABLE));
+        } else if (preference == mRebootMsg) {
+            return cmd.su.runWaitFor("reboot").success();
         }
 
         return false;
@@ -580,7 +582,7 @@ public class PropModder extends PreferenceFragment implements
             mProxDelayPref.setValue(PROX_DELAY_DEFAULT);
         }
         boolean rmLogging = cmd.su.runWaitFor(String.format("grep -q \"#rm -f /dev/log/main\" %s", INIT_SCRIPT_PATH)).success();
-        mLogcatPref.setChecked(rmLogging);
+        mLogcatPref.setChecked(!rmLogging);
         String sleep = Helpers.findBuildPropValueOf(SLEEP_PROP);
         if (!sleep.equals(DISABLE)) {
             mSleepPref.setValue(sleep);

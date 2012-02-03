@@ -115,6 +115,8 @@
     <string name="summary_settings_behavior">Default behavior is long press</string>
     <string name="title_auto_hide_toggles">Autohide Toggles</string>
     <string name="summary_auto_hide_toggles">After collapse toggles will hide</string>
+    <string name="title_date_behavior">Date Behavior</string>
+    <string name="summary_date_behavior">Launch calender if checked alarm if not</string>
 
     <!-- Statusbar | Battery -->
     <string name="battery_icon">Battery Style</string>

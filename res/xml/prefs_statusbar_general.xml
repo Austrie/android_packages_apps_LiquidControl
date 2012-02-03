@@ -12,4 +12,9 @@
         android:title="@string/title_auto_hide_toggles"
         android:summary="@string/summary_auto_hide_toggles" />
 
+    <CheckBoxPreference
+        android:key="date_behavior"
+        android:title="@string/title_date_behavior"
+        android:summary="@string/summary_date_behavior" />
+
 </PreferenceScreen>

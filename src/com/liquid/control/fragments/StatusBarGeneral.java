@@ -16,9 +16,11 @@ public class StatusBarGeneral extends PreferenceFragment {
 
     private static final String PREF_SETTINGS_BUTTON_BEHAVIOR = "settings_behavior";
     private static final String PREF_AUTO_HIDE_TOGGLES = "auto_hide_toggles";
+    private static final String PREF_DATE_BEHAVIOR = "date_behavior";
 
     CheckBoxPreference mDefaultSettingsButtonBehavior;
     CheckBoxPreference mAutoHidetoggles;
+    CheckBoxPreference mDateBehavior;
     Context mContext;
 
     @Override
@@ -32,13 +34,15 @@ public class StatusBarGeneral extends PreferenceFragment {
 
         mDefaultSettingsButtonBehavior = (CheckBoxPreference) findPreference(PREF_SETTINGS_BUTTON_BEHAVIOR);
         mDefaultSettingsButtonBehavior.setChecked(Settings.System.getInt(mContext
-                .getContentResolver(), Settings.System.STATUSBAR_SETTINGS_BEHAVIOR,
-                0) == 1);
+                .getContentResolver(), Settings.System.STATUSBAR_SETTINGS_BEHAVIOR, 0) == 1);
 
         mAutoHidetoggles = (CheckBoxPreference) findPreference(PREF_AUTO_HIDE_TOGGLES);
         mAutoHidetoggles.setChecked(Settings.System.getInt(mContext
-                .getContentResolver(), Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE,
-                1) == 1);
+                .getContentResolver(), Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE, 1) == 1);
+
+        mDateBehavior = (CheckBoxPreference) findPreference(PREF_DATE_BEHAVIOR);
+        mDateBehavior.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUSBAR_DATE_BEHAVIOR, 0) == 1);
     }
 
     @Override
@@ -55,8 +59,13 @@ public class StatusBarGeneral extends PreferenceFragment {
                     Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
-        }
 
+        } else if (preference == mDateBehavior) {
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_DATE_BEHAVIOR,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+            return true;
+        }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 }

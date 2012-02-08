@@ -17,4 +17,14 @@
         android:title="@string/title_date_behavior"
         android:summary="@string/summary_date_behavior" />
 
+    <CheckBoxPreference
+        android:key="status_bar_brightness_toggle"
+        android:title="@string/title_status_bar_brightness_toggle"
+        android:summary="@string/summary_status_bar_brightness_toggle" />
+
+    <CheckBoxPreference
+        android:key="adb_icon" 
+        android:title="@string/adb_icon_title"
+        android:summary="@string/adb_icon_summary" />
+
 </PreferenceScreen>

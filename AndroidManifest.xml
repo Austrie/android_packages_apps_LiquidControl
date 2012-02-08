@@ -18,7 +18,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo"
-        android:uiOptions="splitActionBarWhenNarrow" >
+        android:uiOptions="none" >
         <activity
             android:label="@string/app_name"
             android:name=".LiquidActivity" >
@@ -99,9 +99,10 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".util.ShowBuildProp">
+        <activity android:name=".fragments.LightLevels">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.liquid.control.LIGHTLEVELS" />
             </intent-filter>
         </activity>
         <activity android:name=".fragments.PropModder">
@@ -111,26 +112,9 @@
                 <category android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.LightLevels">
+        <activity android:name=".util.ShowBuildProp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.liquid.control.LIGHTLEVELS" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.MemorySettings">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.liquid.control.MEMORY" />
-                <category android:name="android.intent.action.SHORTCUT" />
-                <category android:name="android.intent.action.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.ProcessingSettings">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.liquid.control.PROCESSOR" />
-                <category android:name="android.intent.action.SHORTCUT" />
-                <category android:name="android.intent.action.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -141,7 +125,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <service android:name=".service.BootService" />
     </application>
 </manifest>

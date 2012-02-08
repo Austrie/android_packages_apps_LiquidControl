@@ -26,6 +26,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     private static final String PREF_LOCKSCREEN_LAYOUT = "pref_lockscreen_layout";
     private static final String PREF_VOLUME_WAKE = "volume_wake";
     private static final String PREF_VOLUME_MUSIC = "volume_music_controls";
+    private static final String PREF_LOCKSCREEN_BATTERY = "lockscreen_battery";
 
     CheckBoxPreference menuButtonLocation;
     CheckBoxPreference mLockScreenTimeoutUserOverride;
@@ -33,6 +34,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     CheckBoxPreference mVolumeWake;
     CheckBoxPreference mVolumeMusic;
     CheckBoxPreference mLockscreenLandscape;
+    CheckBoxPreference mLockscreenBattery;
 
     private Preference mCurrentCustomActivityPreference;
     private String mCurrentCustomActivityString;
@@ -52,25 +54,28 @@ public class Lockscreens extends SettingsPreferenceFragment implements
 
         menuButtonLocation = (CheckBoxPreference) findPreference(PREF_MENU);
         menuButtonLocation.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.LOCKSCREEN_ENABLE_MENU_KEY,
-                1) == 1);
+                .getContentResolver(), Settings.System.LOCKSCREEN_ENABLE_MENU_KEY, 1) == 1);
+
         mLockScreenTimeoutUserOverride = (CheckBoxPreference) findPreference(PREF_USER_OVERRIDE);
         mLockScreenTimeoutUserOverride.setChecked(Settings.Secure.getInt(getActivity()
-                .getContentResolver(), Settings.Secure.LOCK_SCREEN_LOCK_USER_OVERRIDE,
-                0) == 1);
+                .getContentResolver(), Settings.Secure.LOCK_SCREEN_LOCK_USER_OVERRIDE, 0) == 1);
+
         mLockscreenOption = (ListPreference) findPreference(PREF_LOCKSCREEN_LAYOUT);
         mLockscreenOption.setOnPreferenceChangeListener(this);
         mLockscreenOption.setValue(Settings.System.getInt(
-                getActivity().getContentResolver(), Settings.System.LOCKSCREEN_LAYOUT,
-                0) + "");
+                getActivity().getContentResolver(), Settings.System.LOCKSCREEN_LAYOUT, 0) + "");
+
         mVolumeWake = (CheckBoxPreference) findPreference(PREF_VOLUME_WAKE);
         mVolumeWake.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.VOLUME_WAKE_SCREEN,
-                0) == 1);
+                .getContentResolver(), Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
+
         mVolumeMusic = (CheckBoxPreference) findPreference(PREF_VOLUME_MUSIC);
         mVolumeMusic.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.VOLUME_MUSIC_CONTROLS,
-                0) == 1);
+                .getContentResolver(), Settings.System.VOLUME_MUSIC_CONTROLS, 0) == 1);
+
+        mLockscreenBattery = (CheckBoxPreference) findPreference(PREF_LOCKSCREEN_BATTERY);
+        mLockscreenBattery.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.LOCKSCREEN_BATTERY, 0) == 1);
 
         mPicker = new ShortcutPickerHelper(this, this);
 
@@ -85,7 +90,6 @@ public class Lockscreens extends SettingsPreferenceFragment implements
 
         ((PreferenceGroup) findPreference("advanced_cat"))
                 .removePreference(findPreference(Settings.System.LOCKSCREEN_HIDE_NAV));
-
         refreshSettings();
     }
 
@@ -101,6 +105,11 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                     Settings.Secure.LOCK_SCREEN_LOCK_USER_OVERRIDE,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
+        } else if (preference == mLockscreenBattery) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.LOCKSCREEN_BATTERY,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+            return true;        
         } else if (preference == mVolumeWake) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.VOLUME_WAKE_SCREEN,

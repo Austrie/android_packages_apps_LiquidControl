@@ -8,6 +8,7 @@
     <string name="general_ui">General</string>
     <string name="user_interface">Interface</string>
     <string name="lockscreen_options">Lockscreen</string>
+    <string name="power_menu_optons">Powermenu</string>
     <string name="functionality">Functionality</string>
     <string name="power_saver">Powersaver</string>
     <string name="led_options">LED Options</string>
@@ -68,9 +69,11 @@
     <string name="summary_pref_lockscreen_menu_unlock">Legacy menu icon unlocks screen (requires reboot)</string>
     <string name="title_lockscreen_user_timeout_override">Lockscreen Timeout</string>
     <string name="summary_lockscreen_user_timeout_override">Use default timeout setting after screen is off</string>
-    <string name="volume_wake_title">Volume Wake Keys</string>
+    <string name="lockscreen_battery_title">Battery Percent</string>
+    <string name="lockscreen_battery_summary">Always show percentage on lockscreen</string>
+    <string name="volume_wake_title">Volume Wake</string>
     <string name="volume_wake_summary">Tapping volume keys wakes phone</string>
-    <string name="volume_music_controls_title">Volume Music Controls</string>
+    <string name="volume_music_controls_title">Volume Controls</string>
     <string name="volume_music_controls_summary">Longpress volume keys skips tracks</string>
     <string name="lockscreen_show_nav_title">Navigation Bar</string>
     <string name="lockscreen_show_nav_summary">Hide the navbar on the lockscreen</string>
@@ -88,6 +91,11 @@
     <string name="lockscreen_landscape_summary">Enable horizontal lockscreen orientation</string>
     <string name="lockscreen_quick_unlock_control_title">Quick Unlock</string>
     <string name="lockscreen_quick_unlock_control_summary">Unlock password/pin lockscreen without pressing enter</string>
+
+    <!-- Power Menu -->
+    <string name="title_show_power_saver">Show Powersaver</string>
+    <string name="title_show_screenshot">Show Screenshot</string>
+    <string name="title_show_easter_egg">Show Easteregg</string>
 
     <!-- Power Saving -->
     <string name="title_pref_powersaving_pref_mode">Enable Powersaver</string>
@@ -117,6 +125,10 @@
     <string name="summary_auto_hide_toggles">After collapse toggles will hide</string>
     <string name="title_date_behavior">Date Behavior</string>
     <string name="summary_date_behavior">Launch calender if checked alarm if not</string>
+    <string name="title_status_bar_brightness_toggle">Brightness Control</string>
+    <string name="summary_status_bar_brightness_toggle">Slide finger slowly across statusbar</string>
+    <string name="adb_icon_title">Usb Debugging</string>
+    <string name="adb_icon_summary">Hide debugging statusbar icon</string>
 
     <!-- Statusbar | Battery -->
     <string name="battery_icon">Battery Style</string>
@@ -179,6 +191,7 @@
     <string name="pt_performance">Performance</string>
     <string name="pt_customization">Customization</string>
     <string name="pt_tools">Goodies</string>
+    <string name="pt_voltage">Voltage</string>
     <string name="pt_mod_version">Mod Version</string>
 
     <!-- Customization -->
@@ -215,6 +228,14 @@
     <string name="pt_set_min">Minimum</string>
     <string name="pt_set_gov">Governor</string>
     <string name="pt_cpu_boot">Set On Boot</string>
+
+    <!-- Scrolling Cache -->
+    <string name="pref_scrollingcache_title">Scrolling Cache</string>
+    <string name="pref_scrollingcache_summary">May improve scrolling performance</string>
+    <string name="pref_scrollingcache_force_enable">Force Enable</string>
+    <string name="pref_scrollingcache_default_enable">Default Enable</string>
+    <string name="pref_scrollingcache_default_disable">Default Disable</string>
+    <string name="pref_scrollingcache_force_disable">Force Disable</string>
 
     <!-- Customization -->
     <string name="ps_customizer">Customize the ROM to your liking</string>
@@ -334,15 +355,15 @@
     <string name="pref_zram_summary">Compress memory for increased virtual capacity (requires reboot)</string>
     <string name="pref_heapsize_title">VM heap size</string>
     <string name="pref_heapsize_summary">Maximum amount of memory per VM heap (requires reboot)</string>
-    <string name="pref_purgeable_assets_title">Allow purging of assets</string>
+    <string name="pref_purgeable_assets_title">Allow Purging</string>
     <string name="pref_purgeable_assets_summary">Purging of bitmap memory assets allows the freeing of more RAM when needed (requires reboot)</string>
-    <string name="pref_use_dithering_title">Surface dithering</string>
+    <string name="pref_use_dithering_title">Surface Dithering</string>
     <string name="pref_use_dithering_summary">Dithering improves image quality on some displays at the cost of performance (requires reboot)</string>
-    <string name="pref_use_16bpp_alpha_title">16bit transparency</string>
+    <string name="pref_use_16bpp_alpha_title">16bit Transparency</string>
     <string name="pref_use_16bpp_alpha_summary">Better graphics performance, but lower quality and may cause visual artifacts (requires reboot)</string>
 
     <!-- PropModder -->
-    <string name="propmodder_title">Prop Modder</string>
+    <string name="propmodder_title">PropModder</string>
     <string name="buildprop_title">/system/build.prop mods</string>
     <string name="nonprop_cat_title">Mods involving init.d script</string>
     <string name="main_warning_title">YOU HAVE BEEN WARNED</string>

@@ -1,3 +1,4 @@
+
 package com.liquid.control.fragments;
 
 import android.app.Activity;
@@ -16,7 +17,6 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
@@ -37,11 +37,12 @@ import java.io.File;
 import java.io.FileWriter;
 
 import com.liquid.control.R;
+import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.CMDProcessor;
 import com.liquid.control.util.Helpers;
 
-public class PropModder extends PreferenceFragment implements
-        Preference.OnPreferenceChangeListener {
+public class PropModder extends SettingsPreferenceFragment implements
+        OnPreferenceChangeListener {
 
     private static final String TAG = "LiquidControl :PropModder";
     private static final String APPEND_CMD = "echo \"%s=%s\" >> /system/build.prop";
@@ -631,9 +632,6 @@ public class PropModder extends PreferenceFragment implements
         } else {
             mVvmailPref.setChecked(false);
         }
-
-
-
     }
 }
 

@@ -3,82 +3,80 @@
     <header
         android:title="@string/user_interface" />
 
-    <header
-        android:id="@+id/user_interface"
-        android:title="@string/general_ui"
-        android:fragment="com.liquid.control.fragments.UserInterface" />
+        <header
+            android:id="@+id/user_interface"
+            android:title="@string/general_ui"
+            android:icon="@drawable/ic_general_ui"
+            android:fragment="com.liquid.control.fragments.UserInterface" />
 
-    <header
-        android:id="@+id/nav_bar"
-        android:title="@string/nav_bar"
-        android:fragment="com.liquid.control.fragments.Navbar" />
+        <header
+            android:id="@+id/nav_bar"
+            android:title="@string/nav_bar"
+            android:icon="@drawable/ic_navigation_bar"
+            android:fragment="com.liquid.control.fragments.Navbar" />
 
-    <header
-        android:id="@+id/lockscreens"
-        android:title="@string/lockscreen_options"
-        android:fragment="com.liquid.control.fragments.Lockscreens" />
+        <header
+            android:id="@+id/lockscreens"
+            android:title="@string/lockscreen_options"
+            android:icon="@drawable/ic_lockscreens"
+            android:fragment="com.liquid.control.fragments.Lockscreens" />
+
+        <header
+            android:id="@+id/power_menu"
+            android:title="@string/power_menu_optons"
+            android:icon="@drawable/ic_power_menu"
+            android:fragment="com.liquid.control.fragments.PowerMenu" />
 
     <header
         android:id="@+id/functionality"
         android:title="@string/functionality" />
 
-    <header
-        android:id="@+id/power_saver"
-        android:title="@string/power_saver"
-        android:fragment="com.liquid.control.fragments.PowerSaver" />
+        <header
+            android:id="@+id/power_saver"
+            android:title="@string/power_saver"
+            android:icon="@drawable/ic_powersaver"
+            android:fragment="com.liquid.control.fragments.PowerSaver" />
 
-    <header
-        android:id="@+id/led"
-        android:title="@string/led_options"
-        android:fragment="com.liquid.control.fragments.Led" />
+        <header
+            android:id="@+id/led"
+            android:title="@string/led_options"
+            android:icon="@drawable/ic_led"
+            android:fragment="com.liquid.control.fragments.Led" />
 
     <header
         android:title="@string/statusbar" />
 
-    <header
-        android:id="@+id/statusbar_general"
-        android:title="@string/general"
-        android:fragment="com.liquid.control.fragments.StatusBarGeneral" />
+        <header
+            android:id="@+id/statusbar_general"
+            android:title="@string/general"
+            android:icon="@drawable/ic_general"
+            android:fragment="com.liquid.control.fragments.StatusBarGeneral" />
 
-    <header
-        android:id="@+id/statusbar_toggles"
-        android:title="@string/toggles_layout"
-        android:fragment="com.liquid.control.fragments.StatusBarToggles" />
+        <header
+            android:id="@+id/statusbar_toggles"
+            android:title="@string/toggles_layout"
+            android:icon="@drawable/ic_toggles"
+            android:fragment="com.liquid.control.fragments.StatusBarToggles" />
 
-    <header
-        android:id="@+id/statusbar_clock"
-        android:title="@string/clock"
-        android:fragment="com.liquid.control.fragments.StatusBarClock" />
+        <header
+            android:id="@+id/statusbar_clock"
+            android:title="@string/clock"
+            android:icon="@drawable/ic_clock"
+            android:fragment="com.liquid.control.fragments.StatusBarClock" />
 
-    <header
-        android:id="@+id/statusbar_battery"
-        android:title="@string/battery"
-        android:fragment="com.liquid.control.fragments.StatusBarBattery" />
+        <header
+            android:id="@+id/statusbar_battery"
+            android:title="@string/battery"
+            android:icon="@drawable/ic_battery"
+            android:fragment="com.liquid.control.fragments.StatusBarBattery" />
 
     <header
         android:title="@string/tools" />
 
-    <header
-        android:id="@+id/performance"
-        android:title="@string/pt_performance"
-        android:fragment="com.liquid.control.fragments.Performance" />
-
-    <header
-        android:id="@+id/propmodder"
-        android:title="@string/propmodder_title"
-        android:fragment="com.liquid.control.fragments.PropModder" />
-
-    <header
-        android:title="@string/system" />
-
-    <header
-        android:id="@+id/memory_settings"
-        android:title="@string/memory_settings_title"
-        android:fragment="com.liquid.control.fragments.MemorySettings" />
-
-    <header
-        android:id="@+id/processor_settings"
-        android:title="@string/processor_settings_title"
-        android:fragment="com.liquid.control.fragments.ProcessingSettings" />
+        <header
+            android:id="@+id/performance"
+            android:title="@string/pt_performance"
+            android:icon="@drawable/ic_performance"
+            android:fragment="com.liquid.control.fragments.Performance" />
 
 </preference-headers>

@@ -35,9 +35,9 @@ public class PowerMenu extends PreferenceFragment {
             powerSaverVal = Settings.Secure.getInt(getActivity()
                     .getContentResolver(), Settings.Secure.POWER_SAVER_MODE);
         } catch (SettingNotFoundException e) {
-            mShowPowerSaver.setEnabled(false);
-            mShowPowerSaver
-                    .setSummary("Enable power saver before you can see it in the menu.");
+            //TODO FIX
+            //mShowPowerSaver.setEnabled(false);
+            mShowPowerSaver.setSummary("Enable power saver before you can see it in the menu.");
         }
 
         mShowPowerSaver.setChecked(powerSaverVal == 1);

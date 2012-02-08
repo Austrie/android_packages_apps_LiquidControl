@@ -68,6 +68,7 @@ public class PowerMenu extends PreferenceFragment {
                     Settings.System.POWER_DIALOG_SHOW_EASTER_EGG,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
+        }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }

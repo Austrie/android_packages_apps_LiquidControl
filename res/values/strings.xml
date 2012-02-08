@@ -216,11 +216,6 @@
     <string name="pt_set_gov">Governor</string>
     <string name="pt_cpu_boot">Set On Boot</string>
 
-    <!-- Preference Summaries -->
-    <string name="ps_performance">Set cpu, memory &amp; tweak startup</string>
-    <string name="ps_customization">Customize the lockscreen &amp; status bar</string>
-    <string name="ps_tools">Various system tools and extras</string>
-
     <!-- Customization -->
     <string name="ps_customizer">Customize the ROM to your liking</string>
     <string name="ps_lockscreen">Change lockscreen styles and manage widgets</string>
@@ -273,6 +268,10 @@
     <!-- Longpress Apptasker -->
     <string name="longpress_app_tasker_title">Longpress Apptasker</string>
     <string name="longpress_app_tasker_summary">New task to be launched when selected</string>
+
+    <!-- Processer settings -->
+    <string name="processor_settings_title">Processor Settings</string>
+    <string name="processor_settings_summary">Graphic processing options</string>
 
     <!-- Light Levels -->
     <string name="light_levels_title">Light Levels</string>
@@ -343,10 +342,9 @@
     <string name="pref_use_16bpp_alpha_summary">Better graphics performance, but lower quality and may cause visual artifacts (requires reboot)</string>
 
     <!-- PropModder -->
-    <string name="propmodder_title">PropModder</string>
+    <string name="propmodder_title">Prop Modder</string>
     <string name="buildprop_title">/system/build.prop mods</string>
     <string name="nonprop_cat_title">Mods involving init.d script</string>
-    <!-- WARN THE MASSES THIS CAN BE DANGEROUS!!! -->
     <string name="main_warning_title">YOU HAVE BEEN WARNED</string>
     <string name="main_warning_summary">This app was conceived while watching monkeys juggling knives.  It hacks your \'/system/build.prop\' WE ARE NOT RESPONSIBLE FOR ACCIDENTAL KNIFE CUTS! Your device your responsibility</string>
     <string name="pref_wifi_scan_interval_title">Wifi scan interval</string>
@@ -356,7 +354,6 @@
     <string name="pref_lcd_density_summary">This is the screen density allowing more high definition look (requires reboot)</string>
     <string name="pref_lcd_density_alt_summary">Screen density: %s</string>
     <string name="pref_max_events_title">Windows Manager\'s max events per second</string>
-    <!--TODO find good explanation of this value -->
     <string name="pref_max_events_summary">This is a runtime value that controls the number of events the system will allow in a second (requires reboot)</string>
     <string name="pref_max_events_alt_summary">Max number of system events: %s</string>
     <string name="pref_usb_mode_title">Default USB mode</string>
@@ -407,8 +404,4 @@
     <string name="pref_gpu_summary">To enable hardware acceleration where the GPU controls the UI instead of the CPU</string>
     <string name="pref_vvmail_title">VVMail (Sense ROMs ONLY)</string>
     <string name="pref_vvmail_summary">force Sense ROMS compatibility with VVMail</string>
-
-    <!-- Processer settings -->
-    <string name="processor_settings_title">Processor Settings</string>
-    <string name="processor_settings_summary">Graphic processing options</string>
 </resources>

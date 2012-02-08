@@ -5,18 +5,18 @@
 
     <header
         android:id="@+id/user_interface"
-        android:fragment="com.liquid.control.fragments.UserInterface"
-        android:title="@string/general_ui" />
+        android:title="@string/general_ui"
+        android:fragment="com.liquid.control.fragments.UserInterface" />
 
     <header
         android:id="@+id/nav_bar"
-        android:fragment="com.liquid.control.fragments.Navbar"
-        android:title="@string/nav_bar" />
+        android:title="@string/nav_bar"
+        android:fragment="com.liquid.control.fragments.Navbar" />
 
     <header
         android:id="@+id/lockscreens"
-        android:fragment="com.liquid.control.fragments.Lockscreens"
-        android:title="@string/lockscreen_options" />
+        android:title="@string/lockscreen_options"
+        android:fragment="com.liquid.control.fragments.Lockscreens" />
 
     <header
         android:id="@+id/functionality"
@@ -24,26 +24,26 @@
 
     <header
         android:id="@+id/power_saver"
-        android:fragment="com.liquid.control.fragments.PowerSaver"
-        android:title="@string/power_saver" />
+        android:title="@string/power_saver"
+        android:fragment="com.liquid.control.fragments.PowerSaver" />
 
     <header
         android:id="@+id/led"
-        android:fragment="com.liquid.control.fragments.Led"
-        android:title="@string/led_options" />
+        android:title="@string/led_options"
+        android:fragment="com.liquid.control.fragments.Led" />
 
     <header
         android:title="@string/statusbar" />
 
     <header
         android:id="@+id/statusbar_general"
-        android:fragment="com.liquid.control.fragments.StatusBarGeneral"
-        android:title="@string/general" />
+        android:title="@string/general"
+        android:fragment="com.liquid.control.fragments.StatusBarGeneral" />
 
     <header
         android:id="@+id/statusbar_toggles"
-        android:fragment="com.liquid.control.fragments.StatusBarToggles"
-        android:title="@string/toggles_layout" />
+        android:title="@string/toggles_layout"
+        android:fragment="com.liquid.control.fragments.StatusBarToggles" />
 
     <header
         android:id="@+id/statusbar_clock"
@@ -61,13 +61,11 @@
     <header
         android:id="@+id/performance"
         android:title="@string/pt_performance"
-        android:summary="@string/ps_performance"
         android:fragment="com.liquid.control.fragments.Performance" />
 
     <header
         android:id="@+id/propmodder"
         android:title="@string/propmodder_title"
-        android:summary="@string/buildprop_title"
         android:fragment="com.liquid.control.fragments.PropModder" />
 
     <header
@@ -76,13 +74,11 @@
     <header
         android:id="@+id/memory_settings"
         android:title="@string/memory_settings_title"
-        android:summary="@string/memory_settings_summary"
         android:fragment="com.liquid.control.fragments.MemorySettings" />
 
     <header
         android:id="@+id/processor_settings"
         android:title="@string/processor_settings_title"
-        android:summary="@string/processor_settings_summary"
         android:fragment="com.liquid.control.fragments.ProcessingSettings" />
 
 </preference-headers>

@@ -79,4 +79,10 @@
             android:icon="@drawable/ic_performance"
             android:fragment="com.liquid.control.fragments.Performance" />
 
+        <header
+            android:id="@+id/propmodder"
+            android:title="@string/propmodder_title"
+            android:icon="@drawable/ic_propmodder"
+            android:fragment="com.liquid.control.fragments.PropModder" />
+
 </preference-headers>

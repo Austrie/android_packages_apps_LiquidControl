@@ -17,8 +17,8 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
 import android.util.Log;
@@ -42,8 +42,8 @@ import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.CMDProcessor;
 import com.liquid.control.util.Helpers;
 
-public class PropModder extends SettingsPreferenceFragment implements
-        OnPreferenceChangeListener {
+public class PropModder extends PreferenceFragment implements
+        Preference.OnPreferenceChangeListener {
 
     private static final String TAG = "LiquidControl :PropModder";
     private static final String APPEND_CMD = "echo \"%s=%s\" >> /system/build.prop";

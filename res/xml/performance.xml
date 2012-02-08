@@ -2,15 +2,6 @@
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceScreen
-	    android:key="propmodder"
-		android:title="@string/propmodder_title">
-			<intent
-				android:action="android.intent.action.MAIN"
-				android:targetPackage="com.liquid.control"
-				android:targetClass="com.liquid.control.fragments.PropModder" />
-    </PreferenceScreen>
-
 	<PreferenceCategory
 		android:title="@string/prefcat_cpu"
 		android:key="cpu">

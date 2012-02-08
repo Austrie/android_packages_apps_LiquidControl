@@ -39,13 +39,14 @@ public class PowerMenu extends PreferenceFragment {
             mShowPowerSaver
                     .setSummary("Enable power saver before you can see it in the menu.");
         }
+
         mShowPowerSaver.setChecked(powerSaverVal == 1);
 
         mShowScreenShot = (CheckBoxPreference) findPreference(PREF_SCREENSHOT);
         mShowScreenShot.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_SCREENSHOT, 0) == 1);
+                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_SCREENSHOT, 1) == 1);
 
-        mShowEasterEgg = (CheckBoxPreference) findPreference(PREF_SCREENSHOT);
+        mShowEasterEgg = (CheckBoxPreference) findPreference(PREF_EASTER_EGG);
         mShowEasterEgg.setChecked(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_EASTER_EGG, 0) == 1);
     }

@@ -59,6 +59,9 @@
     <string name="crt_animations_header">CRT Animations</string>
     <string name="crt_on_title">CRT animation is now enabled</string>
     <string name="crt_off_title">CRT animation is now disabled</string>
+    <string name="sounds_category_title">Sounds</string>
+    <string name="screenshot_sound_title">ScreenShot</string>
+    <string name="screenshot_sound_summary">Disable shutter sound when ScreenShot is captured</string>
 
     <!-- Lockscreens -->
     <string name="title_pref_lockscreen_quad_targets">Quad Lockscreen</string>	
@@ -129,6 +132,10 @@
     <string name="summary_status_bar_brightness_toggle">Slide finger slowly across statusbar</string>
     <string name="adb_icon_title">Usb Debugging</string>
     <string name="adb_icon_summary">Hide debugging statusbar icon</string>
+    <string name="statusbar_show_aosp_title">AOSP Settings</string>
+    <string name="statusbar_show_aosp_summary">Hide AOSP statusbar icon</string>
+    <string name="statusbar_show_liquid_control_title">Liquid Control</string>
+    <string name="statusbar_show_liquid_control_summary">Hide Liquid Control statusbar icon</string>
 
     <!-- Statusbar | Battery -->
     <string name="battery_icon">Battery Style</string>

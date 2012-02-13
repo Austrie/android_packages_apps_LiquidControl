@@ -18,11 +18,15 @@ public class StatusBarGeneral extends PreferenceFragment {
     private static final String PREF_AUTO_HIDE_TOGGLES = "auto_hide_toggles";
     private static final String PREF_DATE_BEHAVIOR = "date_behavior";
     private static final String PREF_BRIGHTNESS_TOGGLE = "status_bar_brightness_toggle";
+    private static final String PREF_SHOW_AOSP = "show_aosp_settings";
+    private static final String PREF_SHOW_LIQUIDCONTROL = "show_liquid_control";
 
+    CheckBoxPreference mShowAospSettings;
     CheckBoxPreference mDefaultSettingsButtonBehavior;
     CheckBoxPreference mAutoHidetoggles;
     CheckBoxPreference mDateBehavior;
     CheckBoxPreference mStatusBarBrightnessToggle;
+    CheckBoxPreference mShowLiquidControl;
     Context mContext;
 
     @Override
@@ -49,6 +53,14 @@ public class StatusBarGeneral extends PreferenceFragment {
         mStatusBarBrightnessToggle = (CheckBoxPreference) findPreference(PREF_BRIGHTNESS_TOGGLE);
         mStatusBarBrightnessToggle.setChecked(Settings.System.getInt(mContext
                 .getContentResolver(), Settings.System.STATUS_BAR_BRIGHTNESS_TOGGLE, 0) == 1);
+
+        mShowAospSettings = (CheckBoxPreference) findPreference(PREF_SHOW_AOSP);
+        mShowAospSettings.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUSBAR_REMOVE_AOSP_SETTINGS_LINK, 0) == 1);
+
+        mShowLiquidControl = (CheckBoxPreference) findPreference(PREF_SHOW_LIQUIDCONTROL);
+        mShowLiquidControl.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUSBAR_REMOVE_LIQUIDCONTROL_LINK, 0) == 1);
     }
 
     @Override
@@ -74,6 +86,16 @@ public class StatusBarGeneral extends PreferenceFragment {
         } else if (preference == mStatusBarBrightnessToggle) {
             Settings.System.putInt(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_BRIGHTNESS_TOGGLE,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+            return true;    
+        } else if (preference == mShowAospSettings) {
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_REMOVE_AOSP_SETTINGS_LINK,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+            return true;    
+        } else if (preference == mShowLiquidControl) {
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_REMOVE_LIQUIDCONTROL_LINK,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;    
         }

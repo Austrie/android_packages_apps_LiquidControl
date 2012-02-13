@@ -46,6 +46,17 @@
 	</PreferenceCategory>
 
 	<PreferenceCategory
+		android:key="sounds"
+		android:title="@string/sounds_category_title">
+
+		<CheckBoxPreference
+			android:key="screenshot_sound"
+			android:title="@string/screenshot_sound_title"
+			android:summary="@string/screenshot_sound_summary" />
+
+        </PreferenceCategory>
+
+	<PreferenceCategory
 		android:key="misc"
 		android:title="@string/misc_short">
 
@@ -73,13 +84,14 @@
                 <!--*
                     * we can make this a ListPreference if we find a suitable reason
                     * we also need to decide what we what to do with new input event
-                    * DISABLED TILL WE SUPPORT WITH FRAMEWORKS
+                    * DISABLED TILL DECIDE WHAT TO DO WITH THE EVENT
+                    *
+                    * <CheckBoxPreference
+                    *        android:key="longpress_app_tasker"
+                    *        android:title="@string/longpress_app_tasker_title"
+                    *        android:summary="@string/longpress_app_tasker_summary"
+                    *        android:visible="false" />
                     *-->
-                <CheckBoxPreference
-                        android:key="longpress_app_tasker"
-                        android:title="@string/longpress_app_tasker_title"
-                        android:summary="@string/longpress_app_tasker_summary"
-                        android:visible="false" />
 
 	</PreferenceCategory>
 </PreferenceScreen>

@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
-       
+
+    <CheckBoxPreference
+        android:key="show_aosp_settings"
+        android:title="@string/statusbar_show_aosp_title"
+        android:summary="@string/statusbar_show_aosp_summary"
+        android:disableDependentsState="true" />
+
     <CheckBoxPreference
         android:key="settings_behavior"
         android:title="@string/title_settings_behavior"
-        android:summary="@string/summary_settings_behavior" />
+        android:summary="@string/summary_settings_behavior"
+        android:dependency="show_aosp_settings" />
         
     <CheckBoxPreference
         android:key="auto_hide_toggles"
         android:title="@string/title_auto_hide_toggles"
-        android:summary="@string/summary_auto_hide_toggles" />
+        android:summary="@string/summary_auto_hide_toggles"
+        android:dependency="show_aosp_settings" />
+
+    <CheckBoxPreference
+        android:key="show_liquid_control"
+        android:title="@string/statusbar_show_liquid_control_title"
+        android:summary="@string/statusbar_show_liquid_control_summary" />
+
 
     <CheckBoxPreference
         android:key="date_behavior"

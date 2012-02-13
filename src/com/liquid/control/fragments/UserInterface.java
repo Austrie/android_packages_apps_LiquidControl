@@ -34,6 +34,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     private static final String PREF_LONGPRESS_APP_TASKER = "longpress_app_tasker";
     private static final String PREF_ROTATION_ANIMATION = "rotation_animation_delay";
     private static final String PREF_180 = "rotate_180";
+    private static final String PREF_DISABLE_SCREENSHOT_SOUND = "screenshot_sound";
 
     CheckBoxPreference mAllow180Rotation;
     ListPreference mAnimationRotationDelay;
@@ -46,6 +47,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     CheckBoxPreference mLongPressToKill;
     CheckBoxPreference mShowImeSwitcher;
     CheckBoxPreference mLongPressAppTasker;
+    CheckBoxPreference mDisableScreenshotSound;
 
     String mCustomLabelText = null;
 
@@ -86,8 +88,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
                 Settings.System.ACCELEROMETER_ROTATION_ANGLES, (1 | 2 | 8)) == (1 | 2 | 4 | 8));
 
         mHorizontalAppSwitcher = (CheckBoxPreference) findPreference("horizontal_recents_task_panel");
-        mHorizontalAppSwitcher.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(),
+        mHorizontalAppSwitcher.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.HORIZONTAL_RECENTS_TASK_PANEL, 0) == 1);
 
         mDisableBootAnimation = (CheckBoxPreference) findPreference("disable_bootanimation");
@@ -101,6 +102,10 @@ public class UserInterface extends SettingsPreferenceFragment implements
         mLongPressAppTasker.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
                 Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
         */
+
+        mDisableScreenshotSound = (CheckBoxPreference) findPreference(PREF_DISABLE_SCREENSHOT_SOUND);
+        mDisableScreenshotSound.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.SCREENSHOT_CAMERA_SOUND, 0) == 1);
 
         //TODO: summarys in ics shouldn't be dynamic; only exception is dialog input events
         // summary should be true if checked and false if unchecked
@@ -215,6 +220,10 @@ public class UserInterface extends SettingsPreferenceFragment implements
                         .runWaitFor("mv /system/bin/bugmailer.sh.liquid /system/bin/bugmailer.sh");
                 Helpers.getMount("ro");
             }
+        } else if (preference == mDisableScreenshotSound) {
+            boolean checked = ((CheckBoxPreference) preference).isChecked();
+            Settings.System.putInt(getActivity().getContentResolver(),
+                Settings.System.SCREENSHOT_CAMERA_SOUND, checked ? 1 : 0);
         }
         /* DISABLED TILL WE SUPPORT WITH FRAMEWORKS
           else if (preference == mLongPressAppTasker) {

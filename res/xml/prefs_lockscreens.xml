@@ -43,6 +43,11 @@
 			android:summary="@string/lockscreen_show_nav_summary" />
 
         <CheckBoxPreference
+            android:key="enable_fast_torch"
+            android:title="@string/enable_fast_torch_title"
+            android:summary="@string/enable_fast_torch_summary" />
+
+        <CheckBoxPreference
             android:key="lockscreen_landscape"
             android:title="@string/lockscreen_landscape_title"
             android:summary="@string/lockscreen_landscape_summary" />

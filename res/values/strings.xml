@@ -94,6 +94,8 @@
     <string name="lockscreen_landscape_summary">Enable horizontal lockscreen orientation</string>
     <string name="lockscreen_quick_unlock_control_title">Quick Unlock</string>
     <string name="lockscreen_quick_unlock_control_summary">Unlock password/pin lockscreen without pressing enter</string>
+    <string name="enable_fast_torch_title">Fast Torch</string>
+    <string name="enable_fast_torch_summary">While screen is off, long-press power key to turn torch on</string>
 
     <!-- Power Menu -->
     <string name="title_show_power_saver">Show Powersaver</string>

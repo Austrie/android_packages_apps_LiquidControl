@@ -5,7 +5,8 @@
     <CheckBoxPreference
         android:key="show_aosp_settings"
         android:title="@string/statusbar_show_aosp_title"
-        android:summary="@string/statusbar_show_aosp_summary" />
+        android:summary="@string/statusbar_show_aosp_summary"
+        android:disableDependentsState="true" />
 
     <CheckBoxPreference
         android:key="settings_behavior"

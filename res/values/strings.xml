@@ -89,6 +89,7 @@
     <string name="lockscreen_action_sound">Sound</string>
     <string name="lockscreen_action_camera">Camera</string>
     <string name="lockscreen_action_phone">Phone</string>
+    <string name="lockscreen_action_mms">Messaging</string>
     <string name="lockscreen_action_none">Nothing</string>
     <string name="lockscreen_landscape_title">Horizontal Lockscreen</string>
     <string name="lockscreen_landscape_summary">Enable horizontal lockscreen orientation</string>

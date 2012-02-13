@@ -178,6 +178,8 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 return getResources().getString(R.string.lockscreen_action_sound);
             else if (uri.equals("**camera**"))
                 return getResources().getString(R.string.lockscreen_action_camera);
+            else if (uri.equals("**mms**"))
+                return getResources().getString(R.string.lockscreen_action_mms);
             else if (uri.equals("**phone**"))
                 return getResources().getString(R.string.lockscreen_action_phone);
             else if (uri.equals("**null**"))

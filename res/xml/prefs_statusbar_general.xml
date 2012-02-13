@@ -25,7 +25,6 @@
         android:title="@string/statusbar_show_liquid_control_title"
         android:summary="@string/statusbar_show_liquid_control_summary" />
 
-
     <CheckBoxPreference
         android:key="date_behavior"
         android:title="@string/title_date_behavior"

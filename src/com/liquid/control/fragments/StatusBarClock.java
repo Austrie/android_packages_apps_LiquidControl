@@ -2,20 +2,19 @@
 package com.liquid.control.fragments;
 
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
-import android.app.Activity;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.util.Log;
 
 import com.liquid.control.R;
+import com.liquid.control.SettingsPreferenceFragment;
 
-public class StatusBarClock extends PreferenceFragment implements
+public class StatusBarClock extends SettingsPreferenceFragment implements
         OnPreferenceChangeListener {
 
     private static final String PREF_ENABLE = "clock_style";
@@ -38,22 +37,24 @@ public class StatusBarClock extends PreferenceFragment implements
         mClockStyle = (ListPreference) findPreference(PREF_ENABLE);
         mClockStyle.setOnPreferenceChangeListener(this);
         mClockStyle.setValue(Integer.toString(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.STATUSBAR_CLOCK_STYLE,
-                1)));
+                .getContentResolver(), Settings.System.STATUSBAR_CLOCK_STYLE, 1)));
 
         mClockAmPmstyle = (ListPreference) findPreference(PREF_AM_PM_STYLE);
         mClockAmPmstyle.setOnPreferenceChangeListener(this);
         mClockAmPmstyle.setValue(Integer.toString(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.STATUSBAR_CLOCK_AM_PM_STYLE,
-                2)));
+                .getContentResolver(), Settings.System.STATUSBAR_CLOCK_AM_PM_STYLE, 2)));
 
         mColorPicker = (ColorPickerPreference) findPreference(PREF_COLOR_PICKER);
         mColorPicker.setOnPreferenceChangeListener(this);
 
         mAlarm = (CheckBoxPreference) findPreference(PREF_ALARM_ENABLE);
         mAlarm.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.STATUSBAR_SHOW_ALARM,
-                1) == 1);
+                .getContentResolver(), Settings.System.STATUSBAR_SHOW_ALARM, 1) == 1);
+        
+        if (mTablet) {
+            PreferenceScreen prefs = getPreferenceScreen();
+            prefs.removePreference(mClockAmPmstyle);
+        }
     }
 
     @Override

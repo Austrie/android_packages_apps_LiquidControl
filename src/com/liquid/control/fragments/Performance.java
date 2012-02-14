@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2012 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.liquid.control.fragments;
 
@@ -10,17 +25,17 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 
 import com.liquid.control.R;
+import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.tools.VoltageControl;
 import com.liquid.control.util.CMDProcessor;
 import com.liquid.control.util.Helpers;
 
-public class Performance extends PreferenceFragment implements
+public class Performance extends SettingsPreferenceFragment implements
         OnSharedPreferenceChangeListener, OnPreferenceChangeListener {
 
     public static final String TAG = "Performance";
@@ -270,18 +285,16 @@ public class Performance extends PreferenceFragment implements
             else if (key.equals(KEY_MIN_CPU))
                 mMinCpu.setValue(goodCpu);
         }
-
         return isOk;
     }
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference == mScrollingCachePref) {
             if (newValue != null) {
-                SystemProperties.set(SCROLLINGCACHE_PERSIST_PROP, (String)newValue);
+                SystemProperties.set(SCROLLINGCACHE_PERSIST_PROP, (String) newValue);
                 return true;
             }
         }
-
         return false;
     }
 }

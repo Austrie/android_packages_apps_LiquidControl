@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2012 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.liquid.control;
 
@@ -6,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,6 +58,7 @@ public class LiquidActivity extends PreferenceActivity implements ButtonBarHandl
     private Header mCurrentHeader;
     boolean mInLocalHeaderSwitch;
     boolean mTablet;
+    protected boolean isShortcut;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,11 +79,26 @@ public class LiquidActivity extends PreferenceActivity implements ButtonBarHandl
 
         if (!onIsHidingHeaders() && onIsMultiPane()) {
             highlightHeader();
-            // Force the title so that it doesn't get overridden by a direct launch of
-            // a specific settings screen.
             setTitle(R.string.app_name);
         }
 
+        if (getIntent().getAction().equals("com.lsr.control.START_NEW_FRAGMENT")) {
+            String className = getIntent().getStringExtra("lsr_fragment_name").toString();
+            Bundle b = new Bundle();
+            b.putBoolean("started_from_shortcut", true);
+            isShortcut = true;
+            startWithFragment(className, null, null, 0);
+            finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isShortcut) {
+            finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -320,7 +352,6 @@ public class LiquidActivity extends PreferenceActivity implements ButtonBarHandl
         public void resume() {
             Log.d(TAG, " ...LiquidActivity has RESUMED"); //debugging
         }
-
         public void pause() {
             Log.d(TAG, " ...LiquidActivity has PAUSED"); //debugging
         }

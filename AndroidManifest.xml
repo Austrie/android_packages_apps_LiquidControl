@@ -6,12 +6,12 @@
 
     <original-package android:name="com.liquid.control" />
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:hardwareAccelerated="true"
@@ -22,94 +22,114 @@
         <activity
             android:name=".LiquidActivity"
             android:label="@string/app_name" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
 
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.liquid.CONTROL" />
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
-            android:label="Interface"
-            android:name=".fragments.UserInterface" >
+            android:name=".fragments.UserInterface"
+            android:label="Interface" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.StatusBarBattery" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.StatusBarToggles" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.StatusBarClock" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.Performance" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:label="Voltage"
-            android:name=".tools.VoltageControl" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.Led" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.PowerSaver" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.action.SHORTCUT" />
-                <category android:name="android.intent.action.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.Lockscreens" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.Navbar" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.StatusBarGeneral" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.StatusBarToggles" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".fragments.LightLevels">
+        <activity android:name=".fragments.LightLevels" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.liquid.control.LIGHTLEVELS" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.PropModder">
+        <activity android:name=".fragments.Navbar"
+            android:label="Navigation" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".fragments.Lockscreens"
+            android:label="Lockscreens" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".fragments.PowerMenu"
+            android:label="Powermenu" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.action.SHORTCUT" />
-                <category android:name="android.intent.action.DEFAULT" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".fragments.PowerSaver"
+            android:label="Powersaver" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".fragments.Led"
+            android:label="Led" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".fragments.StatusBarGeneral"
+            android:label="General" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".fragments.StatusBarClock"
+            android:label="Clock" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".fragments.StatusBarToggles"
+            android:label="Toggles" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".fragments.StatusBarBattery"
+            android:label="Battery" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".fragments.Performance"
+            android:clearTaskOnLaunch="true"
+            android:label="Performance" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".tools.VoltageControl" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".fragments.PropModder"
+            android:label="Propmodder" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
         <activity android:name=".util.ShowBuildProp">
@@ -117,9 +137,11 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.PowerMenu">
+        <activity android:name="CreateShortcut"
+            android:theme="@style/Theme.CreateShortCut">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -130,6 +152,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <service android:name=".service.BootService" />
     </application>
 </manifest>

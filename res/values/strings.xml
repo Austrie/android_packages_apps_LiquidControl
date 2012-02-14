@@ -7,11 +7,12 @@
     <!-- Main Menu -->
     <string name="general_ui">General</string>
     <string name="user_interface">Interface</string>
-    <string name="lockscreen_options">Lockscreen</string>
+    <string name="light_levels_title">Light Levels</string>
+    <string name="lockscreen_options">Lockscreens</string>
     <string name="power_menu_optons">Powermenu</string>
     <string name="functionality">Functionality</string>
     <string name="power_saver">Powersaver</string>
-    <string name="led_options">LED Options</string>
+    <string name="led_options">Led Options</string>
     <string name="statusbar">Statusbar</string>
     <string name="general">General</string>
     <string name="toggles_layout">Toggles</string>
@@ -19,6 +20,8 @@
     <string name="battery">Battery</string>
     <string name="nav_bar">Navigation</string>
     <string name="tools">Goodies</string>
+    <string name="pt_performance">Performance</string>
+    <string name="propmodder_title">Propmodder</string>
     <string name="advanced_settings">Advanced</string>
     <string name="misc_short">Misc</string>
     <string name="system">System</string>
@@ -198,7 +201,6 @@
     <string name="pc_init_d_tweaks">Customize Tweaks</string>
 
     <!-- Preference Titles -->
-    <string name="pt_performance">Performance</string>
     <string name="pt_customization">Customization</string>
     <string name="pt_tools">Goodies</string>
     <string name="pt_voltage">Voltage</string>
@@ -301,7 +303,6 @@
     <string name="longpress_app_tasker_summary">New task to be launched when selected</string>
 
     <!-- Light Levels -->
-    <string name="light_levels_title">Light Levels</string>
     <string name="backlight_title">Automatic backlight</string>
     <string name="backlight_summary">Tweak levels and filtering</string>
     <string name="light_filter_title">Light sensor filter</string>
@@ -339,7 +340,6 @@
     <string name="ll_num_levels">Set number of levels</string>
 
     <!-- PropModder -->
-    <string name="propmodder_title">Propmodder</string>
     <string name="buildprop_title">/system/build.prop mods</string>
     <string name="nonprop_cat_title">Mods involving init.d script</string>
     <string name="main_warning_title">YOU HAVE BEEN WARNED</string>

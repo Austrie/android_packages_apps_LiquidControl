@@ -19,7 +19,8 @@
         android:entries="@array/statusbar_date_format"
         android:entryValues="@array/statusbar_date_format_values"
         android:title="@string/statusbar_date_format_title"
-        android:summary="@string/statusbar_date_format_summary" />
+        android:summary="@string/statusbar_date_format_summary"
+        android:dependency="show_date" />
 
     <CheckBoxPreference
         android:key="show_aosp_settings"

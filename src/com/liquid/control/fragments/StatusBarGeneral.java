@@ -49,47 +49,53 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.prefs_statusbar_general);
 
+        // Load preferences
         mShowDate = (CheckBoxPreference) findPreference(PREF_SHOW_DATE);
-        mShowDate.setChecked(Settings.System.getInt(mContext
-                .getContentResolver(), Settings.System.STATUSBAR_SHOW_DATE, 0) == 1);
-
         mDateFormat = (ListPreference) findPreference(PREF_DATE_FORMAT);
         mDateFormat.setOnPreferenceChangeListener(this);
-
         mDefaultSettingsButtonBehavior = (CheckBoxPreference) findPreference(PREF_SETTINGS_BUTTON_BEHAVIOR);
-        mDefaultSettingsButtonBehavior.setChecked(Settings.System.getInt(mContext
-                .getContentResolver(), Settings.System.STATUSBAR_SETTINGS_BEHAVIOR, 0) == 1);
-
         mAutoHideToggles = (CheckBoxPreference) findPreference(PREF_AUTO_HIDE_TOGGLES);
-        mAutoHideToggles.setChecked(Settings.System.getInt(mContext
-                .getContentResolver(), Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE, 0) == 1);
-
         mDateBehavior = (CheckBoxPreference) findPreference(PREF_DATE_BEHAVIOR);
-        mDateBehavior.setChecked(Settings.System.getInt(mContext
-                .getContentResolver(), Settings.System.STATUSBAR_DATE_BEHAVIOR, 0) == 1);
-
         mStatusBarBrightnessToggle = (CheckBoxPreference) findPreference(PREF_BRIGHTNESS_TOGGLE);
-        mStatusBarBrightnessToggle.setChecked(Settings.System.getInt(mContext
-                .getContentResolver(), Settings.System.STATUS_BAR_BRIGHTNESS_TOGGLE, 0) == 1);
-
         mShowAospSettings = (CheckBoxPreference) findPreference(PREF_SHOW_AOSP);
-        mShowAospSettings.setChecked(Settings.System.getInt(mContext
-                .getContentResolver(), Settings.System.STATUSBAR_REMOVE_AOSP_SETTINGS_LINK, 0) == 1);
-
         mShowLiquidControl = (CheckBoxPreference) findPreference(PREF_SHOW_LIQUIDCONTROL);
-        mShowLiquidControl.setChecked(Settings.System.getInt(mContext
-                .getContentResolver(), Settings.System.STATUSBAR_REMOVE_LIQUIDCONTROL_LINK, 0) == 1);
-
         mAdbIcon = (CheckBoxPreference) findPreference(PREF_ADB_ICON);
-        mAdbIcon.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
-                Settings.Secure.ADB_ICON, 1) == 1);
+
+        // make sure the settings are updated
+        updateSettings();
 
         if (mTablet) {
             PreferenceScreen prefs = getPreferenceScreen();
             prefs.removePreference(mStatusBarBrightnessToggle);
             prefs.removePreference(mAutoHideToggles);
             prefs.removePreference(mDefaultSettingsButtonBehavior);
-        }    
+        }
+    }
+
+    private void updateSettings() {
+        mShowDate.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUSBAR_SHOW_DATE, 0) == 1);
+
+        mDefaultSettingsButtonBehavior.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUSBAR_SETTINGS_BEHAVIOR, 0) == 1);
+
+        mAutoHideToggles.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE, 0) == 1);
+
+        mDateBehavior.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUSBAR_DATE_BEHAVIOR, 0) == 1);
+
+        mStatusBarBrightnessToggle.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUS_BAR_BRIGHTNESS_TOGGLE, 0) == 1);
+
+        mShowAospSettings.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUSBAR_REMOVE_AOSP_SETTINGS_LINK, 0) == 1);
+
+        mShowLiquidControl.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUSBAR_REMOVE_LIQUIDCONTROL_LINK, 0) == 1);
+
+        mAdbIcon.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
+                Settings.Secure.ADB_ICON, 1) == 1);
     }
 
     public boolean onPreferenceChange(Preference pref, Object newValue) {
@@ -100,6 +106,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             Log.i(TAG, "led on time new value: " + val);
             success = Settings.System.putInt(getActivity().getContentResolver(), Settings.System.STATUSBAR_DATE_FORMAT, val);
         }
+        // update checkboxes and return success=true:false
+        updateSettings();
         return success;
     }
 
@@ -140,6 +148,11 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.Secure.putInt(getActivity().getContentResolver(),
                     Settings.Secure.ADB_ICON, checked ? 1 : 0);
+            return true;
+        } else if (preference == mShowDate) {
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_SHOW_DATE,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);

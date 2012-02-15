@@ -4,7 +4,9 @@ package com.liquid.control.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.util.Log;
@@ -12,8 +14,13 @@ import android.util.Log;
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 
-public class StatusBarGeneral extends SettingsPreferenceFragment {
+public class StatusBarGeneral extends SettingsPreferenceFragment implements
+        Preference.OnPreferenceChangeListener {
 
+    private static final String TAG = "LiquidControl :StatusBarGeneral";
+    private static final boolean DEBUG = true;
+    private static final String PREF_SHOW_DATE = "show_date";
+    private static final String PREF_DATE_FORMAT = "date_format";
     private static final String PREF_SETTINGS_BUTTON_BEHAVIOR = "settings_behavior";
     private static final String PREF_AUTO_HIDE_TOGGLES = "auto_hide_toggles";
     private static final String PREF_DATE_BEHAVIOR = "date_behavior";
@@ -22,6 +29,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment {
     private static final String PREF_SHOW_LIQUIDCONTROL = "show_liquid_control";
     private static final String PREF_ADB_ICON = "adb_icon";
 
+    CheckBoxPreference mShowDate;
+    ListPreference mDateFormat;
     CheckBoxPreference mShowAospSettings;
     CheckBoxPreference mDefaultSettingsButtonBehavior;
     CheckBoxPreference mAutoHideToggles;
@@ -39,6 +48,13 @@ public class StatusBarGeneral extends SettingsPreferenceFragment {
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.prefs_statusbar_general);
+
+        mShowDate = (CheckBoxPreference) findPreference(PREF_SHOW_DATE);
+        mShowDate.setChecked(Settings.System.getInt(mContext
+                .getContentResolver(), Settings.System.STATUSBAR_SHOW_DATE, 0) == 1);
+
+        mDateFormat = (ListPreference) findPreference(PREF_DATE_FORMAT);
+        mDateFormat.setOnPreferenceChangeListener(this);
 
         mDefaultSettingsButtonBehavior = (CheckBoxPreference) findPreference(PREF_SETTINGS_BUTTON_BEHAVIOR);
         mDefaultSettingsButtonBehavior.setChecked(Settings.System.getInt(mContext
@@ -74,6 +90,17 @@ public class StatusBarGeneral extends SettingsPreferenceFragment {
             prefs.removePreference(mAutoHideToggles);
             prefs.removePreference(mDefaultSettingsButtonBehavior);
         }    
+    }
+
+    public boolean onPreferenceChange(Preference pref, Object newValue) {
+        boolean success = false;
+
+        if (pref == mDateFormat) {
+            int val = Integer.parseInt((String) newValue);
+            Log.i(TAG, "led on time new value: " + val);
+            success = Settings.System.putInt(getActivity().getContentResolver(), Settings.System.STATUSBAR_DATE_FORMAT, val);
+        }
+        return success;
     }
 
     @Override

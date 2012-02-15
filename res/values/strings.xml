@@ -142,6 +142,10 @@
     <string name="statusbar_show_aosp_summary">Hide AOSP statusbar icon</string>
     <string name="statusbar_show_liquid_control_title">Liquid Control</string>
     <string name="statusbar_show_liquid_control_summary">Hide Liquid Control statusbar icon</string>
+    <string name="statusbar_show_date_title">Date</string>
+    <string name="statusbar_show_date_summary">Hide date in pull down statusbar</string>
+    <string name="statusbar_date_format_title">Date format</string>
+    <string name="statusbar_date_format_summary">Customize the statusbar date</string>
 
     <!-- Statusbar | Battery -->
     <string name="battery_icon">Battery Style</string>

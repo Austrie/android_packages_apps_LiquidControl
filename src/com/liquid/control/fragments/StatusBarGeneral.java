@@ -96,6 +96,39 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
 
         mAdbIcon.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
                 Settings.Secure.ADB_ICON, 1) == 1);
+
+        // update the Date format summary
+        int dFormat = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUSBAR_DATE_FORMAT, 0);
+        String date = null;
+        String displayFormat = "Current: %s";
+        switch (dFormat) {
+            case 0:
+                // default, February 14, 2012
+                date = "Febuary 14, 2012";
+            break;
+            case 1:
+                // Tuesday February 14, 2012
+                date = "Tuesday February 14, 2012";
+            break;
+            case 2:
+                // Tues February 14, 2012
+                date = "Tues February 14, 2012";
+            break;
+            case 3:
+                // Tuesday
+                date = "Tuesday";
+            break;
+            case 4:
+                // day 45 of 2012
+                date = "day 45 of 2012";
+            break;
+            case 5:
+                // Tues Feb 14
+                date = "Tues Feb 14";
+            break;
+        }
+        mDateFormat.setSummary(String.format(displayFormat, date));
     }
 
     public boolean onPreferenceChange(Preference pref, Object newValue) {

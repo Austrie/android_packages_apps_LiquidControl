@@ -118,6 +118,9 @@ public class UserInterface extends SettingsPreferenceFragment implements
             // can't get this working in ICS just yet
             ((PreferenceGroup) findPreference("crt")).removePreference(mCrtOnAnimation);
         }
+
+        // update summeries that should be dynamic
+        updateListPrefs();
     }
 
     private void updateCustomLabelTextSummary() {
@@ -238,14 +241,17 @@ public class UserInterface extends SettingsPreferenceFragment implements
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
+        boolean handled = false;
         if (preference == mAnimationRotationDelay) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME,
                     Integer.parseInt((String) newValue));
-            return true;
+            handled = true;
         }
 
-        return false;
+        //update our dynamic values and return if we handled
+        updateListPrefs();
+        return handled;
     }
 
     public static void addButton(Context context, String key) {
@@ -260,5 +266,11 @@ public class UserInterface extends SettingsPreferenceFragment implements
                 .getButtonsStringArray(context);
         enabledToggles.remove(key);
         Navbar.setButtonsFromStringArray(context, enabledToggles);
+    }
+
+    private void updateListPrefs() {
+        int mRotate = Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME, 200);
+        mAnimationRotationDelay.setSummary(String.format("Current: %s", mRotate));
     }
 }

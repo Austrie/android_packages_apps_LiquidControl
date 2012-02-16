@@ -28,7 +28,7 @@
     
     <!-- Navigation -->
     <string name="title_pref_menu_display">Menu Location</string>
-    <string name="summary_pref_menu_display">Position of legacy menu button</string>
+    <string name="summary_pref_menu_display">Position of legacy menu button %s</string>
     <string name="navigation_bar">Navigation</string>
     <string name="navigation_bar_tint_title">Navbar Color</string>
     <string name="title_pref_navigation_menu_display">Menu Visibility</string>

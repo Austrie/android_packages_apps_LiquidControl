@@ -119,6 +119,82 @@ public class Navbar extends SettingsPreferenceFragment implements
         setHasOptionsMenu(true);
     }
 
+    public void updateSummaries() {
+
+        // where is the menu button
+        int location = Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.MENU_LOCATION, 0);
+        String where = null;
+        switch (location) {
+            case 0:
+                where = "right";
+            break;
+            case 1:
+                where = "left";
+            break;
+            case 2:
+                where = "both";
+            break;
+        }
+        menuDisplayLocation.setSummary(String.format("Menu button is located: %s", where));
+
+        // show menu button
+        int visible = Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.MENU_VISIBILITY, 0);
+        String behav = null;
+        switch (visible) {
+            case 0:
+                behav = "Default";
+            break;
+            case 1:
+                behav = "Invisible Icons";
+            break;
+            case 2:
+                behav = "Always Show";
+            break;
+            case 3:
+                behav = "Both Behaviours";
+            break;
+        }
+        mNavBarMenuDisplay.setSummary(behav);
+
+        // button glow
+        int speed = Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.NAVIGATION_BAR_HOME_LONGPRESS, 0);
+        String glow = null;
+        switch (speed) {
+            case 0:
+                glow = "Off";
+            break;
+            case 1:
+                glow = "Fast";
+            break;
+            case 2:
+                glow = "Quick";
+            break;
+            case 3:
+                glow = "Normal";
+            break;
+        }
+        mGlowTimes.setSummary(String.format("Button glow animation speed: %s", glow));
+
+        // Longpress Home
+        int long_home = Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.NAVIGATION_BAR_HOME_LONGPRESS, 0);
+        String lpress = null;
+        switch (long_home) {
+            case 0:
+            lpress = "Do Nothing";
+            break;
+            case 1:
+            lpress = "Show Recents";
+            break;
+        }
+        mHomeLongpress.setSummary(String.format("Longpressing the home screen will: %s", lpress));
+            
+        
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);

@@ -49,6 +49,8 @@
 		<item>10 mins</item>
 		<item>15 mins</item>
 		<item>30 mins</item>
+		<item>60 mins</item>
+		<item>180 mins</item>
 	</string-array>
 
 	<string-array name="pref_powersaving_data_screen_off_delay_values">
@@ -61,6 +63,9 @@
 		<item>600</item>
 		<item>900</item>
 		<item>1800</item>
+		<item>3600</item>
+		<item>10800</item>
+		
 	</string-array>
 
 	<string-array name="pref_powersaving_sync_screen_off_interval_entries">

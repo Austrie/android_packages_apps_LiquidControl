@@ -102,7 +102,8 @@
     <string name="enable_fast_torch_summary">While screen is off, long-press power key to turn torch on</string>
 
     <!-- Power Menu -->
-    <string name="title_show_power_saver">Show Powersaver</string>
+    <string name="title_show_fullscreen">Show Fullscreen Mode</string>
+    <string name="title_show_power_saver">Show Powersaver Mode</string>
     <string name="title_show_screenshot">Show Screenshot</string>
     <string name="title_show_easter_egg">Show Easteregg</string>
 

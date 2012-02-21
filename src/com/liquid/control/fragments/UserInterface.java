@@ -2,6 +2,7 @@
 package com.liquid.control.fragments;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
@@ -48,7 +49,6 @@ public class UserInterface extends SettingsPreferenceFragment implements
     CheckBoxPreference mShowImeSwitcher;
     CheckBoxPreference mLongPressAppTasker;
     CheckBoxPreference mDisableScreenshotSound;
-
     String mCustomLabelText = null;
 
     @Override
@@ -194,7 +194,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.HORIZONTAL_RECENTS_TASK_PANEL, checked ? 1
                             : 0);
-            new CMDProcessor().su.runWaitFor("pkill -TERM -f  com.android.systemui");
+            restartSystemUI();
             return true;
         } else if (preference == mDisableBootAnimation) {
             boolean checked = ((CheckBoxPreference) preference).isChecked();
@@ -252,6 +252,14 @@ public class UserInterface extends SettingsPreferenceFragment implements
         //update our dynamic values and return if we handled
         updateListPrefs();
         return handled;
+    }
+
+    private void restartSystemUI() {
+        try {
+            Runtime.getRuntime().exec("pkill -TERM -f com.android.systemui");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void addButton(Context context, String key) {

@@ -104,9 +104,10 @@
     <string name="lockscreen_wallpaper_summary">You can remove the wallpaper from the menu in this window</string>
 
     <!-- Power Menu -->
-    <string name="title_show_fullscreen">Show Fullscreen Mode</string>
-    <string name="title_show_power_saver">Show Powersaver Mode</string>
+    <string name="title_show_fullscreen">Show Fullscreen</string>
+    <string name="title_show_power_saver">Show Powersaver</string>
     <string name="title_show_screenshot">Show Screenshot</string>
+    <string name="title_show_torch_toggle">Show Torch</string>
     <string name="title_show_easter_egg">Show Easteregg</string>
 
     <!-- Power Saving -->

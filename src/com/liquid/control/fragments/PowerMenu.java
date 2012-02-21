@@ -17,15 +17,16 @@ public class PowerMenu extends PreferenceFragment {
     private static final String PREF_POWER_SAVER = "show_power_saver";
     private static final String PREF_SCREENSHOT = "show_screenshot";
     private static final String PREF_EASTER_EGG = "show_easter_egg";
+    private static final String PREF_TORCH_TOGGLE = "show_torch_toggle";
 
     CheckBoxPreference mShowFullscreen;
     CheckBoxPreference mShowPowerSaver;
     CheckBoxPreference mShowScreenShot;
     CheckBoxPreference mShowEasterEgg;
+    CheckBoxPreference mShowTorchToggle;
 
     @Override
     public void onPause() {
-        // no one cares let it go
         super.onPause();
     }
 
@@ -64,17 +65,18 @@ public class PowerMenu extends PreferenceFragment {
         mShowEasterEgg.setChecked(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_EASTER_EGG, 0) == 1);
 
-        // Check if we are in fullscreen mode if so we freeze the setEnabled state
-        // so user doesn't accidentally completely disable normal mode
         boolean mInFullscreenMode = false;
         mInFullscreenMode = Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.POWER_DIALOG_FULLSCREEN, 0) == 1;
 
-        // now that we know what state we are in lets act accordingly
         mShowFullscreen = (CheckBoxPreference) findPreference(PREF_FULLSCREEN);
         mShowFullscreen.setChecked(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_FULLSCREEN, 0) == 1);
         mShowFullscreen.setEnabled(mInFullscreenMode == false);
+
+        mShowTorchToggle = (CheckBoxPreference) findPreference(PREF_TORCH_TOGGLE);
+        mShowTorchToggle.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_TORCH_TOGGLE, 0) == 1);
     }
 
     @Override
@@ -101,6 +103,11 @@ public class PowerMenu extends PreferenceFragment {
                     Settings.System.POWER_DIALOG_SHOW_FULLSCREEN,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             handled = true;
+        } else if (preference == mShowTorchToggle) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.POWER_DIALOG_SHOW_TORCH_TOGGLE,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+            handled = true;
         }
         updateToggles();
         if (handled) return true;
@@ -108,7 +115,6 @@ public class PowerMenu extends PreferenceFragment {
     }
 
     public void updateToggles() {
-        // any time we do anything we call this
         int powerSaverVal = 0;
         mShowPowerSaver = (CheckBoxPreference) findPreference(PREF_POWER_SAVER);
         try {

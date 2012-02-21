@@ -13,4 +13,7 @@
 	<CheckBoxPreference android:key="show_easter_egg"
 		android:title="@string/title_show_easter_egg" />
 
+	<CheckBoxPreference android:key="show_torch_toggle"
+		android:title="@string/title_show_torch_toggle" />
+
 </PreferenceScreen>

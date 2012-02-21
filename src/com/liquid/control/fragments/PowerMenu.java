@@ -13,28 +13,19 @@ import com.liquid.control.R;
 
 public class PowerMenu extends PreferenceFragment {
 
+    private static final String PREF_AIRPLANE = "show_airplane";
+    private static final String PREF_EASTEREGG = "show_easteregg";
+    private static final String PREF_FLASHLIGHT = "show_flashlight";
     private static final String PREF_FULLSCREEN = "show_fullscreen";
-    private static final String PREF_POWER_SAVER = "show_power_saver";
+    private static final String PREF_POWERSAVER = "show_powersaver";
     private static final String PREF_SCREENSHOT = "show_screenshot";
-    private static final String PREF_EASTER_EGG = "show_easter_egg";
-    private static final String PREF_TORCH_TOGGLE = "show_torch_toggle";
 
+    CheckBoxPreference mShowAirplane;
+    CheckBoxPreference mShowEasteregg;
+    CheckBoxPreference mShowFlashlight;
     CheckBoxPreference mShowFullscreen;
-    CheckBoxPreference mShowPowerSaver;
-    CheckBoxPreference mShowScreenShot;
-    CheckBoxPreference mShowEasterEgg;
-    CheckBoxPreference mShowTorchToggle;
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        updateToggles();
-        super.onResume();
-    }
+    CheckBoxPreference mShowPowersaver;
+    CheckBoxPreference mShowScreenshot;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,97 +34,68 @@ public class PowerMenu extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.prefs_powermenu);
 
-        int powerSaverVal = 0;
-        mShowPowerSaver = (CheckBoxPreference) findPreference(PREF_POWER_SAVER);
+        mShowAirplane = (CheckBoxPreference) findPreference(PREF_AIRPLANE);
+        mShowAirplane.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_AIRPLANE, 0) == 1);
 
-        try {
-            powerSaverVal = Settings.Secure.getInt(getActivity()
-                    .getContentResolver(), Settings.Secure.POWER_SAVER_MODE);
-        } catch (SettingNotFoundException e) {
-            //TODO FIX
-            //mShowPowerSaver.setEnabled(false);
-            mShowPowerSaver.setSummary("Enable power saver before you can see it in the menu.");
-        }
+        mShowEasteregg = (CheckBoxPreference) findPreference(PREF_EASTEREGG);
+        mShowEasteregg.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_EASTEREGG, 0) == 1);
 
-        mShowPowerSaver.setChecked(powerSaverVal == 1);
-
-        mShowScreenShot = (CheckBoxPreference) findPreference(PREF_SCREENSHOT);
-        mShowScreenShot.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_SCREENSHOT, 1) == 1);
-
-        mShowEasterEgg = (CheckBoxPreference) findPreference(PREF_EASTER_EGG);
-        mShowEasterEgg.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_EASTER_EGG, 0) == 1);
-
-        boolean mInFullscreenMode = false;
-        mInFullscreenMode = Settings.System.getInt(getActivity().getContentResolver(),
-                Settings.System.POWER_DIALOG_FULLSCREEN, 0) == 1;
+        mShowFlashlight = (CheckBoxPreference) findPreference(PREF_FLASHLIGHT);
+        mShowFlashlight.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_FLASHLIGHT, 0) == 1);
 
         mShowFullscreen = (CheckBoxPreference) findPreference(PREF_FULLSCREEN);
         mShowFullscreen.setChecked(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_FULLSCREEN, 0) == 1);
-        mShowFullscreen.setEnabled(mInFullscreenMode == false);
 
-        mShowTorchToggle = (CheckBoxPreference) findPreference(PREF_TORCH_TOGGLE);
-        mShowTorchToggle.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_TORCH_TOGGLE, 0) == 1);
+        mShowPowersaver = (CheckBoxPreference) findPreference(PREF_POWERSAVER);
+        mShowPowersaver.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_POWERSAVER, 0) == 1);
+
+        mShowScreenshot = (CheckBoxPreference) findPreference(PREF_SCREENSHOT);
+        mShowScreenshot.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_SCREENSHOT, 1) == 1);
     }
 
     @Override
-    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
-            Preference preference) {
-        boolean handled = false;
-        if (preference == mShowPowerSaver) {
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, 
+        Preference preference) {
+
+        if (preference == mShowAirplane) {
             Settings.System.putInt(getActivity().getContentResolver(),
-                    Settings.System.POWER_DIALOG_SHOW_POWER_SAVER,
+                    Settings.System.POWER_DIALOG_SHOW_AIRPLANE,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
-            handled = true;
-        } else if (preference == mShowScreenShot) {
+            return true;
+        } else if (preference == mShowEasteregg) {
             Settings.System.putInt(getActivity().getContentResolver(),
-                    Settings.System.POWER_DIALOG_SHOW_SCREENSHOT,
+                    Settings.System.POWER_DIALOG_SHOW_EASTEREGG,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
-            handled = true;
-        } else if (preference == mShowEasterEgg) {
+            return true;
+        } else if (preference == mShowFlashlight) {
             Settings.System.putInt(getActivity().getContentResolver(),
-                    Settings.System.POWER_DIALOG_SHOW_EASTER_EGG,
+                    Settings.System.POWER_DIALOG_SHOW_FLASHLIGHT,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
-            handled = true;
+            return true;
         } else if (preference == mShowFullscreen) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.POWER_DIALOG_SHOW_FULLSCREEN,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
-            handled = true;
-        } else if (preference == mShowTorchToggle) {
+            return true;
+        } else if (preference == mShowPowersaver) {
             Settings.System.putInt(getActivity().getContentResolver(),
-                    Settings.System.POWER_DIALOG_SHOW_TORCH_TOGGLE,
+                    Settings.System.POWER_DIALOG_SHOW_POWERSAVER,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
-            handled = true;
+            return true;
+        } else if (preference == mShowScreenshot) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.POWER_DIALOG_SHOW_SCREENSHOT,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+            return true;
         }
-        updateToggles();
-        if (handled) return true;
-        return super.onPreferenceTreeClick(preferenceScreen, preference);
-    }
 
-    public void updateToggles() {
-        int powerSaverVal = 0;
-        mShowPowerSaver = (CheckBoxPreference) findPreference(PREF_POWER_SAVER);
-        try {
-            powerSaverVal = Settings.Secure.getInt(getActivity()
-                    .getContentResolver(), Settings.Secure.POWER_SAVER_MODE);
-        } catch (SettingNotFoundException e) {
-            mShowPowerSaver.setSummary("Enable power saver before you can see it in the menu.");
-        }
-        mShowPowerSaver.setChecked(powerSaverVal == 1);
-        mShowScreenShot.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_SCREENSHOT, 1) == 1);
-        mShowEasterEgg.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_EASTER_EGG, 0) == 1);
-        boolean mInFullscreenMode = false;
-        mInFullscreenMode = Settings.System.getInt(getActivity().getContentResolver(),
-                Settings.System.POWER_DIALOG_FULLSCREEN, 0) == 1;
-        mShowFullscreen.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_FULLSCREEN, 0) == 1);
-        mShowFullscreen.setEnabled(mInFullscreenMode == false);
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 }
 

@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+	<CheckBoxPreference android:key="show_airplane"
+		android:title="@string/title_show_airplane" />
+
+	<CheckBoxPreference android:key="show_easteregg"
+		android:title="@string/title_show_easteregg" />
+
+	<CheckBoxPreference android:key="show_flashlight"
+		android:title="@string/title_show_flashlight" />
+
 	<CheckBoxPreference android:key="show_fullscreen"
 		android:title="@string/title_show_fullscreen" />
 
-	<CheckBoxPreference android:key="show_power_saver"
-		android:title="@string/title_show_power_saver" />
+	<CheckBoxPreference android:key="show_powersaver"
+		android:title="@string/title_show_powersaver" />
 
 	<CheckBoxPreference android:key="show_screenshot"
 		android:title="@string/title_show_screenshot" />
-
-	<CheckBoxPreference android:key="show_easter_egg"
-		android:title="@string/title_show_easter_egg" />
-
-	<CheckBoxPreference android:key="show_torch_toggle"
-		android:title="@string/title_show_torch_toggle" />
 
 </PreferenceScreen>

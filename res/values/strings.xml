@@ -15,6 +15,7 @@
     <string name="led_options">Led Options</string>
     <string name="statusbar">Statusbar</string>
     <string name="general">General</string>
+    <string name="signal">Signal</string>    
     <string name="toggles_layout">Toggles</string>
     <string name="clock">Clock</string>
     <string name="battery">Battery</string>
@@ -183,6 +184,12 @@
     <string name="toggles_order_summary">Choose the order which your toggles are displayed</string>
     <string name="brightness_location_title">Brightness Location</string>
     
+    <!-- Statusbar | Signal -->
+    <string name="signal_style">Signal Style</string>
+    <string name="signal_color_title">Signal Color</string>
+    <string name="hide_signal_title">Hide Signal</string>
+    <string name="hide_signal_summary">Will also hide data indicator for now</string>
+
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>
     <string name="press_color_to_apply">Press On Color To Apply</string>

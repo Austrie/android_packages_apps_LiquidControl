@@ -70,6 +70,12 @@
             android:icon="@drawable/ic_battery"
             android:fragment="com.liquid.control.fragments.StatusBarBattery" />
 
+        <header
+            android:id="@+id/statusbar_singal"
+            android:title="@string/signal"
+            android:icon="@drawable/ic_signal"
+            android:fragment="com.liquid.control.fragments.StatusBarSignal" />
+
     <header
         android:title="@string/tools" />
 

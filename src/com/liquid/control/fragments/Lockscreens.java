@@ -1,8 +1,20 @@
 package com.liquid.control.fragments;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -10,9 +22,15 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
+import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
@@ -21,12 +39,19 @@ import com.liquid.control.util.ShortcutPickerHelper;
 public class Lockscreens extends SettingsPreferenceFragment implements
         ShortcutPickerHelper.OnPickListener, OnPreferenceChangeListener {
 
+    private static final String TAG = "Lockscreens";
+
     private static final String PREF_MENU = "pref_lockscreen_menu_unlock";
     private static final String PREF_USER_OVERRIDE = "lockscreen_user_timeout_override";
     private static final String PREF_LOCKSCREEN_LAYOUT = "pref_lockscreen_layout";
     private static final String PREF_VOLUME_WAKE = "volume_wake";
     private static final String PREF_VOLUME_MUSIC = "volume_music_controls";
     private static final String PREF_LOCKSCREEN_BATTERY = "lockscreen_battery";
+
+    public static final int REQUEST_PICK_WALLPAPER = 199;
+    public static final int SELECT_ACTIVITY = 2;
+    public static final int SELECT_WALLPAPER = 3;
+    private static final String WALLPAPER_NAME = "lockscreen_wallpaper.jpg";
 
     CheckBoxPreference menuButtonLocation;
     CheckBoxPreference mLockScreenTimeoutUserOverride;
@@ -35,6 +60,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     CheckBoxPreference mVolumeMusic;
     CheckBoxPreference mLockscreenLandscape;
     CheckBoxPreference mLockscreenBattery;
+    Preference mLockscreenWallpaper;
 
     private Preference mCurrentCustomActivityPreference;
     private String mCurrentCustomActivityString;
@@ -78,6 +104,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         mLockscreenBattery.setChecked(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.LOCKSCREEN_BATTERY, 0) == 1);
 
+        mLockscreenWallpaper = findPreference("wallpaper");
         mPicker = new ShortcutPickerHelper(this, this);
 
         for (String key : keys) {
@@ -92,6 +119,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         ((PreferenceGroup) findPreference("advanced_cat"))
                 .removePreference(findPreference(Settings.System.LOCKSCREEN_HIDE_NAV));
         refreshSettings();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -121,6 +149,26 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                     Settings.System.VOLUME_MUSIC_CONTROLS,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
+        } else if (preference == mLockscreenWallpaper) {
+            int width = getActivity().getWallpaperDesiredMinimumWidth();
+            int height = getActivity().getWallpaperDesiredMinimumHeight();
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            float spotlightX = (float) display.getWidth() / width;
+            float spotlightY = (float) display.getHeight() / height;
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+            intent.setType("image/*");
+            intent.putExtra("crop", "true");
+            intent.putExtra("aspectX", width);
+            intent.putExtra("aspectY", height);
+            intent.putExtra("outputX", width);
+            intent.putExtra("outputY", height);
+            intent.putExtra("scale", true);
+            intent.putExtra("spotlightX", spotlightX);
+            intent.putExtra("spotlightY", spotlightY);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, getLockscreenExternalUri());
+            intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+            startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
+            return true;
         } else if (keys.contains(preference.getKey())) {
             return Settings.System.putInt(getActivity().getContentResolver(),
                     preference.getKey(),
@@ -129,15 +177,38 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.lockscreens, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.remove_wallpaper:
+                File f = new File(mContext.getFilesDir(), WALLPAPER_NAME);
+                Log.e(TAG, mContext.deleteFile(WALLPAPER_NAME) + "");
+                Log.e(TAG, mContext.deleteFile(WALLPAPER_NAME) + "");
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private Uri getLockscreenExternalUri() {
+        File dir = mContext.getExternalCacheDir();
+        File wallpaper = new File(dir, WALLPAPER_NAME);
+        return Uri.fromFile(wallpaper);
+    }
+
     public void refreshSettings() {
 
         int lockscreenTargets = Settings.System.getInt(getContentResolver(),
                 Settings.System.LOCKSCREEN_LAYOUT, 2);
         PreferenceGroup targetGroup = (PreferenceGroup) findPreference("lockscreen_targets");
         targetGroup.removeAll();
-
-        // quad only uses first 4, but we make the system think there's 6 for the alternate layout
-        // so only show 4
         if (lockscreenTargets == 6) {
             Settings.System.putString(getContentResolver(),
                     Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[4], "**null**");
@@ -167,10 +238,8 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         String uri = Settings.System.getString(getActivity()
                 .getContentResolver(),
                 Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[i]);
-
         if (uri == null)
             return getResources().getString(R.string.lockscreen_action_none);
-
         if (uri.startsWith("**")) {
             if (uri.equals("**unlock**"))
                 return getResources().getString(R.string.lockscreen_action_unlock);
@@ -178,10 +247,10 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 return getResources().getString(R.string.lockscreen_action_sound);
             else if (uri.equals("**camera**"))
                 return getResources().getString(R.string.lockscreen_action_camera);
-            else if (uri.equals("**mms**"))
-                return getResources().getString(R.string.lockscreen_action_mms);
             else if (uri.equals("**phone**"))
                 return getResources().getString(R.string.lockscreen_action_phone);
+            else if (uri.equals("**mms**"))
+                return getResources().getString(R.string.lockscreen_action_mms);
             else if (uri.equals("**null**"))
                 return getResources().getString(R.string.lockscreen_action_none);
         } else {
@@ -211,7 +280,6 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             int index = Integer.parseInt(preference.getKey().substring(
                     preference.getKey().lastIndexOf("_") + 1));
             Log.e("LIQUID", "lockscreen target, index: " + index);
-
             if (newValue.equals("**app**")) {
                 mCurrentCustomActivityPreference = preference;
                 mCurrentCustomActivityString = Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index];
@@ -226,11 +294,38 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         return false;
     }
 
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.e("LIQUID", "ACTIVITY RESULT");
-        mPicker.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_PICK_WALLPAPER) {
+                FileOutputStream wallpaperStream = null;
+                try {
+                    wallpaperStream = mContext.openFileOutput(WALLPAPER_NAME, Context.MODE_PRIVATE);
+                } catch (FileNotFoundException e) {
+                    return;
+                }
+
+                Uri selectedImageUri = getLockscreenExternalUri();
+                Log.e(TAG, "Selected image uri: " + selectedImageUri);
+                Bitmap bitmap = BitmapFactory.decodeFile(selectedImageUri.getPath());
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, wallpaperStream);
+            } else if (requestCode == ShortcutPickerHelper.REQUEST_PICK_SHORTCUT
+                    || requestCode == ShortcutPickerHelper.REQUEST_PICK_APPLICATION) {
+                mPicker.onActivityResult(requestCode, resultCode, data);
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void copy(File src, File dst) throws IOException {
+        InputStream in = new FileInputStream(src);
+        FileOutputStream out = new FileOutputStream(dst);
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
     }
 }
 

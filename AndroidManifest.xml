@@ -5,6 +5,7 @@
     android:sharedUserId="android.uid.system" >
 
     <original-package android:name="com.liquid.control" />
+
     <uses-permission android:name="android.permission.REBOOT" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
@@ -28,6 +29,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".fragments.UserInterface"
             android:label="Interface" >
@@ -64,6 +66,7 @@
                 <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
+
         <activity android:name=".fragments.PowerSaver"
             android:label="Powersaver" >
             <intent-filter >
@@ -107,6 +110,7 @@
                 <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
+
         <activity android:name=".fragments.Performance"
             android:clearTaskOnLaunch="true"
             android:label="Performance" >
@@ -141,18 +145,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <receiver
-            android:name=".service.BootReceiver"
-            android:enabled="true" >
-            <intent-filter>
+            android:enabled="true"
+            android:name=".service.BootReceiver" >
+            <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".util.SystemRootTools"
-            android:enabled="true" >
-            <intent-filter>
-                <action android:name="com.lsr.control.ACTION_RESTART_SYSTEMUI" />
             </intent-filter>
         </receiver>
         <service android:name=".service.BootService" />

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -22,8 +21,7 @@ import android.widget.EditText;
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.CMDProcessor;
-import com.liquid.control.util.Helpers;
-import com.liquid.control.util.SystemRootTools;
+import com.liquid.control.util.Helpers;    
 
 public class UserInterface extends SettingsPreferenceFragment implements
         OnPreferenceChangeListener {
@@ -196,7 +194,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.HORIZONTAL_RECENTS_TASK_PANEL, checked ? 1
                             : 0);
-            restartSystemUI();
+            new CMDProcessor().su.runWaitFor("pkill -TERM -f  com.android.systemui");
             return true;
         } else if (preference == mDisableBootAnimation) {
             boolean checked = ((CheckBoxPreference) preference).isChecked();
@@ -254,10 +252,6 @@ public class UserInterface extends SettingsPreferenceFragment implements
         //update our dynamic values and return if we handled
         updateListPrefs();
         return handled;
-    }
-
-    private void restartSystemUI() {
-        mContext.sendBroadcast(new Intent(SystemRootTools.ACTION_RESTART_SYSTEMUI));
     }
 
     public static void addButton(Context context, String key) {

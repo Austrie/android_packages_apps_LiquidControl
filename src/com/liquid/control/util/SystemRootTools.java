@@ -1,5 +1,7 @@
 package com.liquid.control.util;
 
+import java.io.IOException;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +16,11 @@ public class SystemRootTools extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (ACTION_RESTART_SYSTEMUI.equals(action)) {
-            new CMDProcessor().su.runWaitFor("pkill -TERM -f  com.android.systemui");
+            try {
+                Runtime.getRuntime().exec("pkill -TERM -f  com.android.systemui");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

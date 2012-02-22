@@ -308,8 +308,8 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 Log.e(TAG, "Selected image uri: " + selectedImageUri);
                 Bitmap bitmap = BitmapFactory.decodeFile(selectedImageUri.getPath());
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, wallpaperStream);
-            } else if (requestCode == ShortcutPickerHelper.REQUEST_PICK_SHORTCUT
-                    || requestCode == ShortcutPickerHelper.REQUEST_PICK_APPLICATION) {
+            } else if (requestCode == REQUEST_PICK_SHORTCUT
+                || requestCode == REQUEST_PICK_APPLICATION) {
                 mPicker.onActivityResult(requestCode, resultCode, data);
             }
         }

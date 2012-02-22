@@ -53,7 +53,7 @@ public class Performance extends SettingsPreferenceFragment implements
     public static final String MINFREE = "/sys/module/lowmemorykiller/parameters/minfree";
     private static final String SCROLLINGCACHE_PREF = "pref_scrollingcache";
     private static final String SCROLLINGCACHE_PERSIST_PROP = "persist.sys.scrollingcache";
-    private static final String SCROLLINGCACHE_DEFAULT = "1";
+    private static final String SCROLLINGCACHE_DEFAULT = "0";
 
     private String[] ALL_GOV;
     private int[] SPEED_STEPS;

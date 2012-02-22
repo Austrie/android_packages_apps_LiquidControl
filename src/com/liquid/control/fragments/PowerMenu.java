@@ -36,7 +36,7 @@ public class PowerMenu extends PreferenceFragment {
 
         mShowAirplane = (CheckBoxPreference) findPreference(PREF_AIRPLANE);
         mShowAirplane.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_AIRPLANE, 0) == 1);
+                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_AIRPLANE, 1) == 1);
 
         mShowEasteregg = (CheckBoxPreference) findPreference(PREF_EASTEREGG);
         mShowEasteregg.setChecked(Settings.System.getInt(getActivity()

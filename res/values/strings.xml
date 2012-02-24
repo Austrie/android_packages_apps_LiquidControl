@@ -152,6 +152,8 @@
     <string name="statusbar_show_date_summary">Hide date in pull down statusbar</string>
     <string name="statusbar_date_format_title">Date format</string>
     <string name="statusbar_date_format_summary">Customize the statusbar date</string>
+    <string name="statusbar_windowshade_background_title">Windowshade background</string>
+    <string name="statusbar_alpha_title">Statusbar Transparency</string>
 
     <!-- Statusbar | Battery -->
     <string name="battery_icon">Battery Style</string>

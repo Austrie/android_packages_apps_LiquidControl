@@ -2,6 +2,15 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <com.liquid.control.widgets.SeekBarPreference
+        android:key="statusbar_alpha"
+        android:title="@string/statusbar_alpha_title" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        android:key="statusbar_windowshade_background_color"
+        android:title="@string/statusbar_windowshade_background_title"
+        android:defaultValue="#ff33b5e5" />
+
     <CheckBoxPreference
         android:key="show_date"
         android:title="@string/statusbar_show_date_title"

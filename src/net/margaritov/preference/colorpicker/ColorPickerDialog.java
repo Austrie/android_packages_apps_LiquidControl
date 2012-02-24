@@ -28,12 +28,8 @@ import android.widget.LinearLayout;
 
 import com.liquid.control.R;
 
-public class ColorPickerDialog
-        extends
-        Dialog
-        implements
-        ColorPickerView.OnColorChangedListener,
-        View.OnClickListener {
+public class ColorPickerDialog extends Dialog implements
+        ColorPickerView.OnColorChangedListener, View.OnClickListener {
 
     private ColorPickerView mColorPicker;
 
@@ -59,7 +55,6 @@ public class ColorPickerDialog
     private void init(int color) {
         // To fight color branding.
         getWindow().setFormat(PixelFormat.RGBA_8888);
-
         setUp(color);
 
     }
@@ -83,11 +78,8 @@ public class ColorPickerDialog
         mIcsColor = (Button) layout.findViewById(R.id.ics_color);
 
         ((LinearLayout) mOldColor.getParent()).setPadding(
-                Math.round(mColorPicker.getDrawingOffset()),
-                0,
-                Math.round(mColorPicker.getDrawingOffset()),
-                0
-                );
+                Math.round(mColorPicker.getDrawingOffset()), 0,
+                Math.round(mColorPicker.getDrawingOffset()), 0);
 
         mOldColor.setOnClickListener(this);
         mNewColor.setOnClickListener(this);
@@ -103,6 +95,7 @@ public class ColorPickerDialog
                 try {
                     int newColor = ColorPickerPreference.convertToColorInt(text);
                     mColorPicker.setColor(newColor, true);
+                    dismiss();
                 } catch (Exception e) {
                 }
             }

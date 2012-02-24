@@ -13,6 +13,9 @@ import android.util.Log;
 
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
+import com.liquid.control.widgets.SeekBarPreference;
+
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 public class StatusBarGeneral extends SettingsPreferenceFragment implements
         Preference.OnPreferenceChangeListener {
@@ -28,6 +31,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_SHOW_AOSP = "show_aosp_settings";
     private static final String PREF_SHOW_LIQUIDCONTROL = "show_liquid_control";
     private static final String PREF_ADB_ICON = "adb_icon";
+    private static final String PREF_WINDOWSHADE_COLOR = "statusbar_windowshade_background_color";
+    private static final String PREF_STATUSBAR_ALPHA = "statusbar_alpha";
 
     CheckBoxPreference mShowDate;
     ListPreference mDateFormat;
@@ -38,6 +43,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     CheckBoxPreference mStatusBarBrightnessToggle;
     CheckBoxPreference mShowLiquidControl;
     CheckBoxPreference mAdbIcon;
+    ColorPickerPreference mWindowshadeBackground;
+    SeekBarPreference mStatusbarAlpha;
     Context mContext;
 
     @Override
@@ -60,6 +67,10 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mShowAospSettings = (CheckBoxPreference) findPreference(PREF_SHOW_AOSP);
         mShowLiquidControl = (CheckBoxPreference) findPreference(PREF_SHOW_LIQUIDCONTROL);
         mAdbIcon = (CheckBoxPreference) findPreference(PREF_ADB_ICON);
+        mWindowshadeBackground = (ColorPickerPreference) findPreference(PREF_WINDOWSHADE_COLOR);
+        mWindowshadeBackground.setOnPreferenceChangeListener(this);
+        mStatusbarAlpha = (SeekBarPreference) findPreference(PREF_STATUSBAR_ALPHA);
+        mStatusbarAlpha.setOnPreferenceChangeListener(this);
 
         // make sure the settings are updated
         updateSettings();
@@ -129,16 +140,32 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             break;
         }
         mDateFormat.setSummary(String.format(displayFormat, date));
+
+        float defaultAlpha = Settings.System.getFloat(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, 0.6f);
+        mStatusbarAlpha.setInitValue((int) (defaultAlpha * 100));
     }
 
     public boolean onPreferenceChange(Preference pref, Object newValue) {
         boolean success = false;
 
         if (pref == mDateFormat) {
-            int val = Integer.parseInt((String) newValue);
-            Log.i(TAG, "led on time new value: " + val);
-            success = Settings.System.putInt(getActivity().getContentResolver(), Settings.System.STATUSBAR_DATE_FORMAT, val);
+            int val0 = Integer.parseInt((String) newValue);
+            Log.i(TAG, "led on time new value: " + val0);
+            success = Settings.System.putInt(getActivity().getContentResolver(), Settings.System.STATUSBAR_DATE_FORMAT, val0);
+        } else if (pref == mStatusbarAlpha) {
+            float val1 = Float.parseFloat((String) newValue);
+            Log.e(TAG, "value: " + val1 / 100 + "    raw: " + val1);
+            success = Settings.System.putFloat(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, val1 / 100);
+        } else if (pref == mWindowshadeBackground) {
+            String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
+            mWindowshadeBackground.setSummary(hex);
+            int intHex = ColorPickerPreference.convertToColorInt(hex);
+            success = Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.Settings.System.getInt(cr, Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR), intHex);
         }
+
         // update checkboxes and return success=true:false
         updateSettings();
         return success;

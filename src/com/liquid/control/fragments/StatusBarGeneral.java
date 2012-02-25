@@ -9,7 +9,9 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
@@ -33,6 +35,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_ADB_ICON = "adb_icon";
     private static final String PREF_WINDOWSHADE_COLOR = "statusbar_windowshade_background_color";
     private static final String PREF_STATUSBAR_ALPHA = "statusbar_alpha";
+    private static String STATUSBAR_COLOR_SUMMARY_HOLDER;
 
     CheckBoxPreference mShowDate;
     ListPreference mDateFormat;
@@ -142,8 +145,19 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mDateFormat.setSummary(String.format(displayFormat, date));
 
         float defaultAlpha = Settings.System.getFloat(getActivity()
-                .getContentResolver(), Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, 0.6f);
+                .getContentResolver(), Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, 1f);
         mStatusbarAlpha.setInitValue((int) (defaultAlpha * 100));
+        mStatusbarAlpha.setSummary(String.format("%d", defaultAlpha * 100));
+
+        try {
+            int value = Settings.System.getInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR);
+            // I'm blanking on a better way to setSummary
+            String summary = String.format("%d", value);
+            mWindowshadeBackground.setSummary(summary);
+        } catch (SettingNotFoundException snfe) {
+            // just let it go
+        }
     }
 
     public boolean onPreferenceChange(Preference pref, Object newValue) {
@@ -151,19 +165,23 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
 
         if (pref == mDateFormat) {
             int val0 = Integer.parseInt((String) newValue);
-            Log.i(TAG, "led on time new value: " + val0);
-            success = Settings.System.putInt(getActivity().getContentResolver(), Settings.System.STATUSBAR_DATE_FORMAT, val0);
+            if (DEBUG) Log.d(TAG, "led on time new value: " + val0);
+            success = Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_DATE_FORMAT, val0);
         } else if (pref == mStatusbarAlpha) {
             float val1 = Float.parseFloat((String) newValue);
-            Log.e(TAG, "value: " + val1 / 100 + "    raw: " + val1);
+            if (DEBUG) Log.d(TAG, "value: " + val1 / 100 + "    raw: " + val1);
             success = Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, val1 / 100);
         } else if (pref == mWindowshadeBackground) {
             String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
-            mWindowshadeBackground.setSummary(hex);
+            pref.setSummary(hex);
+
             int intHex = ColorPickerPreference.convertToColorInt(hex);
-            success = Settings.System.putInt(getActivity().getContentResolver(),
-                    Settings.System.Settings.System.getInt(cr, Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR), intHex);
+            success =Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, intHex);
+
+            if (DEBUG) Log.d(TAG, String.format("new color hex value: %d", intHex));
         }
 
         // update checkboxes and return success=true:false

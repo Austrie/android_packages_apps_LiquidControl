@@ -30,6 +30,9 @@ import com.liquid.control.R;
 
 public class ColorPickerDialog extends Dialog implements
         ColorPickerView.OnColorChangedListener, View.OnClickListener {
+    private static final String TAG = "ColorPickerDialog";
+    private static final boolean DEBUG = true;
+
 
     private ColorPickerView mColorPicker;
 
@@ -63,11 +66,8 @@ public class ColorPickerDialog extends Dialog implements
 
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
-
         View layout = inflater.inflate(R.layout.dialog_color_picker, null);
-
         setContentView(layout);
-
         setTitle(R.string.dialog_color_picker);
 
         mColorPicker = (ColorPickerView) layout.findViewById(R.id.color_picker_view);
@@ -88,20 +88,21 @@ public class ColorPickerDialog extends Dialog implements
         mColorPicker.setColor(color, true);
         mHex.setText(ColorPickerPreference.convertToARGB(color));
         mSetButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 String text = mHex.getText().toString();
+
                 try {
                     int newColor = ColorPickerPreference.convertToColorInt(text);
                     mColorPicker.setColor(newColor, true);
-                    dismiss();
+                    if (DEBUG) Log.d(TAG, String.format("newColor int: %s", newColor));
                 } catch (Exception e) {
+                    if (DEBUG) e.printStackTrace();
                 }
             }
         });
-        mIcsColor.setOnClickListener(new View.OnClickListener() {
 
+        mIcsColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {

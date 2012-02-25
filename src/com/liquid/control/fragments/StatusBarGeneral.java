@@ -147,7 +147,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         float defaultAlpha = Settings.System.getFloat(getActivity()
                 .getContentResolver(), Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, 1f);
         mStatusbarAlpha.setInitValue((int) (defaultAlpha * 100));
-        mStatusbarAlpha.setSummary(String.format("%d", defaultAlpha * 100));
+        mStatusbarAlpha.setSummary(String.format("%f", defaultAlpha * 100));
 
         try {
             int value = Settings.System.getInt(getActivity().getContentResolver(),

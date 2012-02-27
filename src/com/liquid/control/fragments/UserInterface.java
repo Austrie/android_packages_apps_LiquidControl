@@ -171,6 +171,17 @@ public class UserInterface extends SettingsPreferenceFragment implements
                 }
             });
 
+            // if the frameworks see "default" then our TextView is View.GONE and
+            // we show the system default carrier label controled by CarrierLabel.java
+            alert.setNeutralButton("Default", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    String vzw = "default";
+                    Settings.System.putString(getActivity().getContentResolver(),
+                            Settings.System.CUSTOM_CARRIER_LABEL, vzw);
+                    updateCustomLabelTextSummary();
+                }
+            });
+
             alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     // Canceled.

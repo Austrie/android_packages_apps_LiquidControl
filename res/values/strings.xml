@@ -135,6 +135,8 @@
 
     <!--  Statusbar | General -->
     <string name="title_settings_behavior">Settings Behavior</string>
+    <string name="statusbar_expanded_title">Pull down menu</string>
+    <string name="statusbar_unexpanded_title">Statusbar unexpanded</string>
     <string name="summary_settings_behavior">Default behavior is long press</string>
     <string name="title_auto_hide_toggles">Autohide Toggles</string>
     <string name="summary_auto_hide_toggles">After collapse toggles will hide</string>
@@ -153,7 +155,9 @@
     <string name="statusbar_date_format_title">Date format</string>
     <string name="statusbar_date_format_summary">Customize the statusbar date</string>
     <string name="statusbar_windowshade_background_title">Windowshade background</string>
-    <string name="statusbar_alpha_title">Statusbar Transparency</string>
+    <string name="statusbar_alpha_title">Statusbar Expanded Transparency</string>
+    <string name="statusbar_unexpanded_alpha_title">Statusbar Unexpanded Transparency</string>
+    <string name="statusbar_unexpanded_color_title">Statusbar Unexpanded Color</string>
 
     <!-- Statusbar | Battery -->
     <string name="battery_icon">Battery Style</string>

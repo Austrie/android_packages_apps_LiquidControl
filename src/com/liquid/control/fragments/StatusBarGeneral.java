@@ -35,6 +35,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_ADB_ICON = "adb_icon";
     private static final String PREF_WINDOWSHADE_COLOR = "statusbar_windowshade_background_color";
     private static final String PREF_STATUSBAR_ALPHA = "statusbar_alpha";
+    private static final String PREF_STATUSBAR_UNEXPANDED_ALPHA = "statusbar_unexpanded_alpha";
+    private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
     private static String STATUSBAR_COLOR_SUMMARY_HOLDER;
 
     CheckBoxPreference mShowDate;
@@ -48,6 +50,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     CheckBoxPreference mAdbIcon;
     ColorPickerPreference mWindowshadeBackground;
     SeekBarPreference mStatusbarAlpha;
+    SeekBarPreference mStatusbarUnexpandedAlpha;
+    ColorPickerPreference mStatusbarUnexpandedColor;
     Context mContext;
 
     @Override
@@ -74,6 +78,10 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mWindowshadeBackground.setOnPreferenceChangeListener(this);
         mStatusbarAlpha = (SeekBarPreference) findPreference(PREF_STATUSBAR_ALPHA);
         mStatusbarAlpha.setOnPreferenceChangeListener(this);
+        mStatusbarUnexpandedAlpha = (SeekBarPreference) findPreference(PREF_STATUSBAR_UNEXPANDED_ALPHA);
+        mStatusbarUnexpandedAlpha.setOnPreferenceChangeListener(this);
+        mStatusbarUnexpandedColor = (ColorPickerPreference) findPreference(PREF_STATUSBAR_UNEXPANDED_COLOR);
+        mStatusbarUnexpandedColor.setOnPreferenceChangeListener(this);
 
         // make sure the settings are updated
         updateSettings();
@@ -144,16 +152,31 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         }
         mDateFormat.setSummary(String.format(displayFormat, date));
 
-        float defaultAlpha = Settings.System.getFloat(getActivity()
+        float expandedAlpha = Settings.System.getFloat(getActivity()
                 .getContentResolver(), Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, 1f);
-        mStatusbarAlpha.setInitValue((int) (defaultAlpha * 100));
-        mStatusbarAlpha.setSummary(String.format("%f", defaultAlpha * 100));
+        mStatusbarAlpha.setInitValue((int) (expandedAlpha * 100));
+        mStatusbarAlpha.setSummary(String.format("%f", expandedAlpha * 100));
 
         try {
-            int value = Settings.System.getInt(getActivity().getContentResolver(),
+            int expandedColor = Settings.System.getInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR);
             // I'm blanking on a better way to setSummary
-            String summary = String.format("%d", value);
+            String summary = String.format("%d", expandedColor);
+            mWindowshadeBackground.setSummary(summary);
+        } catch (SettingNotFoundException snfe) {
+            // just let it go
+        }
+
+        float unexpandedAlpha = Settings.System.getFloat(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_UNEXPANDED_ALPHA, 1f);
+        mStatusbarUnexpandedAlpha.setInitValue((int) (unexpandedAlpha * 100));
+        mStatusbarUnexpandedAlpha.setSummary(String.format("%f", unexpandedAlpha * 100));
+
+        try {
+            int unexpandedColor = Settings.System.getInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_UNEXPANDED_COLOR);
+            // I'm blanking on a better way to setSummary
+            String summary = String.format("%d", unexpandedColor);
             mWindowshadeBackground.setSummary(summary);
         } catch (SettingNotFoundException snfe) {
             // just let it go
@@ -170,7 +193,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                     Settings.System.STATUSBAR_DATE_FORMAT, val0);
         } else if (pref == mStatusbarAlpha) {
             float val1 = Float.parseFloat((String) newValue);
-            if (DEBUG) Log.d(TAG, "value: " + val1 / 100 + "    raw: " + val1);
+            if (DEBUG) Log.d(TAG, "value:" + val1 / 100 + "    raw:" + val1);
             success = Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, val1 / 100);
         } else if (pref == mWindowshadeBackground) {
@@ -182,6 +205,19 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                     Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, intHex);
 
             if (DEBUG) Log.d(TAG, String.format("new color hex value: %d", intHex));
+        } else if (pref == mStatusbarUnexpandedAlpha) {
+            float val2 = Float.parseFloat((String) newValue);
+            if (DEBUG) Log.d(TAG, "value:" + val2 / 100 + "    raw:" + val2);
+            success = Settings.System.putFloat(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_UNEXPANDED_ALPHA, val2 / 100);
+        } else if (pref == mStatusbarUnexpandedColor) {
+            String statusbar_hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
+            pref.setSummary(statusbar_hex);
+
+            int intHex = ColorPickerPreference.convertToColorInt(statusbar_hex);
+            success = Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_UNEXPANDED_COLOR, intHex);
+            if (DEBUG) Log.d(TAG, "color value int:" + intHex);
         }
 
         // update checkboxes and return success=true:false

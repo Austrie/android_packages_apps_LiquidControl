@@ -84,6 +84,7 @@
     <string name="volume_music_controls_summary">Longpress volume keys skips tracks</string>
     <string name="lockscreen_show_nav_title">Navigation Bar</string>
     <string name="lockscreen_show_nav_summary">Hide the navbar on the lockscreen</string>
+    <string name="lockscreen_text_color_title">Lockscreen Text Color</string>
     
     <!-- Lockscreen Targets -->
     <string name="custom_app_n_dialog_title">Choose Action For %1$s</string>
@@ -206,7 +207,7 @@
     <string name="hex">Hex:</string>
     <string name="hex_hint">#FF000000</string>
     <string name="set">Set</string>
-    <string name="ics_color">!!!</string>
+    <string name="ics_color">ICS</string>
     
     <!-- Shortcut Picker -->
     <string name="use_custom_app_title">Custom App</string>

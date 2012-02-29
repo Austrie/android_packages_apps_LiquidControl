@@ -36,10 +36,13 @@ import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.ShortcutPickerHelper;
 
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
+
 public class Lockscreens extends SettingsPreferenceFragment implements
         ShortcutPickerHelper.OnPickListener, OnPreferenceChangeListener {
 
     private static final String TAG = "Lockscreens";
+    private static final boolean DEBUG = true;
 
     private static final String PREF_MENU = "pref_lockscreen_menu_unlock";
     private static final String PREF_USER_OVERRIDE = "lockscreen_user_timeout_override";
@@ -47,6 +50,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     private static final String PREF_VOLUME_WAKE = "volume_wake";
     private static final String PREF_VOLUME_MUSIC = "volume_music_controls";
     private static final String PREF_LOCKSCREEN_BATTERY = "lockscreen_battery";
+    private static final String PREF_LOCKSCREEN_TEXT_COLOR = "lockscreen_text_color";
 
     public static final int REQUEST_PICK_WALLPAPER = 199;
     public static final int SELECT_ACTIVITY = 2;
@@ -61,6 +65,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     CheckBoxPreference mLockscreenLandscape;
     CheckBoxPreference mLockscreenBattery;
     Preference mLockscreenWallpaper;
+    ColorPickerPreference mLockscreenTextColor;
 
     private Preference mCurrentCustomActivityPreference;
     private String mCurrentCustomActivityString;
@@ -117,6 +122,10 @@ public class Lockscreens extends SettingsPreferenceFragment implements
 
         ((PreferenceGroup) findPreference("advanced_cat"))
                 .removePreference(findPreference(Settings.System.LOCKSCREEN_HIDE_NAV));
+
+        mLockscreenTextColor = (ColorPickerPreference) findPreference(PREF_LOCKSCREEN_TEXT_COLOR);
+        mLockscreenTextColor.setOnPreferenceChangeListener(this);
+
         refreshSettings();
         setHasOptionsMenu(true);
     }
@@ -269,20 +278,19 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     }
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference == mLockscreenOption) {
+    public boolean onPreferenceChange(Preference pref, Object newValue) {
+        boolean handled = false;
+        if (pref == mLockscreenOption) {
             int val = Integer.parseInt((String) newValue);
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.LOCKSCREEN_LAYOUT, val);
             refreshSettings();
             return true;
-
-        } else if (preference.getKey().startsWith("lockscreen_target")) {
-            int index = Integer.parseInt(preference.getKey().substring(
-                    preference.getKey().lastIndexOf("_") + 1));
+        } else if (pref.getKey().startsWith("lockscreen_target")) {
+            int index = Integer.parseInt(pref.getKey().substring(pref.getKey().lastIndexOf("_") + 1));
             Log.e("LIQUID", "lockscreen target, index: " + index);
             if (newValue.equals("**app**")) {
-                mCurrentCustomActivityPreference = preference;
+                mCurrentCustomActivityPreference = pref;
                 mCurrentCustomActivityString = Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index];
                 mPicker.pickShortcut();
             } else {
@@ -290,6 +298,14 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                         Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index], (String) newValue);
                 refreshSettings();
             }
+            return true;
+        } else if (pref == mLockscreenTextColor) {
+            String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
+            pref.setSummary(hex);
+            int intHex = ColorPickerPreference.convertToColorInt(hex);
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.LOCKSCREEN_CUSTOM_TEXT_COLOR, intHex);
+            if (DEBUG) Log.d(TAG, String.format("new color hex value: %d", intHex));
             return true;
         }
         return false;

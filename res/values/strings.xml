@@ -132,6 +132,8 @@
     <string name="title_led_off">Pulse Off Duration</string>
     <string name="summary_led_off">@null</string>
     <string name="led_color_title">LED Color</string>
+    <string name="title_led_screen_on">While Screen On</string>
+    <string name="summary_led_screen_on">@null</string>
 
     <!--  Statusbar | General -->
     <string name="title_settings_behavior">Settings Behavior</string>

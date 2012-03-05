@@ -113,7 +113,7 @@
     <string name="title_show_flashlight">Show Flashlight</string>
     <string name="title_show_hidenavbar">Show Hidenavbar</string>
     <string name="title_show_powersaver">Show Powersaver</string>
-    <string name="title_show_powersaver">Show Profiles</string>
+    <string name="title_show_profiles">Show Profiles</string>
     <string name="title_show_screenshot">Show Screenshot</string>
 
     <!-- Power Saving -->

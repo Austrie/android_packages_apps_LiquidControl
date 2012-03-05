@@ -20,6 +20,7 @@ public class StatusBarSignal extends SettingsPreferenceFragment implements
     ListPreference mDbmStyletyle;
     ColorPickerPreference mColorPicker;
     //  CheckBoxPreference mHideSignal;
+    CheckBoxPreference mSixbarSignal;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,9 @@ public class StatusBarSignal extends SettingsPreferenceFragment implements
         //  mHideSignal.setChecked(Settings.System.getInt(getActivity()
         //          .getContentResolver(), Settings.System.STATUSBAR_HIDE_SIGNAL_BARS, 0) != 0);
 
+        mSixbarSignal = (CheckBoxPreference) findPreference("sixbar_signal");
+        mSixbarSignal.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_SIXBAR_SIGNAL, 0) == 1);
     }
 
     @Override
@@ -51,6 +55,12 @@ public class StatusBarSignal extends SettingsPreferenceFragment implements
         //              ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
         //      return true;
         //  }
+        if (preference == mSixbarSignal) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_SIXBAR_SIGNAL,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+            return true;
+        }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 

@@ -207,6 +207,8 @@
     <string name="signal_color_title">Signal Color</string>
     <string name="hide_signal_title">Hide Signal</string>
     <string name="hide_signal_summary">Will also hide data indicator for now</string>
+    <string name="sixbar_signal_title">Sixbar Signal</string>
+    <string name="sixbar_signal_summary">Use six bars signal strength indicator</string>
 
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>

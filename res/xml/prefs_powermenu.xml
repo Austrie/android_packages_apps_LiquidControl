@@ -10,11 +10,14 @@
 	<CheckBoxPreference android:key="show_flashlight"
 		android:title="@string/title_show_flashlight" />
 
-	<CheckBoxPreference android:key="show_fullscreen"
-		android:title="@string/title_show_fullscreen" />
+	<CheckBoxPreference android:key="show_hidenavbar"
+		android:title="@string/title_show_hidenavbar" />
 
 	<CheckBoxPreference android:key="show_powersaver"
 		android:title="@string/title_show_powersaver" />
+
+	<CheckBoxPreference android:key="show_profiles"
+		android:title="@string/title_show_profiles" />
 
 	<CheckBoxPreference android:key="show_screenshot"
 		android:title="@string/title_show_screenshot" />

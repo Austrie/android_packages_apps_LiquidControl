@@ -111,8 +111,9 @@
     <string name="title_show_airplane">Show Airplane</string>
     <string name="title_show_easteregg">Show Easteregg</string>
     <string name="title_show_flashlight">Show Flashlight</string>
-    <string name="title_show_fullscreen">Show Fullscreen</string>
+    <string name="title_show_hidenavbar">Show Hidenavbar</string>
     <string name="title_show_powersaver">Show Powersaver</string>
+    <string name="title_show_powersaver">Show Profiles</string>
     <string name="title_show_screenshot">Show Screenshot</string>
 
     <!-- Power Saving -->

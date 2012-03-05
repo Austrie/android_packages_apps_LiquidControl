@@ -16,15 +16,17 @@ public class PowerMenu extends PreferenceFragment {
     private static final String PREF_AIRPLANE = "show_airplane";
     private static final String PREF_EASTEREGG = "show_easteregg";
     private static final String PREF_FLASHLIGHT = "show_flashlight";
-    private static final String PREF_FULLSCREEN = "show_fullscreen";
+    private static final String PREF_HIDENAVBAR = "show_hidenavbar";
     private static final String PREF_POWERSAVER = "show_powersaver";
+    private static final String PREF_PROFILES = "show_profiles";
     private static final String PREF_SCREENSHOT = "show_screenshot";
 
     CheckBoxPreference mShowAirplane;
     CheckBoxPreference mShowEasteregg;
     CheckBoxPreference mShowFlashlight;
-    CheckBoxPreference mShowFullscreen;
+    CheckBoxPreference mShowHidenavbar;
     CheckBoxPreference mShowPowersaver;
+    CheckBoxPreference mShowProfiles;
     CheckBoxPreference mShowScreenshot;
 
     @Override
@@ -46,13 +48,17 @@ public class PowerMenu extends PreferenceFragment {
         mShowFlashlight.setChecked(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_FLASHLIGHT, 0) == 1);
 
-        mShowFullscreen = (CheckBoxPreference) findPreference(PREF_FULLSCREEN);
-        mShowFullscreen.setChecked(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_FULLSCREEN, 0) == 1);
+        mShowHidenavbar = (CheckBoxPreference) findPreference(PREF_HIDENAVBAR);
+        mShowHidenavbar.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_HIDENAVBAR, 0) == 1);
 
         mShowPowersaver = (CheckBoxPreference) findPreference(PREF_POWERSAVER);
         mShowPowersaver.setChecked(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_POWERSAVER, 0) == 1);
+
+        mShowProfiles = (CheckBoxPreference) findPreference(PREF_PROFILES);
+        mShowProfiles.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.POWER_DIALOG_SHOW_PROFILES, 1) == 1);
 
         mShowScreenshot = (CheckBoxPreference) findPreference(PREF_SCREENSHOT);
         mShowScreenshot.setChecked(Settings.System.getInt(getActivity()
@@ -62,7 +68,6 @@ public class PowerMenu extends PreferenceFragment {
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, 
         Preference preference) {
-
         if (preference == mShowAirplane) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.POWER_DIALOG_SHOW_AIRPLANE,
@@ -78,14 +83,19 @@ public class PowerMenu extends PreferenceFragment {
                     Settings.System.POWER_DIALOG_SHOW_FLASHLIGHT,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
-        } else if (preference == mShowFullscreen) {
+        } else if (preference == mShowHidenavbar) {
             Settings.System.putInt(getActivity().getContentResolver(),
-                    Settings.System.POWER_DIALOG_SHOW_FULLSCREEN,
+                    Settings.System.POWER_DIALOG_SHOW_HIDENAVBAR,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
         } else if (preference == mShowPowersaver) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.POWER_DIALOG_SHOW_POWERSAVER,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+            return true;
+        } else if (preference == mShowProfiles) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.POWER_DIALOG_SHOW_PROFILES,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
         } else if (preference == mShowScreenshot) {

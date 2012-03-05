@@ -78,6 +78,8 @@
     <string name="summary_pref_lockscreen_menu_unlock">Legacy menu icon unlocks screen (requires reboot)</string>
     <string name="title_lockscreen_user_timeout_override">Lockscreen Timeout</string>
     <string name="summary_lockscreen_user_timeout_override">Use default timeout setting after screen is off</string>
+    <string name="show_lock_before_unlock_title">Show Before Unlock</string>
+    <string name="show_lock_before_unlock_summary">Show the lockscreen before secure unlock</string>
     <string name="lockscreen_battery_title">Battery Percent</string>
     <string name="lockscreen_battery_summary">Always show percentage on lockscreen</string>
     <string name="volume_wake_title">Volume Wake</string>
@@ -320,7 +322,7 @@
     <string name="toast_min_max_error01">Frequency cannot be lower than minmium</string>
     <string name="toast_min_max_error02">Frequency cannot be higher than maximum</string>
 
-    <!-- List_Voltage -->
+    <!-- List Voltage -->
     <string name="freq">Frequency</string>
     <string name="current">mV Current</string>
     <string name="saved">mV Saved</string>

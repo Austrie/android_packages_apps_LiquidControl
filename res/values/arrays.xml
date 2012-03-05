@@ -218,6 +218,18 @@
 		<item>0</item>
 	</string-array>
 
+	<string-array name="clock_weekday_entries">
+		<item>Hide</item>
+		<item>Small</item>
+		<item>Regular</item>
+	</string-array>
+
+	<string-array name="clock_weekday_values">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+	</string-array>
+
 	<string-array name="brightness_location_entries">
 		<item>On Top</item>
 		<item>On Bottom</item>

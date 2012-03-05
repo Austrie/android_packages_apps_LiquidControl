@@ -66,6 +66,8 @@
     <string name="sounds_category_title">Sounds</string>
     <string name="screenshot_sound_title">ScreenShot</string>
     <string name="screenshot_sound_summary">Disable shutter sound when ScreenShot is captured</string>
+    <string name="usb_title">USB</string>
+    <string name="usb_fast_charge_title">USB fast charge</string>
 
     <!-- Lockscreens -->
     <string name="title_pref_lockscreen_quad_targets">Quad Lockscreen</string>	

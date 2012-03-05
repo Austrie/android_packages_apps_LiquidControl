@@ -732,6 +732,7 @@
     </string-array>
 
     <string-array name="entries_sdcard_buffer_explain">
+        <item>disable</item>
         <item>128 kb</item>
         <item>1024 kb</item>
         <item>2048 kb (Best)</item>
@@ -742,6 +743,7 @@
     </string-array>
 
     <string-array name="entries_sdcard_buffer">
+        <item>disable</item>
         <item>128</item>
         <item>1024</item>
         <item>2048</item>

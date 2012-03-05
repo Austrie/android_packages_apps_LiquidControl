@@ -37,12 +37,6 @@
                 <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.LightLevels" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.liquid.control.LIGHTLEVELS" />
-            </intent-filter>
-        </activity>
         <activity android:name=".fragments.Navbar"
             android:label="Navigation" >
             <intent-filter >

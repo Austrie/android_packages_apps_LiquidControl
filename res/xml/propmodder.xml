@@ -70,11 +70,6 @@
             android:entryValues="@array/entries_fast_up"
             android:persistent="true" />
 
-        <CheckBoxPreference android:key="pref_disable_boot_anim"
-            android:title="@string/pref_disable_boot_anim_title"
-            android:summary="@string/pref_disable_boot_anim_summary"
-            android:persistent="true" />
-
         <ListPreference android:key="pref_prox_delay"
             android:dialogTitle="@string/pref_prox_delay_title"
             android:title="@string/pref_prox_delay_title"

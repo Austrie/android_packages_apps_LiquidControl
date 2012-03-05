@@ -50,15 +50,15 @@ public class PropModder extends PreferenceFragment implements
     private static final String KILL_PROP_CMD = "busybox sed -i \"/%s/D\" /system/build.prop";
     private static final String REPLACE_CMD = "busybox sed -i \"/%s/ c %<s=%s\" /system/build.prop";
     private static final String LOGCAT_CMD = "busybox sed -i \"/log/ c %s\" /system/etc/init.d/72propmodder_script";
-    private static final String SDCARD_BUFFER_CMD = "busybox sed -i \"/179:0/ c echo %s > /sys/devices/virtual/bdi/179:0/read_ahead_kb\" /system/etc/init.d/72propmodder_script";
+    private static final String SDCARD_BUFFER_CMD = "echo %s > /sys/devices/virtual/bdi/179:0/read_ahead_kb";
     private static final String REBOOT_PREF = "reboot";
     private static final String FIND_CMD = "grep -q \"%s\" /system/build.prop";
     private static final String REMOUNT_CMD = "busybox mount -o %s,remount -t yaffs2 /dev/block/mtdblock1 /system";
     private static final String PROP_EXISTS_CMD = "grep -q %s /system/build.prop";
-    private static final String SDCARD_BUFFER_ON_THE_FLY_CMD = "echo %s > /sys/devices/virtual/bdi/179:0/read_ahead_kb";
     private static final String DISABLE = "disable";
     private static final String SHOWBUILD_PATH = "/system/tmp/showbuild";
-    private static final String INIT_SCRIPT_PATH ="/system/etc/init.d/72propmodder_script";
+    private static final String INIT_SCRIPT_LOGCAT = "/system/etc/init.d/72logcat";
+    private static final String INIT_SCRIPT_SDCARD = "/system/etc/init.d/72sdcard";
     private static final String INIT_SCRIPT_TEMP_PATH = "/system/tmp/init_script";
     private static final String WIFI_SCAN_PREF = "pref_wifi_scan_interval";
     private static final String WIFI_SCAN_PROP = "wifi.supplicant_scan_interval";
@@ -88,17 +88,12 @@ public class PropModder extends PreferenceFragment implements
     private static final String FAST_UP_PROP = "ro.ril.hsxpa";
     private static final String FAST_UP_PERSIST_PROP = "persist.fast_up";
     private static final String FAST_UP_DEFAULT = System.getProperty(FAST_UP_PROP);
-    private static final String DISABLE_BOOT_ANIM_PREF = "pref_disable_boot_anim";
-    private static final String DISABLE_BOOT_ANIM_PROP_1 = "ro.kernel.android.bootanim";
-    private static final String DISABLE_BOOT_ANIM_PROP_2 = "debug.sf.nobootanimation";
-    private static final String DISABLE_BOOT_ANIM_PERSIST_PROP = "persist.disable_boot_anim";
     private static final String PROX_DELAY_PREF = "pref_prox_delay";
     private static final String PROX_DELAY_PROP = "mot.proximity.delay";
     private static final String PROX_DELAY_PERSIST_PROP = "persist.prox.delay";
     private static final String PROX_DELAY_DEFAULT = System.getProperty(PROX_DELAY_PROP);
     private static final String LOGCAT_PREF = "pref_logcat";
     private static final String LOGCAT_PERSIST_PROP = "persist.logcat";
-    private static final String LOGCAT_DISABLE = "#rm -f /dev/log/main";
     private static final String LOGCAT_ALIVE_PATH = "/system/etc/init.d/72propmodder_script";
     private static final String LOGCAT_ENABLE = "rm -f /dev/log/main";
     private static final String MOD_VERSION_PREF = "pref_mod_version";
@@ -145,6 +140,7 @@ public class PropModder extends PreferenceFragment implements
     private static final String VVMAIL_PERSIST_PROP = "persist_vvmail";
     private static final String VVMAIL_PROP_0 = "HorizontalVVM";
     private static final String VVMAIL_PROP_1 = "HorizontalBUA";
+    private boolean NEEDS_SETUP = false;
 
     private String placeholder;
     private String tcpstack0;
@@ -165,7 +161,6 @@ public class PropModder extends PreferenceFragment implements
     private ListPreference mRingDelayPref;
     private ListPreference mVmHeapsizePref;
     private ListPreference mFastUpPref;
-    private CheckBoxPreference mDisableBootAnimPref;
     private ListPreference mProxDelayPref;
     private CheckBoxPreference mLogcatPref;
     private EditTextPreference mModVersionPref;
@@ -180,17 +175,24 @@ public class PropModder extends PreferenceFragment implements
     private AlertDialog mAlertDialog;
     private NotificationManager mNotificationManager;
 
+    private File tmpDir = new File("/system/tmp");
+    private File init_d = new File("/system/etc/init.d");
+    private File initScriptLogcat = new File(INIT_SCRIPT_LOGCAT);
+    private File initScriptSdcard = new File(INIT_SCRIPT_SDCARD);
+
     //handler for command processor
     private final CMDProcessor cmd = new CMDProcessor();
+    private PreferenceScreen prefSet;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.propmodder);
-        PreferenceScreen prefSet = getPreferenceScreen();
+        prefSet = getPreferenceScreen();
 
         mRebootMsg = (PreferenceScreen) prefSet.findPreference(REBOOT_PREF);
+        prefSet.removePreference(mRebootMsg);
 
         mWifiScanPref = (ListPreference) prefSet.findPreference(WIFI_SCAN_PREF);
         mWifiScanPref.setOnPreferenceChangeListener(this);
@@ -210,12 +212,9 @@ public class PropModder extends PreferenceFragment implements
         mFastUpPref = (ListPreference) prefSet.findPreference(FAST_UP_PREF);
         mFastUpPref.setOnPreferenceChangeListener(this);
 
-        mDisableBootAnimPref = (CheckBoxPreference) prefSet.findPreference(DISABLE_BOOT_ANIM_PREF);
-
         mProxDelayPref = (ListPreference) prefSet.findPreference(PROX_DELAY_PREF);
         mProxDelayPref.setOnPreferenceChangeListener(this);
 
-        //we may need a new method of detection here
         mLogcatPref = (CheckBoxPreference) prefSet.findPreference(LOGCAT_PREF);
 
         mSleepPref = (ListPreference) prefSet.findPreference(SLEEP_PREF);
@@ -254,48 +253,24 @@ public class PropModder extends PreferenceFragment implements
         mVvmailPref = (CheckBoxPreference) prefSet.findPreference(VVMAIL_PREF);
 
         updateScreen();
-        /*
-         * we have some requirements so we check
-         * and create if needed
-         * TODO: .exists() is ok but we should use
-         *     : .isDirectory() and .isFile() to be sure
-         *     : as .exists() returns positive if a txt file
-         *     : exists @ /system/tmp
-         */
-        File tmpDir = new File("/system/tmp");
-        boolean tmpDir_exists = tmpDir.exists();
 
-        File init_d = new File("/system/etc/init.d");
-        boolean init_d_exists = init_d.exists();
+        //Mounting takes the most time so lets avoid doing it if possible
+        if (!tmpDir.isDirectory() || !init_d.isDirectory()) NEEDS_SETUP = true;
 
-        File initScript = new File(INIT_SCRIPT_PATH);
-        boolean initScript_exists = initScript.exists();
-
-        if (!tmpDir_exists) {
+        if (NEEDS_SETUP) {
             try {
-                Log.d(TAG, "We need to make /system/tmp dir");
-                mount("rw");
-                cmd.su.runWaitFor("mkdir /system/tmp");
+                if (!mount("rw")) throw new RuntimeException("Could not remount /system rw");
+                if (!tmpDir.isDirectory()) {
+                     Log.d(TAG, "We need to make /system/tmp dir");
+                    cmd.su.runWaitFor("mkdir /system/tmp");
+                }
+                if (!init_d.isDirectory()) {
+                    Log.d(TAG, "We need to make /system/etc/init.d/ dir");
+                    enableInit();
+                }
             } finally {
                 mount("ro");
-            }
-        }
-        if (!init_d_exists) {
-            try {
-                Log.d(TAG, "We need to make /system/etc/init.d/ dir");
-                mount("rw");
-                enableInit();
-            } finally {
-                mount("ro");
-            }
-        }
-        if (!initScript_exists) {
-            try {
-                Log.d(TAG, String.format("init.d script not found @ '%s'", INIT_SCRIPT_PATH));
-                mount("rw");
-                initScript();
-            } finally {
-                mount("ro");
+                NEEDS_SETUP = false;
             }
         }
     }
@@ -316,16 +291,18 @@ public class PropModder extends PreferenceFragment implements
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         boolean value;
-        if (preference == mDisableBootAnimPref) {
-            value = mDisableBootAnimPref.isChecked();
-            return doMod(null, DISABLE_BOOT_ANIM_PROP_1, String.valueOf(value ? 0 : 1))
-                    && doMod(DISABLE_BOOT_ANIM_PERSIST_PROP,
-                            DISABLE_BOOT_ANIM_PROP_2, String.valueOf(value ? 1 : 0));
-        } else if (preference == mLogcatPref) {
+        if (preference == mLogcatPref) {
             value = mLogcatPref.isChecked();
-            placeholder = String.valueOf(value ? LOGCAT_ENABLE : LOGCAT_DISABLE);
-            SystemProperties.set(LOGCAT_PERSIST_PROP, placeholder);
-            return cmd.su.runWaitFor(String.format(LOGCAT_CMD, placeholder)).success();
+            mount("rw");
+            boolean returnValue = false;
+            if (value) {
+                returnValue = cmd.su.runWaitFor(String.format("echo %s > %s", LOGCAT_ENABLE, INIT_SCRIPT_LOGCAT)).success();
+            } else {
+                returnValue = cmd.su.runWaitFor(String.format("rm %s", INIT_SCRIPT_LOGCAT)).success();
+            }
+            mount("ro");
+            rebootRequired();
+            return returnValue;
         } else if (preference == mTcpStackPref) {
             Log.d(TAG, "mTcpStackPref.onPreferenceTreeClick()");
             value = mTcpStackPref.isChecked();
@@ -398,10 +375,21 @@ public class PropModder extends PreferenceFragment implements
                  return doMod(SLEEP_PERSIST_PROP, SLEEP_PROP,
                         newValue.toString());
             } else if (preference == mSdcardBufferPref) {
-                 return mount("rw")
-                            && cmd.su.runWaitFor(String.format(SDCARD_BUFFER_ON_THE_FLY_CMD, newValue.toString())).success()
-                            && cmd.su.runWaitFor(String.format(SDCARD_BUFFER_CMD, newValue.toString())).success()
-                            && mount("ro");
+                boolean returnValue = false;
+                mount("rw");
+                if (newValue.toString() == DISABLE) {
+                    returnValue = cmd.su.runWaitFor(String.format("rm %s", INIT_SCRIPT_SDCARD)).success();
+                } else {
+                    String newFormat = String.format(SDCARD_BUFFER_CMD, newValue.toString());
+                    mount("rw");
+                    cmd.su.runWaitFor(String.format(SDCARD_BUFFER_CMD, newValue.toString()));
+                    cmd.su.runWaitFor(String.format("echo '%s' > %s", INIT_SCRIPT_SDCARD));
+                    cmd.su.runWaitFor(String.format("chmod 777 %s", INIT_SCRIPT_SDCARD));
+                    returnValue = true;
+                }
+                mount("ro");
+                rebootRequired();
+                return returnValue;
             }
         }
 
@@ -431,7 +419,6 @@ public class PropModder extends PreferenceFragment implements
                     Log.d(TAG, String.format("value != %s", DISABLE));
                     success = cmd.su.runWaitFor(String.format(REPLACE_CMD, key, value)).success();
                 }
-
             } else {
                 Log.d(TAG, "append command starting");
                 success = cmd.su.runWaitFor(String.format(APPEND_CMD, key, value)).success();
@@ -445,10 +432,14 @@ public class PropModder extends PreferenceFragment implements
             mount("ro");
         }
 
+        rebootRequired();
+        return success;
+    }
+
+    private void rebootRequired() {
+        prefSet.addPreference(mRebootMsg);
         mRebootMsg.setTitle("Reboot required");
         mRebootMsg.setSummary("values will take effect on next boot");
-        mRebootMsg.setEnabled(true);
-        return success;
     }
 
     public boolean mount(String read_value) {
@@ -472,25 +463,22 @@ public class PropModder extends PreferenceFragment implements
         }
     }
 
-    public boolean initScript() {
-        FileWriter wAlive;
-        try {
-            wAlive = new FileWriter(INIT_SCRIPT_TEMP_PATH);
-            //forgive me but without all the \n's the script is one line long O:-)
-            wAlive.write("#\n#init.d script by PropModder\n#\n\n");
-            wAlive.write("#rm -f /dev/log/main\n");
-            wAlive.write("#echo 2048 > /sys/devices/virtual/bdi/179:0/read_ahead_kb");
-            wAlive.flush();
-            wAlive.close();
-            cmd.su.runWaitFor(String.format("cp -f %s %s", INIT_SCRIPT_TEMP_PATH, INIT_SCRIPT_PATH)).success();
-            //This should be find because if the chmod fails the install failed
-            return cmd.su.runWaitFor(String.format("chmod 755 %s", INIT_SCRIPT_PATH)).success();
-        } catch(Exception e) {
-            Log.e(TAG, "initScript install failed: " + e);
-            e.printStackTrace();
+    public boolean initLogcat(boolean swap0) {
+        if (swap0) {
+            cmd.su.runWaitFor(String.format("echo 'rm -f /dev/log/main' >  %s", INIT_SCRIPT_LOGCAT)).success();
+            return cmd.su.runWaitFor(String.format("chmod 755 %s", INIT_SCRIPT_LOGCAT)).success();
+        } else {
+            return cmd.su.runWaitFor(String.format("rm -f %s", INIT_SCRIPT_LOGCAT)).success();
         }
+    }
 
-        return false;
+    public boolean initSdcard(boolean swap1) {
+        if (swap1) {
+            cmd.su.runWaitFor(String.format("echo 'rm -f /dev/log/main' >  %s", INIT_SCRIPT_LOGCAT)).success();
+            return cmd.su.runWaitFor(String.format("chmod 755 %s", INIT_SCRIPT_LOGCAT)).success();
+        } else {
+            return cmd.su.runWaitFor(String.format("rm -f %s", INIT_SCRIPT_LOGCAT)).success();
+        }
     }
 
     public boolean enableInit() {
@@ -509,7 +497,6 @@ public class PropModder extends PreferenceFragment implements
             Log.e(TAG, "enableInit install failed: " + e);
             e.printStackTrace();
         }
-
         return false;
     }
 
@@ -567,15 +554,6 @@ public class PropModder extends PreferenceFragment implements
         } else {
             mFastUpPref.setValue(FAST_UP_DEFAULT);
         }
-        String ba1 = Helpers.findBuildPropValueOf(DISABLE_BOOT_ANIM_PROP_1);
-        String ba2 = Helpers.findBuildPropValueOf(DISABLE_BOOT_ANIM_PROP_2);
-        if (ba1.equals("0") && ba2.equals("1")) {
-            Log.d(TAG, "bootanimation is disabled");
-            mDisableBootAnimPref.setChecked(false);
-        } else {
-            Log.d(TAG, "bootanimation is enabled");
-            mDisableBootAnimPref.setChecked(true);
-        }
         String prox = Helpers.findBuildPropValueOf(PROX_DELAY_PROP);
         if (!prox.equals(DISABLE)) {
             mProxDelayPref.setValue(prox);
@@ -583,8 +561,6 @@ public class PropModder extends PreferenceFragment implements
         } else {
             mProxDelayPref.setValue(PROX_DELAY_DEFAULT);
         }
-        boolean rmLogging = cmd.su.runWaitFor(String.format("grep -q \"#rm -f /dev/log/main\" %s", INIT_SCRIPT_PATH)).success();
-        mLogcatPref.setChecked(!rmLogging);
         String sleep = Helpers.findBuildPropValueOf(SLEEP_PROP);
         if (!sleep.equals(DISABLE)) {
             mSleepPref.setValue(sleep);
@@ -633,6 +609,10 @@ public class PropModder extends PreferenceFragment implements
         } else {
             mVvmailPref.setChecked(false);
         }
+        if (initScriptLogcat.isFile()) {
+            mLogcatPref.setChecked(true);
+        } else {
+            mLogcatPref.setChecked(false);
+        }
     }
 }
-

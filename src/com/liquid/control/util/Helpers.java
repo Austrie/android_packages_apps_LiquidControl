@@ -248,4 +248,32 @@ public class Helpers {
             return DISABLE;
         }
     }
+
+    // find value of /sys/kernel/fast_charge/force_fast_charge
+    public static int isFastCharge() {
+        int onOff = 0;
+        String line = "";
+        final String filename = "/sys/kernel/fast_charge/force_fast_charge";
+        final File f = new File(filename);
+
+        if (f.exists() && f.canRead()) {
+            try {
+                final BufferedReader br = new BufferedReader(new FileReader(f), 256);
+                String buffer = null;
+                while ((buffer = br.readLine()) != null) {
+                    line += buffer + "\n";
+                    try {
+                        onOff = Integer.parseInt(buffer);
+                    } catch (NumberFormatException nfe) {
+                        onOff = 0;
+                    }
+                }
+                br.close();
+            } catch (final Exception e) {
+                Log.e(TAG, "Error reading file: " + filename, e);
+                onOff = 0;
+            }
+        }
+        return onOff;
+    }
 }

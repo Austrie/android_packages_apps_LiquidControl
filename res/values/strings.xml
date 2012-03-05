@@ -163,6 +163,8 @@
     <string name="statusbar_alpha_title">Statusbar Expanded Transparency</string>
     <string name="statusbar_unexpanded_alpha_title">Statusbar Unexpanded Transparency</string>
     <string name="statusbar_unexpanded_color_title">Statusbar Unexpanded Color</string>
+    <string name="statusbar_layout">Drawer Layout</string>
+    <string name="statusbar_layout_summary">Change the notification drawer layout</string>
 
     <!-- Statusbar | Battery -->
     <string name="battery_icon">Battery Style</string>

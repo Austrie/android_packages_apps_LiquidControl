@@ -37,6 +37,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_STATUSBAR_ALPHA = "statusbar_alpha";
     private static final String PREF_STATUSBAR_UNEXPANDED_ALPHA = "statusbar_unexpanded_alpha";
     private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
+    private static final String PREF_LAYOUT = "status_bar_layout";
     private static String STATUSBAR_COLOR_SUMMARY_HOLDER;
 
     CheckBoxPreference mShowDate;
@@ -52,6 +53,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     SeekBarPreference mStatusbarAlpha;
     SeekBarPreference mStatusbarUnexpandedAlpha;
     ColorPickerPreference mStatusbarUnexpandedColor;
+    ListPreference mLayout;
     Context mContext;
 
     @Override
@@ -82,6 +84,10 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mStatusbarUnexpandedAlpha.setOnPreferenceChangeListener(this);
         mStatusbarUnexpandedColor = (ColorPickerPreference) findPreference(PREF_STATUSBAR_UNEXPANDED_COLOR);
         mStatusbarUnexpandedColor.setOnPreferenceChangeListener(this);
+        mLayout = (ListPreference) findPreference(PREF_LAYOUT);
+        mLayout.setOnPreferenceChangeListener(this);
+        mLayout.setValue(Integer.toString(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.STATUS_BAR_LAYOUT, 0)));
 
         // make sure the settings are updated
         updateSettings();
@@ -151,7 +157,6 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             break;
         }
         mDateFormat.setSummary(String.format(displayFormat, date));
-
         float expandedAlpha = Settings.System.getFloat(getActivity()
                 .getContentResolver(), Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, 1f);
         mStatusbarAlpha.setInitValue((int) (expandedAlpha * 100));
@@ -196,33 +201,45 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             if (DEBUG) Log.d(TAG, "value:" + val1 / 100 + "    raw:" + val1);
             success = Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, val1 / 100);
+            restartSystemUI();
         } else if (pref == mWindowshadeBackground) {
             String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
             pref.setSummary(hex);
-
             int intHex = ColorPickerPreference.convertToColorInt(hex);
             success =Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, intHex);
-
             if (DEBUG) Log.d(TAG, String.format("new color hex value: %d", intHex));
         } else if (pref == mStatusbarUnexpandedAlpha) {
             float val2 = Float.parseFloat((String) newValue);
             if (DEBUG) Log.d(TAG, "value:" + val2 / 100 + "    raw:" + val2);
             success = Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_UNEXPANDED_ALPHA, val2 / 100);
+            restartSystemUI();
         } else if (pref == mStatusbarUnexpandedColor) {
             String statusbar_hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
             pref.setSummary(statusbar_hex);
-
             int intHex = ColorPickerPreference.convertToColorInt(statusbar_hex);
             success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_UNEXPANDED_COLOR, intHex);
             if (DEBUG) Log.d(TAG, "color value int:" + intHex);
+        } else if (preference == mLayout) {
+            int val = Integer.parseInt((String) newValue);
+            result = Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUS_BAR_LAYOUT, val);
+            restartSystemUI();
         }
 
         // update checkboxes and return success=true:false
         updateSettings();
         return success;
+    }
+
+    private void restartSystemUI() {
+        try {
+            Runtime.getRuntime().exec("pkill -TERM -f com.android.systemui");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -269,6 +286,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
         }
+
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 }

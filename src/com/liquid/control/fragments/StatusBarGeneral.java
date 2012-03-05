@@ -1,6 +1,8 @@
 
 package com.liquid.control.fragments;
 
+import java.io.IOException;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -222,9 +224,9 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_UNEXPANDED_COLOR, intHex);
             if (DEBUG) Log.d(TAG, "color value int:" + intHex);
-        } else if (preference == mLayout) {
+        } else if (pref == mLayout) {
             int val = Integer.parseInt((String) newValue);
-            result = Settings.System.putInt(getActivity().getContentResolver(),
+            success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUS_BAR_LAYOUT, val);
             restartSystemUI();
         }
@@ -290,3 +292,4 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 }
+

@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -113,10 +114,10 @@ public class Navbar extends SettingsPreferenceFragment implements
                 com.android.internal.R.bool.config_showNavigationBar);
         mEnableNavigationBar = (CheckBoxPreference) findPreference("enable_nav_bar");
         mEnableNavigationBar.setChecked(Settings.System.getInt(getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW, hasNavBarByDefault ? 1 : 0) == 1);
+                Settings.System.NAVIGATION_BAR_BUTTONS_SHOW, hasNavBarByDefault ? 1 : 0) == 1);
 
         // don't allow devices that must use a navigation bar to disable it
-        if (hasNavBarByDefault) {
+        if (hasNavBarByDefault || mTablet) {
             prefs.removePreference(mEnableNavigationBar);
         }
         mNavigationBarHeight = (ListPreference) findPreference("navigation_bar_height");
@@ -286,7 +287,28 @@ public class Navbar extends SettingsPreferenceFragment implements
             ft.addToBackStack("navbar_layout");
             ft.replace(this.getId(), fragment);
             ft.commit();
+        } else if (preference == mEnableNavigationBar) {
 
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_BUTTONS_SHOW,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Reboot required!")
+                    .setMessage("Please reboot to enable/disable the navigation bar properly!")
+                    .setNegativeButton("I'll reboot later", null)
+                    .setCancelable(false)
+                    .setPositiveButton("Reboot now!", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            PowerManager pm = (PowerManager) getActivity()
+                                    .getSystemService(Context.POWER_SERVICE);
+                            pm.reboot("New navbar");
+                        }
+                    })
+                    .create()
+                    .show();
+            return true;
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -361,12 +383,12 @@ public class Navbar extends SettingsPreferenceFragment implements
 
     public void toggleBar() {
         boolean isBarOn = Settings.System.getInt(getContentResolver(),
-                Settings.System.NAVIGATION_BAR_BUTTONS_HIDE, 0) == 1;
+                Settings.System.NAVIGATION_BAR_BUTTONS_SHOW, 0) == 1;
         Handler h = new Handler();
         Settings.System.putInt(mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_BUTTONS_HIDE, isBarOn ? 0 : 1);
+                Settings.System.NAVIGATION_BAR_BUTTONS_SHOW, isBarOn ? 0 : 1);
         Settings.System.putInt(mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_BUTTONS_HIDE, isBarOn ? 1 : 0);
+                Settings.System.NAVIGATION_BAR_BUTTONS_SHOW, isBarOn ? 1 : 0);
     }
 
     public int mapChosenDpToPixels(int dp) {

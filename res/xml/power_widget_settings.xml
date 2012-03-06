@@ -17,7 +17,6 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Power Widget -->
     <PreferenceCategory
        android:title="@string/power_widget_title">
 

@@ -13,7 +13,7 @@
         <net.margaritov.preference.colorpicker.ColorPickerPreference
             android:key="statusbar_windowshade_background_color"
             android:title="@string/statusbar_windowshade_background_title"
-            android:defaultValue="#ff33b5e5" />
+            android:defaultValue="#ff000000" />
 
         <CheckBoxPreference
             android:key="show_date"
@@ -80,7 +80,7 @@
         <net.margaritov.preference.colorpicker.ColorPickerPreference
             android:key="statusbar_unexpanded_color"
             android:title="@string/statusbar_unexpanded_color_title"
-            android:defaultValue="#ff33b5e5" />
+            android:defaultValue="#ff000000" />
 
         <ListPreference
             android:key="status_bar_layout"

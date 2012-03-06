@@ -14,6 +14,9 @@
      limitations under the License.
 -->
 
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
     <PreferenceCategory android:key="general_category"
         android:title="@string/buildprop_title">
 

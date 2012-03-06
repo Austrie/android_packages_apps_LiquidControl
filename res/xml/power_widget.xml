@@ -58,13 +58,13 @@
             android:entryValues="@array/values_ring_widget"
             android:persistent="false" />
 
-        <ListPreference
+     <!-- <ListPreference
             android:key="pref_flash_mode"
             android:dialogTitle="@string/pref_flash_mode_title"
             android:title="@string/pref_flash_mode_title"
             android:summary="@string/pref_flash_mode_summary"
             android:entries="@array/entries_flash_widget"
-            android:entryValues="@array/values_flash_widget" />
+            android:entryValues="@array/values_flash_widget" /> -->
 
     </PreferenceCategory>
 

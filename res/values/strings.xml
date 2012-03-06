@@ -15,10 +15,10 @@
 -->
 <resources>
 
-    <!-- App Name -->
+    <!-- Appname -->
     <string name="app_name">Liquid Control</string>
 
-    <!-- Main Menu -->
+    <!-- Mainmenu -->
     <string name="general_ui">General</string>
     <string name="user_interface">Interface</string>
     <string name="light_levels_title">Light Levels</string>
@@ -42,6 +42,9 @@
     <string name="system">System</string>
     
     <!-- Navigation -->
+    <string name="enable_navbar_title">Enable Navbar</string>
+    <string name="navbar_width_title">Navbar Width</string>
+    <string name="navbar_height_title">Navbar Height</string>
     <string name="title_pref_menu_display">Menu Location</string>
     <string name="summary_pref_menu_display">Position of legacy menu button %s</string>
     <string name="navigation_bar">Navigation</string>
@@ -58,7 +61,7 @@
     <string name="glow_times_title">Button Glow</string>
     <string name="glow_times_summary">Adjust how fast your buttons animate after you touch</string>
 
-    <!-- User Interface -->
+    <!-- Interface -->
     <string name="rotation_animation_delay_title">Rotation Delay</string>
     <string name="rotation_animation_delay_summary">Time for which the device must be stable</string>
     <string name="ime_switcher_title">IME Switcher</string>
@@ -81,9 +84,9 @@
     <string name="screenshot_sound_title">ScreenShot</string>
     <string name="screenshot_sound_summary">Disable shutter sound when ScreenShot is captured</string>
     <string name="usb_title">USB</string>
-    <string name="usb_fast_charge_title">USB fast charge</string>
+    <string name="usb_fast_charge_title">USB fast charging mode</string>
 
-    <!-- Lockscreens -->
+    <!-- Lockscreen -->
     <string name="title_pref_lockscreen_quad_targets">Quad Lockscreen</string>	
     <string name="summary_pref_lockscreen_quad_targets">Add shortcuts on the lockscreen</string>
     <string name="title_pref_lockscreen_octo_targets">Octo Lockscreen</string>	
@@ -104,7 +107,7 @@
     <string name="lockscreen_show_nav_summary">Hide the navbar on the lockscreen</string>
     <string name="lockscreen_text_color_title">Lockscreen Text Color</string>
     
-    <!-- Lockscreen Targets -->
+    <!-- Targets -->
     <string name="custom_app_n_dialog_title">Choose Action For %1$s</string>
     <string name="custom_app_n">Custom Target %1$s</string>
     <string name="lockscreen_targets">Lockscreen Targets</string>
@@ -123,7 +126,7 @@
     <string name="lockscreen_wallpaper_title">Lockscreen Wallpaper</string>
     <string name="lockscreen_wallpaper_summary">You can remove wallpaper from the menu above</string>
 
-    <!-- Power Menu -->
+    <!-- Powermenu -->
     <string name="title_show_airplane">Show Airplane</string>
     <string name="title_show_easteregg">Show Easteregg</string>
     <string name="title_show_flashlight">Show Flashlight</string>
@@ -132,7 +135,7 @@
     <string name="title_show_profiles">Show Profiles</string>
     <string name="title_show_screenshot">Show Screenshot</string>
 
-    <!-- Power Saving -->
+    <!-- Powersaver -->
     <string name="title_pref_powersaving_pref_mode">Enable Powersaver</string>
     <string name="summary_pref_powersaving_pref_mode">@null</string>
     <string name="title_pref_powersaving_data_screen_off">Screen Off Action</string>
@@ -146,7 +149,7 @@
     <string name="powersaver_data_cat">Data</string>
     <string name="powersaver_sync_cat">Sync</string>
 
-    <!--  LED Options -->
+    <!-- LED Options -->
     <string name="title_led_on">Pulse On Duration</string>
     <string name="summary_led_on">@null</string>
     <string name="title_led_off">Pulse Off Duration</string>
@@ -155,10 +158,10 @@
     <string name="title_led_screen_on">While Screen On</string>
     <string name="summary_led_screen_on">@null</string>
 
-    <!--  Statusbar | General -->
+    <!-- Statusbar -->
     <string name="title_settings_behavior">Settings Behavior</string>
-    <string name="statusbar_expanded_title">Pull down menu</string>
-    <string name="statusbar_unexpanded_title">Statusbar unexpanded</string>
+    <string name="statusbar_expanded_title">Statusbar Expanded</string>
+    <string name="statusbar_unexpanded_title">Statusbar Unexpanded</string>
     <string name="summary_settings_behavior">Default behavior is long press</string>
     <string name="title_auto_hide_toggles">Autohide Toggles</string>
     <string name="summary_auto_hide_toggles">After collapse toggles will hide</string>
@@ -167,23 +170,23 @@
     <string name="title_status_bar_brightness_toggle">Brightness Control</string>
     <string name="summary_status_bar_brightness_toggle">Slide finger slowly across statusbar</string>
     <string name="adb_icon_title">Usb Debugging</string>
-    <string name="adb_icon_summary">Hide debugging statusbar icon</string>
-    <string name="statusbar_show_aosp_title">AOSP Settings</string>
-    <string name="statusbar_show_aosp_summary">Hide AOSP statusbar icon</string>
+    <string name="adb_icon_summary">Hide adb debugging statusbar icon</string>
+    <string name="statusbar_show_aosp_title">Settings</string>
+    <string name="statusbar_show_aosp_summary">Hide settings statusbar icon</string>
     <string name="statusbar_show_liquid_control_title">Liquid Control</string>
     <string name="statusbar_show_liquid_control_summary">Hide Liquid Control statusbar icon</string>
     <string name="statusbar_show_date_title">Date</string>
     <string name="statusbar_show_date_summary">Hide date in pull down statusbar</string>
     <string name="statusbar_date_format_title">Date format</string>
     <string name="statusbar_date_format_summary">Customize the statusbar date</string>
-    <string name="statusbar_windowshade_background_title">Windowshade background</string>
-    <string name="statusbar_alpha_title">Statusbar Expanded Transparency</string>
-    <string name="statusbar_unexpanded_alpha_title">Statusbar Unexpanded Transparency</string>
-    <string name="statusbar_unexpanded_color_title">Statusbar Unexpanded Color</string>
+    <string name="statusbar_windowshade_background_title">Windowshade Color</string>
+    <string name="statusbar_alpha_title">Transparency</string>
+    <string name="statusbar_unexpanded_alpha_title">Transparency</string>
+    <string name="statusbar_unexpanded_color_title">Statusbar Color</string>
     <string name="statusbar_layout">Drawer Layout</string>
-    <string name="statusbar_layout_summary">Change the notification drawer layout</string>
+    <string name="statusbar_layout_summary">Change notification drawer layout</string>
 
-    <!-- Statusbar | Battery -->
+    <!-- Battery -->
     <string name="battery_icon">Battery Style</string>
     <string name="battery_summary_text_widget">@null</string>
     <string name="battery_bar">Battery Location</string>
@@ -192,9 +195,9 @@
     <string name="battery_bar_style_title">Battery Style</string>
     <string name="battery_bar_thickness_title">Battery Size</string>
     <string name="battery_bar_animate_title">Charging Animation</string>
-    <string name="battery_bar_animate_summary">Bad things may happen</string>
+    <string name="battery_bar_animate_summary">Bad things could happen</string>
     
-    <!-- Statusbar | Clock -->
+    <!-- Clock -->
     <string name="clock_title_enable">Clock Style</string>
     <string name="title_clock_ampm_entries">AM/PM Style</string>
     <string name="colors">Colors</string>
@@ -203,9 +206,9 @@
     <string name="enable_alarm_title">Alarm Icon</string>
     <string name="enable_alarm_summary">You must toggle alarms for it to show</string>
     <string name="enable_clock_weekday">Current Weekday</string>
-    <string name="enable_clock_weekday_summary">Abbreviated day of the week before time</string>
+    <string name="enable_clock_weekday_summary">Show current abbreviated day of the week</string>
 
-    <!-- Statusbar | Toggles -->
+    <!-- Toggles -->
     <string name="toggle_style_title">Toggle Style</string>
     <string name="toggle_style_summary">Show icons or text on your toggles</string>
     <string name="alternate_button_layout_title">Alternate Toggles</string>
@@ -216,7 +219,7 @@
     <string name="toggles_order_summary">Choose the order which your toggles are displayed</string>
     <string name="brightness_location_title">Brightness Location</string>
     
-    <!-- Statusbar | Signal -->
+    <!-- Signal -->
     <string name="signal_style">Signal Style</string>
     <string name="signal_color_title">Signal Color</string>
     <string name="hide_signal_title">Hide Signal</string>
@@ -224,129 +227,108 @@
     <string name="sixbar_signal_title">Sixbar Signal</string>
     <string name="sixbar_signal_summary">Use six bars signal strength indicator</string>
 
-    <!-- Power Widget -->
+    <!-- Powerwidget -->
     <string name="power_widget_title">Power Widget</string>
-    <string name="title_expanded_widget">Show power widget</string>
-    <string name="summary_expanded_widget">Show the power widget in the notification drawer</string>
-    <string name="title_expanded_hide_onchange">Hide on change</string>
-    <string name="summary_expanded_hide_onchange">Hide the notification drawer after toggling a widget button</string>
-    <string name="title_expanded_hide_indicator">Hide indicator</string>
-    <string name="summary_expanded_hide_indicator">Hide the power widget indicators</string>
-    <string name="title_expanded_hide_scrollbar">Hide scrollbar</string>
-    <string name="summary_expanded_hide_scrollbar">Hide the scrollbar when more than the maximum number of widget buttons are present</string>
-    <string name="title_widget_picker">Widget buttons</string>
-    <string name="summary_widget_picker">Select which buttons to display in the power widget</string>
-    <string name="title_widget_order">Widget button order</string>
-    <string name="summary_widget_order">Select the order of the buttons in the power widget</string>
+    <string name="title_expanded_widget">Enable Widget</string>
+    <string name="summary_expanded_widget">Show the power widget in notification drawer</string>
+    <string name="title_expanded_hide_onchange">Hide On Change</string>
+    <string name="summary_expanded_hide_onchange">Hide notification drawer after pressing widget</string>
+    <string name="title_expanded_hide_indicator">Hide Indicator</string>
+    <string name="summary_expanded_hide_indicator">Hide the power widget indicator displays</string>
+    <string name="title_expanded_hide_scrollbar">Hide Scrollbar</string>
+    <string name="summary_expanded_hide_scrollbar">When more than the max number of widgets</string>
+    <string name="title_widget_picker">Widget Buttons</string>
+    <string name="summary_widget_picker">Select which buttons to display currently</string>
+    <string name="title_widget_order">Widget Order</string>
+    <string name="summary_widget_order">Select the order of notification widgets</string>
     <string name="title_buttons">Buttons</string>
-    <string name="title_toggle_wifi">Toggle Wi-Fi</string>
-    <string name="title_toggle_bluetooth">Toggle Bluetooth</string>
-    <string name="title_toggle_gps">Toggle GPS</string>
-    <string name="title_toggle_sound">Toggle Sound</string>
-    <string name="title_toggle_brightness">Toggle Brightness</string>
-    <string name="title_toggle_sync">Toggle Sync</string>
-    <string name="title_toggle_wifiap">Toggle Wi-Fi AP</string>
-    <string name="title_toggle_screentimeout">Toggle Screentimeout</string>
-    <string name="title_toggle_mobiledata">Toggle Mobiledata</string>
-    <string name="title_toggle_lockscreen">Toggle Lockscreen</string>
-    <string name="title_toggle_networkmode">Toggle 2G/3G</string>
-    <string name="title_toggle_autorotate">Toggle Orientation</string>
-    <string name="title_toggle_airplane">Toggle Airplane mode</string>
-    <string name="title_toggle_flashlight">Toggle LED flashlight</string>
-    <string name="title_toggle_sleep">Go to sleep</string>
-    <string name="title_toggle_media_play_pause">Media: Toggle Play/Pause</string>
-    <string name="title_toggle_media_previous">Media: Skip to Previous</string>
-    <string name="title_toggle_media_next">Media: Skip to Next</string>
-    <string name="title_toggle_lte">Toggle LTE</string>
-    <string name="title_toggle_wimax">Toggle WiMAX</string>
-    <string name="title_button_modes">Button modes</string>
-    <string name="pref_brightness_mode_title">Brightness modes</string>
-    <string name="pref_brightness_mode_summary">Choose how the brightness button changes modes</string>
+    <string name="title_toggle_wifi">Wi-Fi</string>
+    <string name="title_toggle_bluetooth">Bluetooth</string>
+    <string name="title_toggle_gps">GPS</string>
+    <string name="title_toggle_sound">Sound</string>
+    <string name="title_toggle_brightness">Brightness</string>
+    <string name="title_toggle_sync">Sync</string>
+    <string name="title_toggle_wifiap">Wi-Fi AP</string>
+    <string name="title_toggle_screentimeout">Screentimeout</string>
+    <string name="title_toggle_mobiledata">Mobiledata</string>
+    <string name="title_toggle_lockscreen">Lockscreen</string>
+    <string name="title_toggle_networkmode">2G/3G</string>
+    <string name="title_toggle_autorotate">Orientation</string>
+    <string name="title_toggle_airplane">Airplane</string>
+    <string name="title_toggle_flashlight">Flashlight</string>
+    <string name="title_toggle_sleep">Sleep</string>
+    <string name="title_toggle_media_play_pause">Play/Pause</string>
+    <string name="title_toggle_media_previous">Skip (Prev)</string>
+    <string name="title_toggle_media_next">Skip (Next)</string>
+    <string name="title_toggle_lte">LTE</string>
+    <string name="title_toggle_wimax">WiMAX</string>
+    <string name="title_button_modes">Buttons</string>
+    <string name="pref_brightness_mode_title">Brightness</string>
+    <string name="pref_brightness_mode_summary">How brightness widget changes modes</string>
     <string name="brightness_mode_auto">Auto</string>
     <string name="brightness_mode_dim">Dim</string>
-    <string name="pref_network_mode_title">Network modes</string>
-    <string name="pref_network_mode_summary">Choose how the NetworkMode button changes modes</string>
-    <string name="pref_screentimeout_mode_title">Screentimeout modes</string>
-    <string name="pref_screentimeout_mode_summary">Choose how the Screentimeout button changes modes</string>
-    <string name="pref_ring_mode_title">Sound modes</string>
-    <string name="pref_ring_mode_summary">Choose how the sound button changes modes</string>
+    <string name="pref_network_mode_title">Network</string>
+    <string name="pref_network_mode_summary">How networkmode widget changes modes</string>
+    <string name="pref_screentimeout_mode_title">Screentimeout</string>
+    <string name="pref_screentimeout_mode_summary">How screentimeout widget changes modes</string>
+    <string name="pref_ring_mode_title">Sound</string>
+    <string name="pref_ring_mode_summary">How the sound widget changes modes</string>
     <string name="sound_mode_silent">Silent</string>
     <string name="sound_mode_vibrate">Vibrate</string>
     <string name="sound_mode_sound">Sound</string>
     <string name="sound_mode_soundVibrate">Sound+Vibrate</string>
-    <string name="pref_flash_mode_title">Flash mode</string>
-    <string name="pref_flash_mode_summary">Choose High / Death Ray</string>
-    <string name="expanded_haptic_feedback_title">Haptic feedback</string>
-    <string name="expanded_haptic_feedback_summary">Enable/disable haptic feedback</string>
+    <string name="pref_flash_mode_title">Flash</string>
+    <string name="pref_flash_mode_summary">High/Death Ray</string>
+    <string name="expanded_haptic_feedback_title">Haptic Feedback</string>
+    <string name="expanded_haptic_feedback_summary">Enable or disable haptic feedback</string>
 
-    <!-- Color Picker -->
+    <!-- Colorpicker -->
     <string name="dialog_color_picker">Color Picker</string>
-    <string name="press_color_to_apply">Press On Color To Apply</string>
+    <string name="press_color_to_apply">Press On color to apply</string>
     <string name="arrow_right">→</string> 
     <string name="arrow_down">↓</string>
     <string name="hex">Hex:</string>
     <string name="hex_hint">#FF000000</string>
     <string name="set">Set</string>
-    <string name="ics_color">ICS</string>
+    <string name="ics_color">Default</string>
     
-    <!-- Shortcut Picker -->
+    <!-- Shortcuts -->
     <string name="use_custom_app_title">Custom App</string>
     <string name="use_custom_app_summary">Use selected custom application</string>
     <string name="select_custom_app_title">Select App</string>
     <string name="group_applications">Applications</string>
-
-    <!-- Dialog Titles -->
-    <string name="dt_free_memory">Memory Taskkiller</string>
-
-    <!-- Preference Categories -->
-    <string name="prefcat_cpu">Overclocking</string>
-    <string name="prefcat_free_memory">Free Memory</string>
-    <string name="pc_tweaks">Tweaks</string>
-    <string name="pc_init_d">Enable/Disable Tweaks</string>
-    <string name="pc_init_d_tweaks">Customize Tweaks</string>
-
-    <!-- Preference Titles -->
-    <string name="pt_customization">Customization</string>
-    <string name="pt_tools">Goodies</string>
-    <string name="pt_voltage">Voltage</string>
-    <string name="pt_mod_version">Mod Version</string>
-
-    <!-- Customization -->
-    <string name="pt_customizer">Customizer</string>
-    <string name="pt_lockscreen">Lockscreen</string>
-    <string name="pt_ui_status_bar">Statusbar</string>
-    <string name="pt_pulldown_text">Pulldown Text</string>
-    <string name="pt_theme_manager">Theme Manager</string>
-
-    <!-- Goodies -->
-    <string name="pt_spare_parts">Spare Parts</string>
-    <string name="pt_dev_tools">Dev Tools</string>
-    <string name="pt_dsp_manager">DSP Manager</string>
-    <string name="pt_testing_menu">Testing Menu</string>
-
-    <!-- Start Tweaks -->
-    <string name="pt_init_d">Startup Tweaks</string>
-    <string name="pt_enable_init_d">Enable Tweaks</string>
-    <string name="pt_zipalign">Zipalign Apks</string>
-    <string name="pt_enable_sd_boost">Sdcard Booster</string>
-    <string name="pt_sd_boost">Read Ahead Value</string>
-    <string name="pt_fix_permissions">Fix Permissions</string>
-    <string name="pt_clear_cache">Clear Cache</string>
-    <string name="pt_enable_sysctl">Enable Sysctl</string>
-    <string name="pt_enable_cron">Scheduled Tasks</string>
-
-    <!-- Performance -->
-    <string name="pt_set_cpu_activity">Overclocking</string>
-    <string name="pt_free_memory">Free Memory</string>
-    <string name="pt_free_memory_boot">Set On Boot</string>
 
     <!-- Overclocking -->
     <string name="pt_set_max">Maximum</string>
     <string name="pt_set_min">Minimum</string>
     <string name="pt_set_gov">Governor</string>
     <string name="pt_cpu_boot">Set On Boot</string>
+    <string name="ps_set_max">Maxium\nCurrent: %s</string>
+    <string name="ps_set_min">Minium\nCurrent: %s</string>
+    <string name="ps_set_gov">Governor\nCurrent: %s</string>
+    <string name="ps_cpu_boot">Set On Boot</string>
+    <string name="toast_min_max_error01">Frequency cannot be lower than minmium</string>
+    <string name="toast_min_max_error02">Frequency cannot be higher than maximum</string>
 
-    <!-- Scrolling Cache -->
+    <!-- Performance -->
+    <string name="pt_voltage">Voltage</string>
+    <string name="pt_cpu">Overclocking</string>
+    <string name="pt_free_memory">Free Memory</string>
+    <string name="dt_free_memory">Memory Taskkiller</string>
+    <string name="pt_free_memory_boot">Free On Startup</string>
+    <string name="ps_set_cpu_activity">Set frequencies and current governor</string>
+    <string name="ps_free_memory">Amount of ram the taskkiller will keep | Current: %s</string>
+    <string name="ps_free_memory_boot">Apply the amount above at boot</string>
+
+    <!-- Voltage -->
+    <string name="freq">Frequency</string>
+    <string name="current">mV Current</string>
+    <string name="saved">mV Saved</string>
+    <string name="error_values">Error Getting Values</string>
+    <string name="set_boot">Set On Boot</string>
+    <string name="apply_values">Apply Values</string>
+
+    <!-- Scrolling -->
     <string name="pref_scrollingcache_title">Scrolling Cache</string>
     <string name="pref_scrollingcache_summary">May improve scrolling performance</string>
     <string name="pref_scrollingcache_force_enable">Force Enable</string>
@@ -354,95 +336,9 @@
     <string name="pref_scrollingcache_default_disable">Default Disable</string>
     <string name="pref_scrollingcache_force_disable">Force Disable</string>
 
-    <!-- Customization -->
-    <string name="ps_customizer">Customize the ROM to your liking</string>
-    <string name="ps_lockscreen">Change lockscreen styles and manage widgets</string>
-    <string name="ps_ui_status_bar">Customize the statusbar presentation</string>
-    <string name="ps_pulldown_text">Change the carrier text in the pulldown</string>
-    <string name="ps_theme_manager">Install custom themes for this ROM</string>
-
-    <!-- Tools -->
-    <string name="ps_spare_parts">Various tweaks and customization</string>
-    <string name="ps_dev_tools">Tools for developers and advanced users</string>
-    <string name="ps_dsp_manager">Stand alone equalizer and bass booster</string>
-    <string name="ps_testing_menu">Phone info, battery info, usage statistics</string>
-
-    <!-- Startup Tweaks -->
-    <string name="ps_init_d">Configure tweaks that are run at boot</string>
-    <string name="ps_enable_init_d">Enable/disabe startup tweaks</string>
-    <string name="ps_zipalign">Zipalign any unaligned apps on each boot</string>
-    <string name="ps_enable_sd_boost">Enable/disable SD card speed boost</string>
-    <string name="ps_sd_boost">Set value of read ahead in kb</string>
-    <string name="ps_fix_permissions">Fix permissions for apps on each boot</string>
-    <string name="ps_clear_cache">Clear data cache on each boot</string>
-    <string name="ps_enable_sysctl">Enable sysctl tweaks on boot</string>
-    <string name="ps_enable_cron">Enable scheduled cron jobs</string>
-
-    <!-- Overclocking -->
-    <string name="ps_set_max">Maxium\nCurrent: %s</string>
-    <string name="ps_set_min">Minium\nCurrent: %s</string>
-    <string name="ps_set_gov">Governor\nCurrent: %s</string>
-    <string name="ps_cpu_boot">Set On Boot</string>
-
-    <!-- Performance -->
-    <string name="ps_set_cpu_activity">Set frequencies and current governor</string>
-    <string name="ps_free_memory">Amount of ram the taskkiller will keep | Current: %s</string>
-    <string name="ps_free_memory_boot">Apply the amount above at boot</string>
-
-    <!-- Toast Messages -->
-    <string name="toast_min_max_error01">Frequency cannot be lower than minmium</string>
-    <string name="toast_min_max_error02">Frequency cannot be higher than maximum</string>
-
-    <!-- List Voltage -->
-    <string name="freq">Frequency</string>
-    <string name="current">mV Current</string>
-    <string name="saved">mV Saved</string>
-
-    <!-- Read Voltage -->
-    <string name="error_values">Error Getting Values</string>
-    <string name="set_boot">Set On Boot</string>
-    <string name="apply_values">Apply Values</string>
-
-    <!-- Longpress Apptasker -->
+    <!-- Apptasker -->
     <string name="longpress_app_tasker_title">Longpress Apptasker</string>
     <string name="longpress_app_tasker_summary">New task to be launched when selected</string>
-
-    <!-- Light Levels -->
-    <string name="backlight_title">Automatic backlight</string>
-    <string name="backlight_summary">Tweak levels and filtering</string>
-    <string name="light_filter_title">Light sensor filter</string>
-    <string name="light_filter_enabled_title">Enabled</string>
-    <string name="light_filter_enabled_summary">Apply moving average filter to sensor data to reduce flicker</string>
-    <string name="light_filter_window_title">Window length</string>
-    <string name="light_filter_window_summary">Filtered value is the average sensor value during this period</string>
-    <string name="light_filter_reset_title">Reset threshold</string>
-    <string name="light_filter_reset_summary">Samples deviating this much from current average resets the filter</string>
-    <string name="light_filter_interval_title">Sample interval</string>
-    <string name="light_filter_interval_summary">Low value can improve accuracy but uses some more CPU</string>
-    <string name="light_levels_enabled_title">Use custom</string>
-    <string name="light_levels_dim_title">Screen dim level</string>
-    <string name="light_levels_dim_summary">Brightness used to dim the screen</string>
-    <string name="light_levels_editor_title">Edit other levels\u2026</string>
-    <string name="light_decrease_enabled_title">Allow light decrease</string>
-    <string name="light_decrease_enabled_summary">Enable to allow lights to decrease. Use hysteresis to reduce flicker</string>
-    <string name="light_decrease_hysteresis_title">Decrease hysteresis</string>
-    <string name="light_decrease_hysteresis_summary">Sensor levels overlap this much downwards</string>
-    <string name="ll_title">Light sensor levels</string>
-    <string name="ll_header_upper">Upper</string>
-    <string name="ll_header_lower">Lower</string>
-    <string name="ll_header_lcd">Screen</string>
-    <string name="ll_header_btn">Buttons</string>
-    <string name="ll_header_kb">Keyboard</string>
-    <string name="ll_lux">Sensor (filtered / raw):</string>
-    <string name="ll_lcd">Screen:</string>
-    <string name="ll_btn">Buttons:</string>
-    <string name="ll_kb">Keyboard:</string>
-    <string name="ll_disabled">disabled</string>
-    <string name="ll_default">Load defaults</string>
-    <string name="ll_save">Save &amp; apply</string>
-    <string name="ll_reload">Reload current</string>
-    <string name="ll_bad_levels">Levels must be increasing</string>
-    <string name="ll_num_levels">Set number of levels</string>
 
     <!-- PropModder -->
     <string name="buildprop_title">/system/build.prop mods</string>
@@ -478,8 +374,6 @@
     <string name="pref_fast_up_title">HSUPA upload speed hack</string>
     <string name="pref_fast_up_summary">*WARNING* if you change this value it will add the needed values to your build.prop if they are not already present (requires reboot)</string>
     <string name="pref_fast_up_alt_summary">Fast up found active: %s</string>
-    <string name="pref_disable_boot_anim_title">Disable Boot Animation</string>
-    <string name="pref_disable_boot_anim_summary">Disable system boot animation (requires reboot)</string>
     <string name="pref_prox_delay_title">Proximity sensor delay</string>
     <string name="pref_prox_delay_summary">When you are in-call screen is off when the device moves away from your face this delay value controls how long before screen turns on (requires reboot)</string>
     <string name="pref_prox_delay_alt_summary">Proximity sensor set to: %s</string>
@@ -506,4 +400,5 @@
     <string name="pref_gpu_summary">To enable hardware acceleration where the GPU controls the UI instead of the CPU</string>
     <string name="pref_vvmail_title">VVMail (Sense ROMs ONLY)</string>
     <string name="pref_vvmail_summary">force Sense ROMS compatibility with VVMail</string>
+
 </resources>

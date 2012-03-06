@@ -43,7 +43,7 @@ public class PowerWidgetUtil {
     public static final String BUTTON_NETWORKMODE = "toggleNetworkMode";
     public static final String BUTTON_AUTOROTATE = "toggleAutoRotate";
     public static final String BUTTON_AIRPLANE = "toggleAirplane";
-    public static final String BUTTON_FLASHLIGHT = "toggleFlashlight";
+//    public static final String BUTTON_FLASHLIGHT = "toggleFlashlight";
     public static final String BUTTON_SLEEP = "toggleSleepMode";
     public static final String BUTTON_MEDIA_PLAY_PAUSE = "toggleMediaPlayPause";
     public static final String BUTTON_MEDIA_PREVIOUS = "toggleMediaPrevious";
@@ -65,9 +65,9 @@ public class PowerWidgetUtil {
         BUTTONS.put(BUTTON_BRIGHTNESS, new PowerWidgetUtil.ButtonInfo(
                 BUTTON_BRIGHTNESS, R.string.title_toggle_brightness,
                 "com.android.systemui:drawable/stat_brightness_on"));
-        BUTTONS.put(BUTTON_FLASHLIGHT, new PowerWidgetUtil.ButtonInfo(
+       /* BUTTONS.put(BUTTON_FLASHLIGHT, new PowerWidgetUtil.ButtonInfo(
                 BUTTON_FLASHLIGHT, R.string.title_toggle_flashlight,
-                "com.android.systemui:drawable/stat_flashlight_on"));
+                "com.android.systemui:drawable/stat_flashlight_on")); */
         BUTTONS.put(BUTTON_GPS, new PowerWidgetUtil.ButtonInfo(
                 BUTTON_GPS, R.string.title_toggle_gps, "com.android.systemui:drawable/stat_gps_on"));
         BUTTONS.put(BUTTON_LOCKSCREEN, new PowerWidgetUtil.ButtonInfo(
@@ -118,12 +118,13 @@ public class PowerWidgetUtil {
     }
 
     private static final String BUTTON_DELIMITER = "|";
-    private static final String BUTTONS_DEFAULT = PowerButton.BUTTON_BLUETOOTH
-                             + BUTTON_DELIMITER + PowerButton.BUTTON_BRIGHTNESS
-                             + BUTTON_DELIMITER + PowerButton.BUTTON_GPS
-                             + BUTTON_DELIMITER + PowerButton.BUTTON_SOUND
-                             + BUTTON_DELIMITER + PowerButton.BUTTON_WIFI
-                             + BUTTON_DELIMITER + PowerButton.BUTTON_FLASHLIGHT;
+    private static final String BUTTONS_DEFAULT = BUTTON_BLUETOOTH
+                             + BUTTON_DELIMITER + BUTTON_BRIGHTNESS
+                             + BUTTON_DELIMITER + BUTTON_GPS
+                             + BUTTON_DELIMITER + BUTTON_SOUND
+                             + BUTTON_DELIMITER + BUTTON_SYNC
+                             + BUTTON_DELIMITER + BUTTON_WIFI
+                             + BUTTON_DELIMITER + BUTTON_FLASHLIGHT;
 
     public static String getCurrentButtons(Context context) {
         String buttons = Settings.System.getString(context.getContentResolver(),

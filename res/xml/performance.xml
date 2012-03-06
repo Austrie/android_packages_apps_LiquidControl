@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<PreferenceCategory
-		android:title="@string/prefcat_cpu"
+		android:title="@string/pt_cpu"
 		android:key="cpu">
 
 		<ListPreference
@@ -45,7 +45,7 @@
 
 	<PreferenceCategory
         android:key="performance"
-		android:title="@string/prefcat_free_memory">
+		android:title="@string/pt_free_memory">
 
 		<ListPreference
 			android:key="free_memory"

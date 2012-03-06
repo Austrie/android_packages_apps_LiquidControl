@@ -4,7 +4,7 @@
 
 	<CheckBoxPreference
 		android:key="enable_nav_bar"
-		android:title="Enable bar" />
+		android:title="@string/enable_navbar_title" />
 
 	<ListPreference
 		android:entries="@array/pref_navigation_menu_entries"
@@ -23,7 +23,7 @@
 	<net.margaritov.preference.colorpicker.ColorPickerPreference
 		android:key="nav_button_color"
 		android:title="@string/navigation_bar_tint_title"
-		android:defaultValue="#FFFFFF" />
+		android:defaultValue="#FF33B5E5" />
 
 	<Preference
 		android:key="enabled_buttons"
@@ -61,13 +61,13 @@
 			android:entries="@array/navigation_bar_width_entries"
 			android:entryValues="@array/navigation_bar_width"
 			android:key="navigation_bar_width"
-			android:title="Navigation bar width" />
+			android:title="@string/navbar_width_title" />
 
 		<ListPreference
 			android:entries="@array/navigation_bar_height_entries"
 			android:entryValues="@array/navigation_bar_height"
 			android:key="navigation_bar_height"
-			android:title="Navigation bar height" />
+			android:title="@string/navbar_height_title" />
 
 	</PreferenceCategory>
 </PreferenceScreen>

@@ -110,7 +110,7 @@ public class PropModder extends PreferenceFragment implements
     private static final String LOGCAT_PREF = "pref_logcat";
     private static final String LOGCAT_PERSIST_PROP = "persist.logcat";
     private static final String LOGCAT_ALIVE_PATH = "/system/etc/init.d/72propmodder_script";
-    private static final String LOGCAT_ENABLE = "rm -f /dev/log/main";
+    private static final String LOGCAT_ENABLE = "rm /dev/log/main";
     private static final String MOD_VERSION_PREF = "pref_mod_version";
     private static final String MOD_VERSION_PROP = "ro.build.display.id";
     private static final String MOD_VERSION_PERSIST_PROP = "persist.build.display.id";
@@ -480,7 +480,7 @@ public class PropModder extends PreferenceFragment implements
 
     public boolean initLogcat(boolean swap0) {
         if (swap0) {
-            cmd.su.runWaitFor(String.format("echo 'rm -f /dev/log/main' >  %s", INIT_SCRIPT_LOGCAT)).success();
+            cmd.su.runWaitFor(String.format("echo 'rm /dev/log/main' >  %s", INIT_SCRIPT_LOGCAT)).success();
             return cmd.su.runWaitFor(String.format("chmod 755 %s", INIT_SCRIPT_LOGCAT)).success();
         } else {
             return cmd.su.runWaitFor(String.format("rm -f %s", INIT_SCRIPT_LOGCAT)).success();

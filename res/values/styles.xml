@@ -13,10 +13,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <resources>
 
-    <style name="Theme.CreateShortCut" parent="android:Theme.Holo.DialogWhenLarge">
-    </style>
+    <style name="Theme.CreateShortCut" parent="android:Theme.Holo.DialogWhenLarge"></style>
 
 </resources>

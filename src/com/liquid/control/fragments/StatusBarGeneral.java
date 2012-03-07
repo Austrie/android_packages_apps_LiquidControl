@@ -62,8 +62,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
 
     /* Default Color Schemes */
     private static final float STATUSBAR_EXPANDED_ALPHA_DEFAULT = 0.7f; //TODO update
-    private static final int STATUSBAR_EXPANDED_COLOR_DEFAULT = 0xFF111111; //TODO update
-    private static final int STATUSBAR_UNEXPANDED_COLOR_DEFAULT = 0xFF111111; //TODO update
+    private static final int STATUSBAR_EXPANDED_COLOR_DEFAULT = 0xFF000000; //TODO update
+    private static final int STATUSBAR_UNEXPANDED_COLOR_DEFAULT = 0xFF000000; //TODO update
 
     CheckBoxPreference mShowDate;
     ListPreference mDateFormat;

@@ -134,7 +134,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         switch (item.getItemId()) {
             case R.id.reset:
                 Settings.System.putInt(getActivity().getContentResolver(),
-                        Settings.System.STATUSBAR_SHOW_DATE, 1);
+                        Settings.System.STATUSBAR_SHOW_DATE, 0);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_REMOVE_AOSP_SETTINGS_LINK, 0);
                 Settings.System.putInt(getActivity().getContentResolver(),

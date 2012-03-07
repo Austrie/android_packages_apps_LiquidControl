@@ -396,9 +396,8 @@ public class PropModder extends PreferenceFragment implements
                     returnValue = cmd.su.runWaitFor(String.format("rm %s", INIT_SCRIPT_SDCARD)).success();
                 } else {
                     String newFormat = String.format(SDCARD_BUFFER_CMD, newValue.toString());
-                    mount("rw");
                     cmd.su.runWaitFor(String.format(SDCARD_BUFFER_CMD, newValue.toString()));
-                    cmd.su.runWaitFor(String.format("echo '%s' > %s", INIT_SCRIPT_SDCARD));
+                    cmd.su.runWaitFor(String.format("echo '%s' > %s", newFormat, INIT_SCRIPT_SDCARD));
                     cmd.su.runWaitFor(String.format("chmod 777 %s", INIT_SCRIPT_SDCARD));
                     returnValue = true;
                 }

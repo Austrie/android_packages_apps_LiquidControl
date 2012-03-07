@@ -182,7 +182,7 @@
     <string name="statusbar_date_format_summary">Customize the statusbar date</string>
     <string name="statusbar_windowshade_background_title">Windowshade Color</string>
     <string name="statusbar_alpha_title">Transparency</string>
-    <string name="statusbar_unexpanded_alpha_title">Transparency</string>
+    <string name="statusbar_unexpanded_alpha_title">Notification icon alpha</string>
     <string name="statusbar_unexpanded_color_title">Statusbar Color</string>
     <string name="statusbar_layout">Drawer Layout</string>
     <string name="statusbar_layout_summary">Change notification drawer layout</string>

@@ -28,6 +28,10 @@ import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Toast;
 
 import com.liquid.control.R;
@@ -55,6 +59,11 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
     private static final String PREF_LAYOUT = "status_bar_layout";
     private static String STATUSBAR_COLOR_SUMMARY_HOLDER;
+
+    /* Default Color Schemes */
+    private static final float STATUSBAR_EXPANDED_ALPHA_DEFAULT = 0.7f; //TODO update
+    private static final int STATUSBAR_EXPANDED_COLOR_DEFAULT = 0xFF111111; //TODO update
+    private static final int STATUSBAR_UNEXPANDED_COLOR_DEFAULT = 0xFF111111; //TODO update
 
     CheckBoxPreference mShowDate;
     ListPreference mDateFormat;
@@ -109,7 +118,41 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             prefs.removePreference(mDefaultSettingsButtonBehavior);
         }
 
+        setHasOptionsMenu(true);
         updateSettings();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.statusbar_general, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.reset:
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_SHOW_DATE, 1);
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_REMOVE_AOSP_SETTINGS_LINK, 0);
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_REMOVE_LIQUIDCONTROL_LINK, 0);
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_DATE_FORMAT, 0);
+                Settings.System.putFloat(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, STATUSBAR_EXPANDED_ALPHA_DEFAULT);
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, STATUSBAR_EXPANDED_COLOR_DEFAULT);
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_UNEXPANDED_COLOR, STATUSBAR_UNEXPANDED_COLOR_DEFAULT);
+
+                updateSettings();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     private void updateSettings() {
@@ -185,6 +228,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             // just let it go
         }
 
+        //XXX this isn't working the way we may want so consider chopping it out soon
         float unexpandedAlpha = Settings.System.getFloat(getActivity()
                 .getContentResolver(), Settings.System.STATUSBAR_UNEXPANDED_ALPHA, 1f);
         mStatusbarUnexpandedAlpha.setInitValue((int) (unexpandedAlpha * 100));

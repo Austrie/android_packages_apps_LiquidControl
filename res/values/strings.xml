@@ -47,57 +47,57 @@
     <string name="navbar_width_title">Navbar Width</string>
     <string name="navbar_height_title">Navbar Height</string>
     <string name="title_pref_menu_display">Menu Location</string>
-    <string name="summary_pref_menu_display">Position of legacy menu button %s</string>
+    <string name="summary_pref_menu_display">Position of menu button</string>
     <string name="navigation_bar">Navigation</string>
     <string name="navigation_bar_tint_title">Navbar Color</string>
     <string name="title_pref_navigation_menu_display">Menu Visibility</string>
-    <string name="summary_pref_navigation_menu_display">How you want the menu buttons to appear</string>
+    <string name="summary_pref_navigation_menu_display">Appearance of the menus</string>
     <string name="navbar_order_title">Button Order</string>
-    <string name="navbar_order_summary">Customize the order of your soft keys</string>
+    <string name="navbar_order_summary">The order of your softkeys</string>
     <string name="enabled_navbar_buttons_title">Enabled Buttons</string>
-    <string name="enabled_navbar_buttons_summary">Choose which soft keys you would like to see</string>
+    <string name="enabled_navbar_buttons_summary">Choose the desired softkeys</string>
     <string name="button_transparency_title">Button Transparency</string>
     <string name="long_press_home_title">Longpress Home</string>
-    <string name="long_press_home_summary">What to do when long pressing the home softkey</string>
+    <string name="long_press_home_summary">Long pressing the home softkey</string>
     <string name="glow_times_title">Button Glow</string>
-    <string name="glow_times_summary">Adjust how fast your buttons animate after you touch</string>
+    <string name="glow_times_summary">Adjust button animation speeds</string>
 
     <!-- Interface -->
     <string name="rotation_animation_delay_title">Rotation Delay</string>
-    <string name="rotation_animation_delay_summary">Time for which the device must be stable</string>
+    <string name="rotation_animation_delay_summary">Time which device must be stable</string>
     <string name="ime_switcher_title">IME Switcher</string>
-    <string name="ime_switcher_summary">In statusbar, while typing (requires reboot)</string>
+    <string name="ime_switcher_summary">In statusbar, while typing</string>
     <string name="custom_carrier_label_title">Carrier Label</string>
-    <string name="longpress_to_kill_title">Hold back to kill</string>
-    <string name="longpress_to_kill_summary">Holding back will kill the current activity</string>
+    <string name="longpress_to_kill_title">App Killer</string>
+    <string name="longpress_to_kill_summary">Holding back kills current activity</string>
     <string name="rotate_180_title">180° Rotation</string>
     <string name="rotate_180_summary">Allow your device to rotate upside down!</string>
     <string name="horizontal_recents_task_panel_title">Horizontal Recents</string>
     <string name="horizontal_recents_task_panel_summary">Use WebOS style task switcher</string>
     <string name="disable_bootanimation_title">Boot Animation</string>
-    <string name="disable_bootanimation_summary">Toggle boot animation for faster boot time</string>
+    <string name="disable_bootanimation_summary">Disable boot animation for faster boot</string>
     <string name="disable_bugmailer_title">Android Bugmailer</string>
     <string name="disable_bugmailer_summary">Disable integrated bugmailer support</string>
     <string name="crt_animations_header">CRT Animations</string>
     <string name="crt_on_title">CRT animation is now enabled</string>
     <string name="crt_off_title">CRT animation is now disabled</string>
     <string name="sounds_category_title">Sounds</string>
-    <string name="screenshot_sound_title">ScreenShot</string>
-    <string name="screenshot_sound_summary">Disable shutter sound when ScreenShot is captured</string>
+    <string name="screenshot_sound_title">Screenshot</string>
+    <string name="screenshot_sound_summary">Disable sound when capturing screen</string>
     <string name="usb_title">USB</string>
     <string name="usb_fast_charge_title">USB fast charging mode</string>
 
     <!-- Lockscreen -->
     <string name="title_pref_lockscreen_quad_targets">Quad Lockscreen</string>	
-    <string name="summary_pref_lockscreen_quad_targets">Add shortcuts on the lockscreen</string>
+    <string name="summary_pref_lockscreen_quad_targets">Four shortcuts on lockscreen</string>
     <string name="title_pref_lockscreen_octo_targets">Octo Lockscreen</string>	
-    <string name="summary_pref_lockscreen_octo_targets">Adds many shortcuts on the lockscreen</string>
+    <string name="summary_pref_lockscreen_octo_targets">Eight shortcuts on lockscreen</string>
     <string name="title_pref_lockscreen_menu_unlock">Menu Unlock</string>
-    <string name="summary_pref_lockscreen_menu_unlock">Legacy menu icon unlocks screen (requires reboot)</string>
+    <string name="summary_pref_lockscreen_menu_unlock">Legacy menu icon unlocks screen</string>
     <string name="title_lockscreen_user_timeout_override">Lockscreen Timeout</string>
-    <string name="summary_lockscreen_user_timeout_override">Use default timeout setting after screen is off</string>
+    <string name="summary_lockscreen_user_timeout_override">Default timeout after screen is off</string>
     <string name="show_lock_before_unlock_title">Show Before Unlock</string>
-    <string name="show_lock_before_unlock_summary">Show the lockscreen before secure unlock</string>
+    <string name="show_lock_before_unlock_summary">Show lockscreen before secure unlock</string>
     <string name="lockscreen_battery_title">Battery Percent</string>
     <string name="lockscreen_battery_summary">Always show percentage on lockscreen</string>
     <string name="volume_wake_title">Volume Wake</string>
@@ -119,13 +119,13 @@
     <string name="lockscreen_action_mms">Messaging</string>
     <string name="lockscreen_action_none">Nothing</string>
     <string name="lockscreen_landscape_title">Horizontal Lockscreen</string>
-    <string name="lockscreen_landscape_summary">Enable horizontal lockscreen orientation</string>
+    <string name="lockscreen_landscape_summary">Enable horizontal lock orientation</string>
     <string name="lockscreen_quick_unlock_control_title">Quick Unlock</string>
-    <string name="lockscreen_quick_unlock_control_summary">Unlock password/pin lockscreen without enter</string>
+    <string name="lockscreen_quick_unlock_control_summary">Unlock secure lock without enter</string>
     <string name="enable_fast_torch_title">Fast Torch</string>
-    <string name="enable_fast_torch_summary">While screen is off, long-press power key to turn torch on</string>
+    <string name="enable_fast_torch_summary">Screen is off, long-press power key</string>
     <string name="lockscreen_wallpaper_title">Lockscreen Wallpaper</string>
-    <string name="lockscreen_wallpaper_summary">You can remove wallpaper from the menu above</string>
+    <string name="lockscreen_wallpaper_summary">Remove wallpaper from menu above</string>
 
     <!-- Powermenu -->
     <string name="title_show_airplane">Show Airplane</string>
@@ -140,13 +140,13 @@
     <string name="title_pref_powersaving_pref_mode">Enable Powersaver</string>
     <string name="summary_pref_powersaving_pref_mode">@null</string>
     <string name="title_pref_powersaving_data_screen_off">Screen Off Action</string>
-    <string name="summary_pref_powersaving_data_screen_off">What to do with the data when the screen turns off</string>
+    <string name="summary_pref_powersaving_data_screen_off">Data state when screen turns off</string>
     <string name="title_pref_powersaving_data_screen_off_delay">Data Action Delay</string>
-    <string name="summary_pref_powersaving_data_screen_off_delay">How long to wait before applying data action</string>
+    <string name="summary_pref_powersaving_data_screen_off_delay">Delay of selected data action</string>
     <string name="title_pref_powersaving_sync_screen_off">Sync Action</string>
-    <string name="summary_pref_powersaving_sync_screen_off">Whether android auto syncs data and contacts</string>
+    <string name="summary_pref_powersaving_sync_screen_off">Auto sync data and contacts</string>
     <string name="title_pref_powersaving_sync_screen_off_delay">Time Interval</string>
-    <string name="summary_pref_powersaving_sync_screen_off_delay">How long to wait between each forced sync</string>
+    <string name="summary_pref_powersaving_sync_screen_off_delay">Current sync time interval</string>
     <string name="powersaver_data_cat">Data</string>
     <string name="powersaver_sync_cat">Sync</string>
 
@@ -205,43 +205,43 @@
     <string name="clock_color_title">Clock Color</string>
     <string name="reset_color_title">Reset Color</string>
     <string name="enable_alarm_title">Alarm Icon</string>
-    <string name="enable_alarm_summary">You must toggle alarms for it to show</string>
+    <string name="enable_alarm_summary">Toggle alarms for it to show</string>
     <string name="enable_clock_weekday">Current Weekday</string>
-    <string name="enable_clock_weekday_summary">Show current abbreviated day of the week</string>
+    <string name="enable_clock_weekday_summary">Abbreviated current day of week</string>
 
     <!-- Toggles -->
     <string name="toggle_style_title">Toggle Style</string>
-    <string name="toggle_style_summary">Show icons or text on your toggles</string>
+    <string name="toggle_style_summary">Show icons or text on toggles</string>
     <string name="alternate_button_layout_title">Alternate Toggles</string>
-    <string name="alternate_button_layout_summary">Use toggle buttons instead of switches</string>
+    <string name="alternate_button_layout_summary">Use toggle buttons instead</string>
     <string name="enabled_toggles_title">Enabled Toggles</string>
     <string name="enabled_toggles_summary">Choose toggles to display</string>
     <string name="toggles_order_title">Toggle Order</string>
-    <string name="toggles_order_summary">Choose the order which your toggles are displayed</string>
+    <string name="toggles_order_summary">The order toggles are displayed</string>
     <string name="brightness_location_title">Brightness Location</string>
     
     <!-- Signal -->
     <string name="signal_style">Signal Style</string>
     <string name="signal_color_title">Signal Color</string>
     <string name="hide_signal_title">Hide Signal</string>
-    <string name="hide_signal_summary">Will also hide data indicator for now</string>
+    <string name="hide_signal_summary">Hides data indicator for now</string>
     <string name="sixbar_signal_title">Sixbar Signal</string>
-    <string name="sixbar_signal_summary">Use six bars signal strength indicator</string>
+    <string name="sixbar_signal_summary">Use sixbar signal strength mod</string>
 
     <!-- Powerwidget -->
     <string name="power_widget_title">Power Widget</string>
     <string name="title_expanded_widget">Enable Widget</string>
-    <string name="summary_expanded_widget">Show the power widget in notification drawer</string>
+    <string name="summary_expanded_widget">Show power widget in notifications</string>
     <string name="title_expanded_hide_onchange">Hide On Change</string>
-    <string name="summary_expanded_hide_onchange">Hide notification drawer after pressing widget</string>
+    <string name="summary_expanded_hide_onchange">Hide notification drawer after press</string>
     <string name="title_expanded_hide_indicator">Hide Indicator</string>
-    <string name="summary_expanded_hide_indicator">Hide the power widget indicator displays</string>
+    <string name="summary_expanded_hide_indicator">Hide the power widget indicator</string>
     <string name="title_expanded_hide_scrollbar">Hide Scrollbar</string>
-    <string name="summary_expanded_hide_scrollbar">When more than the max number of widgets</string>
+    <string name="summary_expanded_hide_scrollbar">When more than the max number</string>
     <string name="title_widget_picker">Widget Buttons</string>
-    <string name="summary_widget_picker">Select which buttons to display currently</string>
+    <string name="summary_widget_picker">The buttons displayed currently</string>
     <string name="title_widget_order">Widget Order</string>
-    <string name="summary_widget_order">Select the order of notification widgets</string>
+    <string name="summary_widget_order">The order of notification widgets</string>
     <string name="title_buttons">Buttons</string>
     <string name="title_toggle_wifi">Wi-Fi</string>
     <string name="title_toggle_bluetooth">Bluetooth</string>
@@ -318,8 +318,8 @@
     <string name="dt_free_memory">Memory Taskkiller</string>
     <string name="pt_free_memory_boot">Free On Startup</string>
     <string name="ps_set_cpu_activity">Set frequencies and current governor</string>
-    <string name="ps_free_memory">Amount of ram the taskkiller will keep | Current: %s</string>
-    <string name="ps_free_memory_boot">Apply the amount above at boot</string>
+    <string name="ps_free_memory">Amount of ram taskkiller keeps | Current: %s</string>
+    <string name="ps_free_memory_boot">Apply amount above at startup</string>
 
     <!-- Voltage -->
     <string name="freq">Frequency</string>

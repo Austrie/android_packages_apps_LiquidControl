@@ -33,11 +33,10 @@ import android.widget.Toast;
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.widgets.SeekBarPreference;
-
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 public class StatusBarGeneral extends SettingsPreferenceFragment implements
-        Preference.OnPreferenceChangeListener {
+        OnPreferenceChangeListener {
 
     private static final String TAG = "LiquidControl :StatusBarGeneral";
     private static final boolean DEBUG = true;
@@ -76,10 +75,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mContext = getActivity().getApplicationContext();
-
-        // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.prefs_statusbar_general);
 
         // Load preferences
@@ -106,15 +102,14 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mLayout.setValue(Integer.toString(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.STATUS_BAR_LAYOUT, 0)));
 
-        // make sure the settings are updated
-        updateSettings();
-
         if (mTablet) {
             PreferenceScreen prefs = getPreferenceScreen();
             prefs.removePreference(mStatusBarBrightnessToggle);
             prefs.removePreference(mAutoHideToggles);
             prefs.removePreference(mDefaultSettingsButtonBehavior);
         }
+
+        updateSettings();
     }
 
     private void updateSettings() {
@@ -173,6 +168,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                 date = "Tues Feb 14";
             break;
         }
+
         mDateFormat.setSummary(String.format(displayFormat, date));
         float expandedAlpha = Settings.System.getFloat(getActivity()
                 .getContentResolver(), Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, 1f);
@@ -218,7 +214,6 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             if (DEBUG) Log.d(TAG, "value:" + val1 / 100 + "    raw:" + val1);
             success = Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, val1 / 100);
-            restartSystemUI();
         } else if (pref == mWindowshadeBackground) {
             String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
             pref.setSummary(hex);
@@ -231,7 +226,6 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             if (DEBUG) Log.d(TAG, "value:" + val2 / 100 + "    raw:" + val2);
             success = Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_UNEXPANDED_ALPHA, val2 / 100);
-            restartSystemUI();
         } else if (pref == mStatusbarUnexpandedColor) {
             String statusbar_hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
             pref.setSummary(statusbar_hex);
@@ -243,20 +237,10 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             int val = Integer.parseInt((String) newValue);
             success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUS_BAR_LAYOUT, val);
-            restartSystemUI();
         }
 
-        // update checkboxes and return success=true:false
         updateSettings();
         return success;
-    }
-
-    private void restartSystemUI() {
-        try {
-            Runtime.getRuntime().exec("pkill -TERM -f com.android.systemui");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

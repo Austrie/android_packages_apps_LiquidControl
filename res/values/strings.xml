@@ -186,6 +186,8 @@
     <string name="statusbar_unexpanded_color_title">Statusbar Color</string>
     <string name="statusbar_layout">Drawer Layout</string>
     <string name="statusbar_layout_summary">Change notification drawer layout</string>
+    <string name="test_notice_title">Test Notice</string>
+    <string name="test_notice_summary">Alpha only applies to new notices</string>
 
     <!-- Battery -->
     <string name="battery_icon">Battery Style</string>

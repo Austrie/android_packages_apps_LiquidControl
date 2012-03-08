@@ -16,13 +16,16 @@
 
 package com.liquid.control.fragments;
 
-import java.io.IOException;
-
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
@@ -37,6 +40,9 @@ import android.widget.Toast;
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.widgets.SeekBarPreference;
+
+import java.io.IOException;
+
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 public class StatusBarGeneral extends SettingsPreferenceFragment implements
@@ -56,9 +62,14 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_WINDOWSHADE_COLOR = "statusbar_windowshade_background_color";
     private static final String PREF_STATUSBAR_ALPHA = "statusbar_alpha";
     private static final String PREF_STATUSBAR_UNEXPANDED_ALPHA = "statusbar_unexpanded_alpha";
+    private static final String PREF_TEST_NOTICE = "test_notice";
     private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
     private static final String PREF_LAYOUT = "status_bar_layout";
     private static String STATUSBAR_COLOR_SUMMARY_HOLDER;
+
+    private static final String TEST_SHORT = "Alpha Test";
+    private static final String TEST_TITLE = "Test Notice";
+    private static final String TEST_MESSAGE = "Sent to test notification alpha";
 
     /* Default Color Schemes */
     private static final float STATUSBAR_EXPANDED_ALPHA_DEFAULT = 0.7f; //TODO update
@@ -77,8 +88,10 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     ColorPickerPreference mWindowshadeBackground;
     SeekBarPreference mStatusbarAlpha;
     SeekBarPreference mStatusbarUnexpandedAlpha;
+    PreferenceScreen mTestNotification;
     ColorPickerPreference mStatusbarUnexpandedColor;
     ListPreference mLayout;
+    NotificationManager mNoticeManager;
     Context mContext;
 
     @Override
@@ -110,6 +123,23 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mLayout.setOnPreferenceChangeListener(this);
         mLayout.setValue(Integer.toString(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.STATUS_BAR_LAYOUT, 0)));
+
+        mTestNotification = (PreferenceScreen) findPreference(PREF_TEST_NOTICE);
+        mTestNotification.setOnPreferenceClickListener(
+                new OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(mContext,com.liquid.control.fragments.StatusBarGeneral.class);
+                mNoticeManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+                mNoticeManager.cancelAll();
+                Notification testNote = new Notification(R.mipmap.ic_launcher, TEST_SHORT,
+                        System.currentTimeMillis());
+                testNote.setLatestEventInfo(mContext, TEST_TITLE,
+                        TEST_MESSAGE, PendingIntent.getActivity(mContext,
+                        0, intent, PendingIntent.FLAG_CANCEL_CURRENT));
+                mNoticeManager.notify(0, testNote);
+                return true;
+            }
+        });
 
         if (mTablet) {
             PreferenceScreen prefs = getPreferenceScreen();
@@ -228,7 +258,6 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             // just let it go
         }
 
-        //XXX this isn't working the way we may want so consider chopping it out soon
         float unexpandedAlpha = Settings.System.getFloat(getActivity()
                 .getContentResolver(), Settings.System.STATUSBAR_UNEXPANDED_ALPHA, 1f);
         mStatusbarUnexpandedAlpha.setInitValue((int) (unexpandedAlpha * 100));

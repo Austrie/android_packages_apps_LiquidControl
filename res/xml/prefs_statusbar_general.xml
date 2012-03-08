@@ -93,6 +93,12 @@
             android:key="statusbar_unexpanded_alpha"
             android:title="@string/statusbar_unexpanded_alpha_title" />
 
+        <PreferenceScreen
+            android:key="test_notice"
+            android:title="@string/test_notice_title"
+            android:summary="@string/test_notice_summary" >
+        </PreferenceScreen>
+
         <net.margaritov.preference.colorpicker.ColorPickerPreference
             android:key="statusbar_unexpanded_color"
             android:title="@string/statusbar_unexpanded_color_title"

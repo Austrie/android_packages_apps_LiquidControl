@@ -128,7 +128,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mTestNotification.setOnPreferenceClickListener(
                 new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(mContext,com.liquid.control.fragments.StatusBarGeneral.class);
+                Intent intent = new Intent();
                 mNoticeManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
                 mNoticeManager.cancelAll();
                 Notification testNote = new Notification(R.mipmap.ic_launcher, TEST_SHORT,

@@ -21,6 +21,11 @@
         android:title="@string/statusbar_expanded_title"
         android:key="statusbar_expanded_cat">
 
+        <Preference
+            android:key="user_background"
+            android:title="@string/user_background_title"
+            android:summary="@string/user_background_summary" />
+
         <com.liquid.control.widgets.SeekBarPreference
             android:key="statusbar_alpha"
             android:title="@string/statusbar_alpha_title" />
@@ -82,6 +87,13 @@
             android:key="adb_icon" 
             android:title="@string/adb_icon_title"
             android:summary="@string/adb_icon_summary" />
+
+        <ListPreference
+            android:key="windowshade_handle"
+            android:title="@string/windowshade_handle_title"
+            android:summary="@string/windowshade_handle_summary"
+            android:entries="@array/windowshade_handle_entries"
+            android:entryValues="@array/windowshade_handle_values" />
 
     </PreferenceCategory>
 

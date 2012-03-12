@@ -16,11 +16,15 @@
 
 package com.liquid.control.fragments;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -28,9 +32,11 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceScreen;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,6 +48,9 @@ import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.widgets.SeekBarPreference;
 
 import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
@@ -66,15 +75,21 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
     private static final String PREF_LAYOUT = "status_bar_layout";
     private static String STATUSBAR_COLOR_SUMMARY_HOLDER;
-
     private static final String TEST_SHORT = "Alpha Test";
     private static final String TEST_TITLE = "Test Notice";
     private static final String TEST_MESSAGE = "Sent to test notification alpha";
+
+    private static final String PREF_USER_BACKGROUND = "user_background";
+    private static final String PREF_WINDOWSHADE_HANDLE = "windowshade_handle"; //TODO finish
+    private static final int REQUEST_PICK_WALLPAPER = 199;
+    private static final String USER_IMAGE_NAME = "windowshade_background.jpg";
+    private static boolean USER_SUPPLIED_IMAGE;
 
     /* Default Color Schemes */
     private static final float STATUSBAR_EXPANDED_ALPHA_DEFAULT = 0.7f; //TODO update
     private static final int STATUSBAR_EXPANDED_COLOR_DEFAULT = 0xFF000000; //TODO update
     private static final int STATUSBAR_UNEXPANDED_COLOR_DEFAULT = 0xFF000000; //TODO update
+
 
     CheckBoxPreference mShowDate;
     ListPreference mDateFormat;
@@ -91,6 +106,9 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     PreferenceScreen mTestNotification;
     ColorPickerPreference mStatusbarUnexpandedColor;
     ListPreference mLayout;
+    Preference mUserBackground;
+    ListPreference mWindowshadeHandle;
+
     NotificationManager mNoticeManager;
     Context mContext;
 
@@ -141,6 +159,10 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             }
         });
 
+        mUserBackground = (Preference) findPreference(PREF_USER_BACKGROUND);
+        mWindowshadeHandle = (ListPreference) findPreference(PREF_WINDOWSHADE_HANDLE);
+        mWindowshadeHandle.setOnPreferenceChangeListener(this);
+
         if (mTablet) {
             PreferenceScreen prefs = getPreferenceScreen();
             prefs.removePreference(mStatusBarBrightnessToggle);
@@ -163,6 +185,9 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.reset:
+                // first statusbar background
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND, 0);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_SHOW_DATE, 0);
                 Settings.System.putInt(getActivity().getContentResolver(),
@@ -188,25 +213,18 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private void updateSettings() {
         mShowDate.setChecked(Settings.System.getInt(mContext
                 .getContentResolver(), Settings.System.STATUSBAR_SHOW_DATE, 0) == 1);
-
         mDefaultSettingsButtonBehavior.setChecked(Settings.System.getInt(mContext
                 .getContentResolver(), Settings.System.STATUSBAR_SETTINGS_BEHAVIOR, 0) == 1);
-
         mAutoHideToggles.setChecked(Settings.System.getInt(mContext
                 .getContentResolver(), Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE, 0) == 1);
-
         mDateBehavior.setChecked(Settings.System.getInt(mContext
                 .getContentResolver(), Settings.System.STATUSBAR_DATE_BEHAVIOR, 0) == 1);
-
         mStatusBarBrightnessToggle.setChecked(Settings.System.getInt(mContext
                 .getContentResolver(), Settings.System.STATUS_BAR_BRIGHTNESS_TOGGLE, 0) == 1);
-
         mShowAospSettings.setChecked(Settings.System.getInt(mContext
                 .getContentResolver(), Settings.System.STATUSBAR_REMOVE_AOSP_SETTINGS_LINK, 0) == 1);
-
         mShowLiquidControl.setChecked(Settings.System.getInt(mContext
                 .getContentResolver(), Settings.System.STATUSBAR_REMOVE_LIQUIDCONTROL_LINK, 0) == 1);
-
         mAdbIcon.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
                 Settings.Secure.ADB_ICON, 1) == 1);
 
@@ -272,6 +290,19 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         } catch (SettingNotFoundException snfe) {
             // just let it go
         }
+
+        // TODO: update summary mWindowshadeHandle
+        int handleImage = Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE, 0);
+        String imageName = "default";
+        switch (handleImage) {
+            case 1:
+                imageName = "Liquid Example 1";
+                break;
+            case 0:
+            default:
+                imageName = "Liquid Example 0 -ie default";
+        }
     }
 
     public boolean onPreferenceChange(Preference pref, Object newValue) {
@@ -310,6 +341,10 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             int val = Integer.parseInt((String) newValue);
             success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUS_BAR_LAYOUT, val);
+        } else if (pref == mWindowshadeHandle) {
+            int val = Integer.parseInt((String) newValue);
+            success = Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE, val);
         }
 
         updateSettings();
@@ -359,9 +394,66 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                     Settings.System.STATUSBAR_SHOW_DATE,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
             return true;
+        } else if (preference == mUserBackground) {
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            float spotlightX = (float) display.getWidth();
+            float spotlightY = (float) display.getHeight();
+            if (DEBUG) Log.d(TAG, "spotlightX: " + spotlightX + "	spotlightY: " + spotlightY);
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+            intent.setType("image/*");
+            intent.putExtra("crop", "true");
+            // XXX: not sure exactly what all we HAVE to send to image cropper yet
+            // we don't send the huge aspectX/Y values for wide screen
+            intent.putExtra("aspectX", spotlightX);
+            intent.putExtra("aspectY", spotlightY);
+            intent.putExtra("outputX", spotlightX);
+            intent.putExtra("outputY", spotlightY);
+            intent.putExtra("scale", true);
+            intent.putExtra("spotlightX", spotlightX);
+            intent.putExtra("spotlightY", spotlightY);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, getWindowshadeExternalUri());
+            intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+            startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
+            return true;
         }
-
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
-}
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_PICK_WALLPAPER) {
+                FileOutputStream userImageStream = null;
+                try {
+                    userImageStream = mContext.openFileOutput(USER_IMAGE_NAME, Context.MODE_WORLD_READABLE);
+                } catch (FileNotFoundException e) {
+                    return;
+                }
+                Uri selectedImageUri = getWindowshadeExternalUri();
+                if (DEBUG) Log.d(TAG, "Selected image uri: " + selectedImageUri);
+                Bitmap bitmap = BitmapFactory.decodeFile(selectedImageUri.getPath());
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, userImageStream);
+                // this doesn't mean that the setting changed
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND, 1);
+                // now we poke a useless setting to initiate the change
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_USE_WINDOWSHADE_BACKGROUND, USER_SUPPLIED_IMAGE ? 1 : 0);
+            }
+        } else {
+            // result was not ok disable user background then poke the useless setting to update
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND, 0);
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_USE_WINDOWSHADE_BACKGROUND, USER_SUPPLIED_IMAGE ? 1 : 0);
+            if (DEBUG) Log.d(TAG, "result was not ok resultCode: " + resultCode);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private Uri getWindowshadeExternalUri() {
+        File dir = mContext.getExternalCacheDir();
+        File userImage = new File(dir, USER_IMAGE_NAME);
+        Log.d(TAG, "Statusbar background path: " + userImage.getAbsolutePath());
+        return Uri.fromFile(userImage);
+    }
+}

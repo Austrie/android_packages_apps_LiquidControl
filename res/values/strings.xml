@@ -41,7 +41,8 @@
     <string name="advanced_settings">Advanced</string>
     <string name="misc_short">Misc</string>
     <string name="system">System</string>
-    
+    <string name="drawables_main_screen_title">Images</string>
+
     <!-- Navigation -->
     <string name="enable_navbar_title">Enable Navbar</string>
     <string name="navbar_width_title">Navbar Width</string>
@@ -188,6 +189,13 @@
     <string name="statusbar_layout_summary">Change notification drawer layout</string>
     <string name="test_notice_title">Test Notice</string>
     <string name="test_notice_summary">Alpha only applies to new notices</string>
+    <string name="windowshade_background_title">Statusbar background</string>
+    <string name="liquid_background_title">Liquid Status</string>
+    <string name="liquid_background_summary">Liquid themed statusbar backgrounds</string>
+    <string name="user_background_title">Custom statusbar background</string>
+    <string name="user_background_summary">You supply the image</string>
+    <string name="windowshade_handle_title">Window Handle</string>
+    <string name="windowshade_handle_summary">customize the statusbar close handle bar image</string>
 
     <!-- Battery -->
     <string name="battery_icon">Battery Style</string>

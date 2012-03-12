@@ -1055,4 +1055,14 @@
         <item>0</item>
     </string-array>
 
+    <string-array name="windowshade_handle_entries">
+        <item>Liquid example 0</item>
+        <item>Liquid example 1</item>
+    </string-array>
+
+    <string-array name="windowshade_handle_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
 </resources>

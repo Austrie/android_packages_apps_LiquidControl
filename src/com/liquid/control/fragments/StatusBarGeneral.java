@@ -216,7 +216,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mDefaultSettingsButtonBehavior.setChecked(Settings.System.getInt(mContext
                 .getContentResolver(), Settings.System.STATUSBAR_SETTINGS_BEHAVIOR, 0) == 1);
         mAutoHideToggles.setChecked(Settings.System.getInt(mContext
-                .getContentResolver(), Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE, 0) == 1);
+                .getContentResolver(), Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE, 1) == 1);
         mDateBehavior.setChecked(Settings.System.getInt(mContext
                 .getContentResolver(), Settings.System.STATUSBAR_DATE_BEHAVIOR, 0) == 1);
         mStatusBarBrightnessToggle.setChecked(Settings.System.getInt(mContext

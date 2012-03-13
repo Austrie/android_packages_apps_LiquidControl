@@ -185,7 +185,6 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.reset:
-                // first statusbar background
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND, 0);
                 Settings.System.putInt(getActivity().getContentResolver(),
@@ -202,6 +201,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                         Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, STATUSBAR_EXPANDED_COLOR_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_UNEXPANDED_COLOR, STATUSBAR_UNEXPANDED_COLOR_DEFAULT);
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE, 0);
 
                 updateSettings();
                 return true;
@@ -297,12 +298,13 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         String imageName = "default";
         switch (handleImage) {
             case 1:
-                imageName = "Liquid Example 1";
+                imageName = mContext.getString(R.string.windowshade_handle_liquid_1);
                 break;
             case 0:
             default:
-                imageName = "Liquid Example 0 -ie default";
+                imageName = mContext.getString(R.string.windowshade_handle_default);
         }
+        mWindowshadeHandle.setSummary(imageName);
     }
 
     public boolean onPreferenceChange(Preference pref, Object newValue) {
@@ -396,21 +398,22 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             return true;
         } else if (preference == mUserBackground) {
             Display display = getActivity().getWindowManager().getDefaultDisplay();
-            float spotlightX = (float) display.getWidth();
-            float spotlightY = (float) display.getHeight();
-            if (DEBUG) Log.d(TAG, "spotlightX: " + spotlightX + "	spotlightY: " + spotlightY);
+            float screenSizeX = (float) display.getWidth();
+            float screenSizeY = (float) display.getHeight();
+            if (DEBUG) Log.d(TAG, "screenSizeX: " + screenSizeX + "	screenSizeY: " + screenSizeY);
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
             intent.setType("image/*");
             intent.putExtra("crop", "true");
-            // XXX: not sure exactly what all we HAVE to send to image cropper yet
-            // we don't send the huge aspectX/Y values for wide screen
-            intent.putExtra("aspectX", spotlightX);
-            intent.putExtra("aspectY", spotlightY);
-            intent.putExtra("outputX", spotlightX);
-            intent.putExtra("outputY", spotlightY);
+            // aspect is 720x1038 ratio for cropper //TODO: is that accurate ratio?
+            intent.putExtra("aspectX", 720);
+            intent.putExtra("aspectY", 1038);
+            // output will be size of screen
+            intent.putExtra("outputX", screenSizeX);
+            intent.putExtra("outputY", screenSizeY);
             intent.putExtra("scale", true);
-            intent.putExtra("spotlightX", spotlightX);
-            intent.putExtra("spotlightY", spotlightY);
+            // draw a starting point square for the user
+            intent.putExtra("spotlightX", screenSizeX);
+            intent.putExtra("spotlightY", screenSizeY);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, getWindowshadeExternalUri());
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
             startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
@@ -432,19 +435,17 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                 if (DEBUG) Log.d(TAG, "Selected image uri: " + selectedImageUri);
                 Bitmap bitmap = BitmapFactory.decodeFile(selectedImageUri.getPath());
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, userImageStream);
-                // this doesn't mean that the setting changed
+
+                // force settings update
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND, 0);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND, 1);
-                // now we poke a useless setting to initiate the change
-                Settings.System.putInt(getActivity().getContentResolver(),
-                        Settings.System.STATUSBAR_USE_WINDOWSHADE_BACKGROUND, USER_SUPPLIED_IMAGE ? 1 : 0);
             }
         } else {
             // result was not ok disable user background then poke the useless setting to update
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND, 0);
-            Settings.System.putInt(getActivity().getContentResolver(),
-                    Settings.System.STATUSBAR_USE_WINDOWSHADE_BACKGROUND, USER_SUPPLIED_IMAGE ? 1 : 0);
             if (DEBUG) Log.d(TAG, "result was not ok resultCode: " + resultCode);
         }
         super.onActivityResult(requestCode, resultCode, data);

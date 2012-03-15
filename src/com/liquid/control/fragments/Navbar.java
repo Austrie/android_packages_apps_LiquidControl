@@ -62,9 +62,13 @@ public class Navbar extends SettingsPreferenceFragment implements
     private static final String PREF_NAV_COLOR = "nav_button_color";
     private static final String PREF_MENU_UNLOCK = "pref_menu_display";
     private static final String PREF_HOME_LONGPRESS = "long_press_home";
+    private static final String PREF_NAV_BACKGROUND_COLOR = "nav_button_background_color";
+
+    private static final int DEFAULT_BACKGROUND_COLOR = 0xFF000000;
 
     // move these later
     ColorPickerPreference mNavigationBarColor;
+    ColorPickerPreference mNavigationBarBackgroundColor;
     ListPreference menuDisplayLocation;
     ListPreference mNavBarMenuDisplay;
     ListPreference mHomeLongpress;
@@ -72,13 +76,12 @@ public class Navbar extends SettingsPreferenceFragment implements
     Preference mNavBarEnabledButtons;
     Preference mLayout;
     SeekBarPreference mButtonAlpha;
-
     CheckBoxPreference mEnableNavigationBar;
     ListPreference mNavigationBarHeight;
     ListPreference mNavigationBarWidth;
 
     private final String[] buttons = {
-            "HOME", "BACK", "TASKS", "SEARCH", "MENU_BIG"
+        "HOME", "BACK", "TASKS", "SEARCH", "MENU_BIG"
     };
 
     @Override
@@ -109,6 +112,9 @@ public class Navbar extends SettingsPreferenceFragment implements
 
         mNavigationBarColor = (ColorPickerPreference) findPreference(PREF_NAV_COLOR);
         mNavigationBarColor.setOnPreferenceChangeListener(this);
+
+        mNavigationBarBackgroundColor = (ColorPickerPreference) findPreference(PREF_NAV_BACKGROUND_COLOR);
+        mNavigationBarBackgroundColor.setOnPreferenceChangeListener(this);
 
         mGlowTimes = (ListPreference) findPreference("glow_times");
         mGlowTimes.setOnPreferenceChangeListener(this);
@@ -147,7 +153,6 @@ public class Navbar extends SettingsPreferenceFragment implements
             prefs.removePreference(mHomeLongpress);
             prefs.removePreference(mNavBarMenuDisplay);
         }
-
         setHasOptionsMenu(true);
     }
 
@@ -170,6 +175,11 @@ public class Navbar extends SettingsPreferenceFragment implements
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.NAVIGATION_BAR_BUTTONS_SHOW, mContext.getResources().getBoolean(
                                 com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0);
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.NAVIGATION_BAR_BUTTONS_SHOW, mContext.getResources().getBoolean(
+                                com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0);
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.NAVIGATION_BAR_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
                 mButtonAlpha.setValue(60);
                 return true;
             default:
@@ -270,12 +280,18 @@ public class Navbar extends SettingsPreferenceFragment implements
             String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String
                     .valueOf(newValue)));
             preference.setSummary(hex);
-
             int intHex = ColorPickerPreference.convertToColorInt(hex);
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.NAVIGATION_BAR_TINT, intHex);
             return true;
-
+        } else if (preference == mNavigationBarBackgroundColor) {
+            String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String
+                    .valueOf(newValue)));
+            preference.setSummary(hex);
+            int intHex = ColorPickerPreference.convertToColorInt(hex);
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_BACKGROUND_COLOR, intHex);
+            return true;
         } else if (preference == mHomeLongpress) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.NAVIGATION_BAR_HOME_LONGPRESS,

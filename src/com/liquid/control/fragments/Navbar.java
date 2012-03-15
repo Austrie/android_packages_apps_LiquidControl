@@ -176,9 +176,6 @@ public class Navbar extends SettingsPreferenceFragment implements
                         Settings.System.NAVIGATION_BAR_BUTTONS_SHOW, mContext.getResources().getBoolean(
                                 com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0);
                 Settings.System.putInt(getActivity().getContentResolver(),
-                        Settings.System.NAVIGATION_BAR_BUTTONS_SHOW, mContext.getResources().getBoolean(
-                                com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0);
-                Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.NAVIGATION_BAR_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
                 mButtonAlpha.setValue(60);
                 return true;

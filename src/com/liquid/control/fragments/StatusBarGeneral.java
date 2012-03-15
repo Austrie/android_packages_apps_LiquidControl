@@ -324,7 +324,10 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
             pref.setSummary(hex);
             int intHex = ColorPickerPreference.convertToColorInt(hex);
-            success =Settings.System.putInt(getActivity().getContentResolver(),
+            // first we must turn off the user background for this to show
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND, 0);
+            success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, intHex);
             if (DEBUG) Log.d(TAG, String.format("new color hex value: %d", intHex));
         } else if (pref == mStatusbarUnexpandedAlpha) {

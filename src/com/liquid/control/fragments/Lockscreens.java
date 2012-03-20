@@ -379,11 +379,12 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     private Drawable resize(Drawable image) {
         int size = 50;
         int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
+
         Bitmap d = ((BitmapDrawable) image).getBitmap();
         Bitmap bitmapOrig = Bitmap.createScaledBitmap(d, px, px, false);
         return new BitmapDrawable(mContext.getResources(), bitmapOrig);
     }
-
+    
     private Drawable getLockscreenIconImage(int index) {
         String uri = Settings.System.getString(getActivity().getContentResolver(),
                 Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index]);

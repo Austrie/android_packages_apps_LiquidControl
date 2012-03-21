@@ -102,6 +102,12 @@
             android:fragment="com.liquid.control.fragments.Performance" />
 
         <header
+            android:id="@+id/brt"
+            android:title="@string/brt_string"
+            android:icon="@drawable/ic_propmodder"
+            android:fragment="com.liquid.control.fragments.BackupRestoreTheme" />
+
+        <header
             android:id="@+id/propmodder"
             android:title="@string/propmodder_title"
             android:icon="@drawable/ic_propmodder"

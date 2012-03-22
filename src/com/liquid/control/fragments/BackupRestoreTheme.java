@@ -252,11 +252,11 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         boolean handledInt = false;
         switch (theme) {
             case EXILED:
-                restore(getString(R.string.exiled_theme_0, true);
+                restore(getString(R.string.exiled_theme_0, true));
                 handledInt = true;
                 break;
             case UNAFFILIATED:
-                restore(getString(R.string.unaffiliated_theme_0, true);
+                restore(getString(R.string.unaffiliated_theme_0, true));
                 handledInt = true;
                 break;
         }

@@ -61,7 +61,7 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
     private static final String THEME_EXILED_PREF = "theme_exiled";
     private static final int EXILED = 1;
     private static String CONFIG_FILENAME = null;
-    private static final String MESSAGE_TO_HEAD_FILE = "These values can be modified by hand but be careful as you can throw unforseen exceptions";
+    private static String CONFIG_CHECK_PASS = "/sdcard/LiquidControl/%s and dependant restore files have been created";
     private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl/";
     private static final String PATH_TO_VALUES = "/sdcard/LiquidControl/backup";
     private static boolean success = false;
@@ -108,7 +108,7 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         alert.setView(input);
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                String value = ((Spannable) input.getText()).toString();
+                final String value = ((Spannable) input.getText()).toString();
 
                 // I'm sure there is some way to check for bad chars in filename
                 if (value != null || value != "" || !value.contains("!") || !value.contains("@") ||
@@ -219,6 +219,15 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
                     }
+
+                    // Notify user if files were created correctly
+                    if (checkConfigFiles(value)) {
+                        Toast.makeText(mContext, String.format(CONFIG_CHECK_PASS,
+                                value), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, "We encountered a problem, restore not created",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -236,8 +245,13 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         // call the file picker then apply in the result
         Intent open_file = new Intent(mContext, com.liquid.control.tools.FilePicker.class);
         open_file.putExtra(OPEN_FILENAME, BLANK);
+        // false because we are not saving
         open_file.putExtra("action", false);
+        // provide a path to start the user off on
         open_file.putExtra("path", PATH_TO_CONFIGS);
+        // force the user to stay in the provided directory
+        open_file.putExtra("lock_dir", true);
+        // result code can be whatever but must match requestCode in onActivityResult
         startActivityForResult(open_file, 1);
     }
 
@@ -365,6 +379,7 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
                 } catch (IOException e) {
                     if (DEBUG) e.printStackTrace();
                 }
+                Toast.makeText(mContext, String.format("Finished restoring %s", open_data_string), Toast.LENGTH_SHORT).show();
             } catch (NullPointerException npe) {
                 // let the user know and move on
                 Toast.makeText(mContext, "no file was returned", Toast.LENGTH_SHORT).show();
@@ -374,6 +389,25 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         } else {
             // request code wasn't what we sent
             Log.wtf(TAG, "This shouldn't ever happen ...shit is fucked up");
+        }
+    }
+
+    private boolean checkConfigFiles(String userName) {
+        String base = "%s/LiquidControl/backup/%s_%s";
+        String nameSpaceHolder = "%s/LiquidControl/%s";
+        File configNameSpace = new File(String.format(nameSpaceHolder, Environment.getExternalStorageDirectory(), userName));
+        File configStrings = new File(String.format(base, Environment.getExternalStorageDirectory(), "string", userName));
+        File configInts = new File(String.format(base, Environment.getExternalStorageDirectory(), "int", userName));
+        File configFloats = new File(String.format(base, Environment.getExternalStorageDirectory(), "float", userName));
+        // this is long but prevents errors later
+        if (configNameSpace.exists() && !configNameSpace.isDirectory() && configNameSpace.canRead() && configStrings.exists() &&
+                configStrings.canRead() && configInts.exists() && configInts.canRead() &&
+                configFloats.exists() && configFloats.canRead()) {
+            if (DEBUG) Log.d(TAG, "config files have been saved");
+            return true;
+        } else {
+            if (DEBUG) Log.d(TAG, "config checks failed");
+            return false;
         }
     }
 

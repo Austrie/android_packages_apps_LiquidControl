@@ -61,11 +61,17 @@ public class FilePicker extends ListActivity {
     private String mFileError;
     private String mMessage;
 
+    /* are we locking the user in supplied directory */
+    public static boolean LOCKED_IN_DIR = false;
+
+    TextView mEmptyDirMessage;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.file_picker);
 
+        mEmptyDirMessage = (TextView) findViewById(R.id.empty);
         myPath = (TextView)findViewById(R.id.path);
         saveFilename = (EditText)findViewById(R.id.save_filename);
 
@@ -77,9 +83,15 @@ public class FilePicker extends ListActivity {
             if (DEBUG) npe.printStackTrace();
         }
 
-        PREV_PATH = "/sdcard/.liquid/";
+        PREV_PATH = "/sdcard/";
         try {
             PREV_PATH = getIntent().getStringExtra("path");
+        } catch (NullPointerException npe) {
+            if (DEBUG) npe.printStackTrace();
+        }
+
+        try {
+            LOCKED_IN_DIR = getIntent().getBooleanExtra("lock_dir", DEFAULT);
         } catch (NullPointerException npe) {
             if (DEBUG) npe.printStackTrace();
         }
@@ -124,16 +136,19 @@ public class FilePicker extends ListActivity {
         File f = new File(dirPath);
         File[] files = f.listFiles();
         if (!dirPath.equals(root)) {
-            item.add(root);
-            path.add(root);
-            item.add(PARENT_DIR);
-            path.add(f.getParent());
+            if (!LOCKED_IN_DIR) {
+                item.add(root);
+                path.add(root);
+                item.add(PARENT_DIR);
+                path.add(f.getParent());
+            }
         }
 
         try {
             for (int i=0; i < files.length; i++) {
                 File file = files[i];
                 path.add(file.getPath());
+                mEmptyDirMessage.setVisibility(View.GONE);
 
                 /* for some reason this seems to sort the list incorrectly
                  * placing either the item or path asynchronous by one list item
@@ -154,6 +169,7 @@ public class FilePicker extends ListActivity {
             setListAdapter(fileList);
         } catch (NullPointerException npe) {
             if (DEBUG) Log.d(TAG, "we experienced a problem with the path");
+            mEmptyDirMessage.setVisibility(View.VISIBLE);
         }
 
     }

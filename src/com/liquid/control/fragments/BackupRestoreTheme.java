@@ -59,7 +59,9 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
     private static final String BACKUP_PREF = "backup";
     private static final String RESTORE_PREF = "restore";
     private static final String THEME_EXILED_PREF = "theme_exiled";
+    private static final String THEME_UNAFFILIATED_PREF = "theme_unaffiliated";
     private static final int EXILED = 1;
+    private static final int UNAFFILIATED = 2;
     private static String CONFIG_FILENAME = null;
     private static String CONFIG_CHECK_PASS = "/sdcard/LiquidControl/%s and dependant restore files have been created";
     private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl/";
@@ -76,6 +78,7 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
     PreferenceScreen mBackup;
     PreferenceScreen mRestore;
     PreferenceScreen mExiledThemer;
+    PreferenceScreen mUnaffiliated;
 
     Properties mStringProps = new Properties();
     Properties mIntProps = new Properties();
@@ -91,6 +94,7 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         mBackup = (PreferenceScreen) prefs.findPreference(BACKUP_PREF);
         mRestore = (PreferenceScreen) prefs.findPreference(RESTORE_PREF);
         mExiledThemer = (PreferenceScreen) prefs.findPreference(THEME_EXILED_PREF);
+        mUnaffiliated = (PreferenceScreen) prefs.findPreference(THEME_UNAFFILIATED_PREF);
         setupArrays();
     }
 
@@ -244,23 +248,19 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         return success;
     }
 
-    private void runRestore() {
-        // call the file picker then apply in the result
-        Intent open_file = new Intent(mContext, com.liquid.control.tools.FilePicker.class);
-        open_file.putExtra(OPEN_FILENAME, BLANK);
-        // false because we are not saving
-        open_file.putExtra("action", false);
-        // provide a path to start the user off on
-        open_file.putExtra("path", PATH_TO_CONFIGS);
-        // force the user to stay in the provided directory
-        open_file.putExtra("lock_dir", true);
-        // result code can be whatever but must match requestCode in onActivityResult
-        startActivityForResult(open_file, 1);
-    }
-
     private boolean applyTheme(int theme) {
-        // TODO: duh
-        return true;
+        boolean handledInt = false;
+        switch (theme) {
+            case EXILED:
+                restore(getString(R.string.exiled_theme_0, true);
+                handledInt = true;
+                break;
+            case UNAFFILIATED:
+                restore(getString(R.string.unaffiliated_theme_0, true);
+                handledInt = true;
+                break;
+        }
+        return handledInt;
     }
 
     @Override
@@ -275,8 +275,11 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
             runRestore();
             return true;
         } else if (pref == mExiledThemer) {
-            if (DEBUG) Log.d(TAG, "calling backup method");
+            if (DEBUG) Log.d(TAG, "calling applyTheme(EXILED) method");
             return applyTheme(EXILED);
+        } else if (pref == mUnaffiliated) {
+            if (DEBUG) Log.d(TAG, "calling applyTheme(UNAFFILIATED) method");
+            return applyTheme(UNAFFILIATED);
         } //TODO: we should also have a complete return to fresh wipe
         return super.onPreferenceTreeClick(prefScreen, pref);
     }
@@ -285,109 +288,13 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO this prob should be given to a Handler() as to be async because this makes the system freak out
         if (DEBUG) Log.d(TAG, "requestCode=" + requestCode + "	resultCode=" + resultCode + "	Intent data=" + data);
-        setupArrays();
         if (requestCode == 1) {
+            //send stuff to restore
             try {
-                final String open_data_string = data.getStringExtra(OPEN_FILENAME);
-                Log.d(TAG, String.format("extra open data found: %s", open_data_string));
-
-                // determine the name to be used for opening saved config files
-                File nameSpaceFile = new File(open_data_string);
-                File testDirectories = new File(PATH_TO_VALUES);
-                final String userSuppliedFilename = nameSpaceFile.getName();
-                if (DEBUG) {
-                    Log.d(TAG, String.format("userSuppliedFilename=%s for nameSpaceFile=%s", userSuppliedFilename, nameSpaceFile));
-                    Log.d(TAG, "Do our directories exist? " + testDirectories.isDirectory());
-                }
-
-                // TODO/XXX should we consider filesystem space? our configs are very small (we don't save drawables, yet)
-                //    and our sdcard is 16gb so for now we won't worry about it
-
-                // first the strings
-                try{
-                    String filename_strings = String.format("%s/LiquidControl/backup/string_%s",
-                            Environment.getExternalStorageDirectory(), userSuppliedFilename);
-                    File configStringFile = new File(filename_strings);
-                    if (DEBUG) Log.d(TAG, String.format("Strings config file {%s}	Exists? %s	CanRead? %s",
-                            configStringFile.getPath(), configStringFile.exists(), configStringFile.canRead()));
-                    FileReader stringReader = new FileReader(configStringFile);
-                    mStringProps.load(stringReader);
-                    for (String stringPropCheck : stringSettingsArray) {
-                        // null is returned if no setting is found
-                        if ((String) mStringProps.get(stringPropCheck) != null) {
-                            if (DEBUG) Log.d(TAG, String.format("String Property found: %s	value: %s",
-                                    stringPropCheck, (String) mStringProps.get(stringPropCheck)));
-                            try {
-                                Settings.System.putString(mContext.getContentResolver(), stringPropCheck,
-                                        (String) mStringProps.get(stringPropCheck));
-                            } catch (NumberFormatException nfe) {
-                                if (DEBUG) nfe.printStackTrace();
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    if (DEBUG) e.printStackTrace();
-                }
-
-                // next ints
-                try{
-                    String filename_ints = String.format("%s/LiquidControl/backup/int_%s",
-                            Environment.getExternalStorageDirectory(), userSuppliedFilename);
-                    File configIntFile = new File(filename_ints);
-                    if (DEBUG) Log.d(TAG, String.format("Ints config file {%s}	Exists? %s	CanRead? %s",
-                            configIntFile.getPath(), configIntFile.exists(), configIntFile.canRead()));
-                    FileReader intsReader = new FileReader(configIntFile);
-                    mIntProps.load(intsReader);
-                    for (String intPropCheck : intSettingsArray) {
-                        // null is returned if no setting is found
-                        if ((String) mIntProps.get(intPropCheck) != null) {
-                            if (DEBUG) Log.d(TAG, String.format("Int property found: %s	value: %s",
-                                    intPropCheck, (String) mIntProps.get(intPropCheck)));
-                            // TODO lots of deferencing going on here is this hurting performace?
-                            try {
-                                Settings.System.putInt(mContext.getContentResolver(), intPropCheck,
-                                        Integer.parseInt((String) mIntProps.get(intPropCheck)));
-                            } catch  (NumberFormatException nfe) {
-                                if (DEBUG) nfe.printStackTrace();
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    if (DEBUG) e.printStackTrace();
-                }
-
-                // last floats
-                try{
-                    String filename_floats = String.format("%s/LiquidControl/backup/float_%s",
-                            Environment.getExternalStorageDirectory(), userSuppliedFilename);
-                    File configFloatFile = new File(filename_floats);
-                    if (DEBUG) Log.d(TAG, String.format("Floats config file {%s} 	Exists? %s	CanRead? %s",
-                            configFloatFile.getPath(), configFloatFile.exists(), configFloatFile.canRead()));
-                    if (DEBUG) Log.d(TAG, "{" + filename_floats + "}");
-                    FileReader floatReader = new FileReader(configFloatFile);
-                    mFloatProps.load(floatReader);
-                    for (String floatPropCheck : floatSettingsArray) {
-                        // null is returned if no setting is found
-                        if ((String) mFloatProps.get(floatPropCheck) != null) {
-                            if (DEBUG) Log.d(TAG, String.format("Float property found: %s	value: %s",
-                                    floatPropCheck, (String) mFloatProps.get(floatPropCheck)));
-                            try {
-                                Settings.System.putFloat(mContext.getContentResolver(), floatPropCheck,
-                                        Float.parseFloat((String) mFloatProps.get(floatPropCheck)));
-                            } catch  (NumberFormatException nfe) {
-                                if (DEBUG) nfe.printStackTrace();
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    if (DEBUG) e.printStackTrace();
-                }
-                Toast.makeText(mContext, String.format("Finished restoring %s", open_data_string), Toast.LENGTH_SHORT).show();
-            } catch (NullPointerException npe) {
-                // let the user know and move on
-                Toast.makeText(mContext, "no file was returned", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                if (DEBUG) e.printStackTrace();
+                supplied = data.getStringExtra(OPEN_FILENAME);
+                restore(supplied, false);
+            } catch (NullPointerException np) {
+                // user backed out of filepicker just move on
             }
         } else {
             // request code wasn't what we sent
@@ -414,6 +321,156 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         }
     }
 
+    private void runRestore() {
+        // call the file picker then apply in the result
+        Intent open_file = new Intent(mContext, com.liquid.control.tools.FilePicker.class);
+        open_file.putExtra(OPEN_FILENAME, BLANK);
+        // false because we are not saving
+        open_file.putExtra("action", false);
+        // provide a path to start the user off on
+        open_file.putExtra("path", PATH_TO_CONFIGS);
+        // force the user to stay in the provided directory
+        open_file.putExtra("lock_dir", true);
+        // result code can be whatever but must match requestCode in onActivityResult
+        startActivityForResult(open_file, 1);
+    }
+
+    private boolean restore(String open_data_string, boolean isTheme) {
+        try {
+            Log.d(TAG, String.format("extra open data found: %s", open_data_string));
+
+            // always reset the arrays so we don't get confused with the last index each array
+            setupArrays();
+
+            // determine the name to be used for opening saved config files
+            File nameSpaceFile = new File(open_data_string);
+            File testDirectories = new File(PATH_TO_VALUES);
+            final String userSuppliedFilename = nameSpaceFile.getName();
+            if (DEBUG) {
+                Log.d(TAG, String.format("userSuppliedFilename=%s for nameSpaceFile=%s", userSuppliedFilename, nameSpaceFile));
+                Log.d(TAG, "Do our directories exist? " + testDirectories.isDirectory());
+            }
+
+            // are we applying a theme? use alt path if so
+            final String filename_strings = String.format("%s/LiquidControl/backup/string_%s",
+                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
+            final String theme_filename_strings = String.format("%s/LiquidControl/themes/values/string_%s",
+                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
+            final String filename_ints = String.format("%s/LiquidControl/backup/int_%s",
+                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
+            final String theme_filename_ints = String.format("%s/LiquidControl/themes/values/int_%s",
+                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
+            final String filename_floats = String.format("%s/LiquidControl/backup/float_%s",
+                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
+            final String theme_filename_floats = String.format("%s/LiquidControl/themes/values/float_%s",
+                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
+
+            // TODO handle missing files
+
+            // TODO/XXX should we consider filesystem space? our configs are very small (we don't save drawables, yet)
+            //    and our sdcard is 16gb so for now we won't worry about it
+
+            // first the strings
+            try {
+                File configStringFile;
+                if (isTheme) {
+                    configStringFile = new File(theme_filename_strings);
+                    if (DEBUG) Log.d(TAG, "Theme detected " + theme_filename_strings);
+                } else {
+                    configStringFile = new File(filename_strings);
+                }
+                if (DEBUG) Log.d(TAG, String.format("Strings config file {%s}	Exists? %s	CanRead? %s",
+                        configStringFile.getPath(), configStringFile.exists(), configStringFile.canRead()));
+                FileReader stringReader = new FileReader(configStringFile);
+                mStringProps.load(stringReader);
+                for (String stringPropCheck : stringSettingsArray) {
+                    // null is returned if no setting is found
+                    if ((String) mStringProps.get(stringPropCheck) != null) {
+                        if (DEBUG) Log.d(TAG, String.format("String Property found: %s	value: %s",
+                                stringPropCheck, (String) mStringProps.get(stringPropCheck)));
+                        try {
+                            Settings.System.putString(mContext.getContentResolver(), stringPropCheck,
+                                    (String) mStringProps.get(stringPropCheck));
+                        } catch (NumberFormatException nfe) {
+                            if (DEBUG) nfe.printStackTrace();
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                if (DEBUG) e.printStackTrace();
+            }
+
+            // next ints
+            try {
+                File configIntFile;
+                if (isTheme) {
+                    configIntFile = new File(theme_filename_ints);
+                    if (DEBUG) Log.d(TAG, "Theme detected " + theme_filename_ints);
+                } else {
+                    configIntFile = new File(filename_ints);
+                }
+                if (DEBUG) Log.d(TAG, String.format("Ints config file {%s}	Exists? %s	CanRead? %s",
+                        configIntFile.getPath(), configIntFile.exists(), configIntFile.canRead()));
+                FileReader intsReader = new FileReader(configIntFile);
+                mIntProps.load(intsReader);
+                for (String intPropCheck : intSettingsArray) {
+                    // null is returned if no setting is found
+                    if ((String) mIntProps.get(intPropCheck) != null) {
+                        if (DEBUG) Log.d(TAG, String.format("Int property found: %s	value: %s",
+                                intPropCheck, (String) mIntProps.get(intPropCheck)));
+                        // TODO lots of deferencing going on here is this hurting performace?
+                        try {
+                            Settings.System.putInt(mContext.getContentResolver(), intPropCheck,
+                                    Integer.parseInt((String) mIntProps.get(intPropCheck)));
+                        } catch  (NumberFormatException nfe) {
+                            if (DEBUG) nfe.printStackTrace();
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                if (DEBUG) e.printStackTrace();
+            }
+
+            // last floats
+            try {
+                File configFloatFile;
+                if (isTheme) {
+                    configFloatFile = new File(theme_filename_floats);
+                    if (DEBUG) Log.d(TAG, "Theme detected " + theme_filename_floats);
+                } else {
+                    configFloatFile = new File(filename_floats);
+                }
+                if (DEBUG) Log.d(TAG, String.format("Floats config file {%s} 	Exists? %s	CanRead? %s",
+                        configFloatFile.getPath(), configFloatFile.exists(), configFloatFile.canRead()));
+                if (DEBUG) Log.d(TAG, "{" + filename_floats + "}");
+                FileReader floatReader = new FileReader(configFloatFile);
+                mFloatProps.load(floatReader);
+                for (String floatPropCheck : floatSettingsArray) {
+                    // null is returned if no setting is found
+                    if ((String) mFloatProps.get(floatPropCheck) != null) {
+                        if (DEBUG) Log.d(TAG, String.format("Float property found: %s	value: %s",
+                                floatPropCheck, (String) mFloatProps.get(floatPropCheck)));
+                        try {
+                            Settings.System.putFloat(mContext.getContentResolver(), floatPropCheck,
+                                    Float.parseFloat((String) mFloatProps.get(floatPropCheck)));
+                        } catch  (NumberFormatException nfe) {
+                            if (DEBUG) nfe.printStackTrace();
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                if (DEBUG) e.printStackTrace();
+            }
+            Toast.makeText(mContext, String.format("Finished restoring %s", open_data_string), Toast.LENGTH_SHORT).show();
+        } catch (NullPointerException npe) {
+            // let the user know and move on
+            Toast.makeText(mContext, "no file was returned", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            if (DEBUG) e.printStackTrace();
+        }
+        // TODO return a real value here
+        return true;
+    }
     private void setupArrays() {
         // be sure we start fresh each time we load
         stringSettingsArray.clear();

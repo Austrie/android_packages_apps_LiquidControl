@@ -428,6 +428,10 @@
     <string name="restore_summary">apply your backup</string>
     <string name="theme_exiled_title">ExiledThemer\'s theme</string>
     <string name="theme_exiled_summary">Exileds awesome ThemeName to be applied</string>
+    <string name="theme_unaffiliated_title">Team Unaffiliated\'s theme</string>
+    <string name="theme_unaffiliated_summary">TeamUnaffiliated awesome ThemeName to be applied</string>
+    <string name="exiled_theme_0">exiled_0</string>
+    <string name="unaffiliated_theme_0">unaffiliated_0</string>
 
     <!-- with BRT goes FilePicker -->
     <string name="cancel">Cancel</string>

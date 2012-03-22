@@ -121,10 +121,13 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
                     for (final String liquid_string_setting : stringSettingsArray) {
                         try {
                             string_setting = Settings.System.getString(getActivity().getContentResolver(), liquid_string_setting);
-                            mStringProps.setProperty(liquid_string_setting, string_setting);
+                            if (string_setting != null) mStringProps.setProperty(liquid_string_setting, string_setting);
                             Log.d(TAG, String.format("Strings: {%s} returned value {%s}", liquid_string_setting, string_setting));
                         } catch (ClassCastException cce) {
                             if (CLASS_DEBUG) cce.printStackTrace();
+                        } catch (NullPointerException npe) {
+                            // since we check above for null this should never happen
+                            npe.printStackTrace();
                         }
                     }
 

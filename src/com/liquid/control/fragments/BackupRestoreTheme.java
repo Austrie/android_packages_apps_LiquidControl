@@ -268,6 +268,7 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO this prob should be given to a Handler() as to be async because this makes the system freak out
         if (DEBUG) Log.d(TAG, "requestCode=" + requestCode + "	resultCode=" + resultCode + "	Intent data=" + data);
+        setupArrays();
         if (requestCode == 1) {
             try {
                 final String open_data_string = data.getStringExtra(OPEN_FILENAME);
@@ -383,10 +384,13 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         floatSettingsArray.clear();
 
         /* XXX These data sets are a pain to maintain so PLEASE KEEP UP TODATE!!! XXX */
-
         // Strings first
         // UserInterface
         stringSettingsArray.add(Settings.System.CUSTOM_CARRIER_LABEL);
+        // StatusBarToggles
+        stringSettingsArray.add(Settings.System.STATUSBAR_TOGGLES);
+        // Misc
+        stringSettingsArray.add(Settings.System.WIDGET_BUTTONS);
 
         // ints next
         // UserInterface
@@ -419,9 +423,72 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.System.LOCKSCREEN_LANDSCAPE);
         intSettingsArray.add(Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL);
         intSettingsArray.add(Settings.System.ENABLE_FAST_TORCH);
+        // Powermenu
+        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_AIRPLANE);
+        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_EASTEREGG);
+        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_FLASHLIGHT);
+        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_HIDENAVBAR);
+        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_POWERSAVER);
+        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_PROFILES);
+        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_SCREENSHOT);
+        // Powersaver
+        intSettingsArray.add(Settings.Secure.POWER_SAVER_MODE);
+        intSettingsArray.add(Settings.Secure.POWER_SAVER_DATA_MODE);
+        intSettingsArray.add(Settings.Secure.POWER_SAVER_DATA_DELAY);
+        intSettingsArray.add(Settings.Secure.POWER_SAVER_SYNC_MODE);
+        intSettingsArray.add(Settings.Secure.POWER_SAVER_SYNC_INTERVAL);
+        intSettingsArray.add(Settings.Secure.POWER_SAVER_WIFI_MODE);
+        intSettingsArray.add(Settings.Secure.POWER_SAVER_SYNC_DATA_MODE);
+        intSettingsArray.add(Settings.Secure.POWER_SAVER_SYNC_MOBILE_PREFERENCE);
+        //Led
+        intSettingsArray.add(Settings.System.NOTIFICATION_LIGHT_OFF);
+        intSettingsArray.add(Settings.System.NOTIFICATION_LIGHT_ON);
+        intSettingsArray.add(Settings.Secure.LED_SCREEN_ON);
+        intSettingsArray.add(Settings.System.NOTIFICATION_LIGHT_COLOR);
+        // StatusBarGeneral
+        intSettingsArray.add(Settings.System.STATUSBAR_SHOW_DATE);
+        intSettingsArray.add(Settings.System.STATUSBAR_DATE_FORMAT);
+        intSettingsArray.add(Settings.System.STATUSBAR_REMOVE_AOSP_SETTINGS_LINK);
+        intSettingsArray.add(Settings.System.STATUSBAR_SETTINGS_BEHAVIOR);
+        intSettingsArray.add(Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE);
+        intSettingsArray.add(Settings.System.STATUSBAR_DATE_BEHAVIOR);
+        intSettingsArray.add(Settings.System.STATUS_BAR_BRIGHTNESS_TOGGLE);
+        intSettingsArray.add(Settings.System.STATUSBAR_REMOVE_LIQUIDCONTROL_LINK);
+        intSettingsArray.add(Settings.Secure.ADB_ICON);
+        intSettingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND);
+        intSettingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_COLOR);
+        intSettingsArray.add(Settings.System.STATUS_BAR_LAYOUT);
+        intSettingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE);
+        // StatusBarToggles
+        intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS);
+        intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_BRIGHTNESS_LOC);
+        intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_STYLE);
+        // StatusBarClock
+        intSettingsArray.add(Settings.System.STATUSBAR_CLOCK_STYLE);
+        intSettingsArray.add(Settings.System.STATUSBAR_CLOCK_AM_PM_STYLE);
+        intSettingsArray.add(Settings.System.STATUSBAR_SHOW_ALARM);
+        intSettingsArray.add(Settings.System.STATUSBAR_CLOCK_COLOR);
+        intSettingsArray.add(Settings.System.STATUSBAR_CLOCK_WEEKDAY);
+        // StatusBarBattery
+        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_ICON);
+        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR);
+        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_STYLE);
+        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_ANIMATE);
+        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_THICKNESS);
+        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_COLOR);
+        // StatusBarSignal
+        intSettingsArray.add(Settings.System.STATUSBAR_SIGNAL_TEXT);
+        intSettingsArray.add(Settings.System.STATUSBAR_SIGNAL_TEXT_COLOR);
+        intSettingsArray.add(Settings.System.STATUSBAR_SIXBAR_SIGNAL);
+        // Misc
+        intSettingsArray.add(Settings.System.EXPANDED_VIEW_WIDGET);
+        intSettingsArray.add(Settings.System.IS_TABLET);
 
         // floats next
         // Navbar
         floatSettingsArray.add(Settings.System.NAVIGATION_BAR_BUTTON_ALPHA);
+        // StatusBarGeneral
+        floatSettingsArray.add(Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA);
+        floatSettingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_ALPHA);
     }
 }

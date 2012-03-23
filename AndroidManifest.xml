@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012 The Android Open Source Project
+<!-- Copyright (C) 2012 The LiquidSmoothROMs Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -147,8 +147,8 @@
                 <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.BackupRestoreTheme"
-            android:label="BackupRestoreTheme" >
+        <activity android:name=".fragments.BackupRestore"
+            android:label="Backup Restore" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />

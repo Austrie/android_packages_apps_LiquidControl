@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012 The Android Open Source Project
+<!-- Copyright (C) 2012 The LiquidSmoothROMs Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -96,16 +96,16 @@
         android:title="@string/tools" />
 
         <header
+            android:id="@+id/backup"
+            android:title="@string/backup_string"
+            android:icon="@drawable/ic_backup"
+            android:fragment="com.liquid.control.fragments.BackupRestore" />
+
+        <header
             android:id="@+id/performance"
             android:title="@string/pt_performance"
             android:icon="@drawable/ic_performance"
             android:fragment="com.liquid.control.fragments.Performance" />
-
-        <header
-            android:id="@+id/brt"
-            android:title="@string/brt_string"
-            android:icon="@drawable/ic_propmodder"
-            android:fragment="com.liquid.control.fragments.BackupRestoreTheme" />
 
         <header
             android:id="@+id/propmodder"

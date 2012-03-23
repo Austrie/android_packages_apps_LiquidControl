@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012 The Android Open Source Project
+<!-- Copyright (C) 2012 The LiquidSmoothROMs Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -415,8 +415,8 @@
     <string name="pref_vvmail_title">VVMail (Sense ROMs ONLY)</string>
     <string name="pref_vvmail_summary">force Sense ROMS compatibility with VVMail</string>
 
-    <!-- B.R.T. BackupRestoreTheme -->
-    <string name="brt_string">B.R.T.</string>
+    <!-- Backup Restore -->
+    <string name="backup_string">Backup Restore</string>
     <string name="backup_alert_title">Filename</string>
     <string name="backup_alert_message">Name your settings file</string>
     <string name="backup_category_title">Backup</string>
@@ -427,9 +427,9 @@
     <string name="restore_title">Restore LiquidControl</string>
     <string name="restore_summary">apply your backup</string>
     <string name="theme_exiled_title">ExiledThemer\'s theme</string>
-    <string name="theme_exiled_summary">Exileds awesome ThemeName to be applied</string>
+    <string name="theme_exiled_summary">Exileds awesome ThemeName</string>
     <string name="theme_unaffiliated_title">Team Unaffiliated\'s theme</string>
-    <string name="theme_unaffiliated_summary">TeamUnaffiliated awesome ThemeName to be applied</string>
+    <string name="theme_unaffiliated_summary">TeamUnaffiliated awesome ThemeName</string>
     <string name="exiled_theme_0">exiled_0</string>
     <string name="unaffiliated_theme_0">unaffiliated_0</string>
 

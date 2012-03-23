@@ -50,9 +50,9 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 
-public class BackupRestoreTheme extends SettingsPreferenceFragment {
+public class BackupRestore extends SettingsPreferenceFragment {
 
-    private static final String TAG = "BRT";
+    private static final String TAG = "BackupRestore";
     private static final boolean DEBUG = true;
     private static final boolean CLASS_DEBUG = false;
     private static final String BLANK = "";
@@ -89,7 +89,7 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
     public void onCreate(Bundle didOrientationChange) {
         super.onCreate(didOrientationChange);
 
-        addPreferencesFromResource(R.xml.backup_restore_theme);
+        addPreferencesFromResource(R.xml.backup_restore);
         PreferenceScreen prefs = getPreferenceScreen();
         mBackup = (PreferenceScreen) prefs.findPreference(BACKUP_PREF);
         mRestore = (PreferenceScreen) prefs.findPreference(RESTORE_PREF);
@@ -252,11 +252,11 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         boolean handledInt = false;
         switch (theme) {
             case EXILED:
-                restore(getString(R.string.exiled_theme_0, true));
+                restore(getString(R.string.exiled_theme_0), true);
                 handledInt = true;
                 break;
             case UNAFFILIATED:
-                restore(getString(R.string.unaffiliated_theme_0, true));
+                restore(getString(R.string.unaffiliated_theme_0), true);
                 handledInt = true;
                 break;
         }
@@ -291,7 +291,7 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         if (requestCode == 1) {
             //send stuff to restore
             try {
-                supplied = data.getStringExtra(OPEN_FILENAME);
+                String supplied = data.getStringExtra(OPEN_FILENAME);
                 restore(supplied, false);
             } catch (NullPointerException np) {
                 // user backed out of filepicker just move on
@@ -471,6 +471,7 @@ public class BackupRestoreTheme extends SettingsPreferenceFragment {
         // TODO return a real value here
         return true;
     }
+
     private void setupArrays() {
         // be sure we start fresh each time we load
         stringSettingsArray.clear();

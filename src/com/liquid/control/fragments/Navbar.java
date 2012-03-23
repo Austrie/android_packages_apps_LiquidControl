@@ -350,8 +350,16 @@ public class Navbar extends SettingsPreferenceFragment implements
         switch (dp) {
             case 48:
                 return getResources().getDimensionPixelSize(R.dimen.navigation_bar_48);
+            case 46:
+                return getResources().getDimensionPixelSize(R.dimen.navigation_bar_46);
+            case 44:
+                return getResources().getDimensionPixelSize(R.dimen.navigation_bar_44);
             case 42:
                 return getResources().getDimensionPixelSize(R.dimen.navigation_bar_42);
+            case 40:
+                return getResources().getDimensionPixelSize(R.dimen.navigation_bar_40);
+            case 38:
+                return getResources().getDimensionPixelSize(R.dimen.navigation_bar_38);
             case 36:
                 return getResources().getDimensionPixelSize(R.dimen.navigation_bar_36);
             case 30:

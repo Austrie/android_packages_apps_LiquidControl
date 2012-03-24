@@ -80,6 +80,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     private static final String PREF_VOLUME_WAKE = "volume_wake";
     private static final String PREF_VOLUME_MUSIC = "volume_music_controls";
     private static final String PREF_LOCKSCREEN_BATTERY = "lockscreen_battery";
+    private static final String PREF_LOCKSCREEN_LOW_BATTERY = "lockscreen_low_battery";
     private static final String PREF_LOCKSCREEN_TEXT_COLOR = "lockscreen_text_color";
     private static final String PREF_SHOW_LOCK_BEFORE_UNLOCK = "show_lock_before_unlock";
 
@@ -96,6 +97,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     CheckBoxPreference mVolumeMusic;
     CheckBoxPreference mLockscreenLandscape;
     CheckBoxPreference mLockscreenBattery;
+    CheckBoxPreference mLockscreenLowBattery;
     Preference mLockscreenWallpaper;
     ColorPickerPreference mLockscreenTextColor;
     CheckBoxPreference mShowLockBeforeUnlock;
@@ -146,6 +148,10 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         mLockscreenBattery = (CheckBoxPreference) findPreference(PREF_LOCKSCREEN_BATTERY);
         mLockscreenBattery.setChecked(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.LOCKSCREEN_BATTERY, 0) == 1);
+
+        mLockscreenLowBattery = (CheckBoxPreference) findPreference(PREF_LOCKSCREEN_LOW_BATTERY);
+        mLockscreenLowBattery.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.LOCKSCREEN_LOW_BATTERY, 0) == 1);
 
         mLockscreenWallpaper = findPreference("wallpaper");
         mPicker = new ShortcutPickerHelper(this, this);
@@ -204,7 +210,12 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.LOCKSCREEN_BATTERY,
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
-            return true;        
+            return true;
+        } else if (preference == mLockscreenLowBattery) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.LOCKSCREEN_LOW_BATTERY,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+            return true;
         } else if (preference == mVolumeWake) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.VOLUME_WAKE_SCREEN,

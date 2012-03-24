@@ -167,6 +167,21 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         setHasOptionsMenu(true);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(
+                android.os.Environment.MEDIA_MOUNTED);
+        if (!isSDPresent) {
+            mLockscreenWallpaper.setEnabled(false);
+            mLockscreenWallpaper
+                    .setSummary("No external storage available (/sdcard)");
+        }
+        refreshSettings();
+    }
+
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if (preference == menuButtonLocation) {
@@ -304,11 +319,17 @@ public class Lockscreens extends SettingsPreferenceFragment implements
 
                 @Override
                 public void onClick(View v) {
-                    currentIconIndex = index;
+                    Boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(
+                            android.os.Environment.MEDIA_MOUNTED);
+                    if (!isSDPresent) {
+                        Toast.makeText(v.getContext(), "Insert SD card to use this feature",
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
 
+                    currentIconIndex = index;
                     int width = 100;
                     int height = width;
-
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
                     intent.setType("image/*");
                     intent.putExtra("crop", "true");
@@ -320,9 +341,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                     // intent.putExtra("return-data", false);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, getExternalIconUri());
                     intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
-
                     Log.i(TAG, "started for result, should output to: " + getExternalIconUri());
-
                     startActivityForResult(intent, REQUEST_PICK_CUSTOM_ICON);
                 }
             });
@@ -468,6 +487,22 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                     Settings.System.LOCKSCREEN_CUSTOM_TEXT_COLOR, intHex);
             if (DEBUG)
                 Log.d(TAG, String.format("new color hex value: %d", intHex));
+            return true;
+        } else if (preference.getKey().startsWith("lockscreen_target")) {
+            int index = Integer.parseInt(preference.getKey().substring(
+                    preference.getKey().lastIndexOf("_") + 1));
+
+            if (newValue.equals("**app**")) {
+                mCurrentCustomActivityPreference = preference;
+                mCurrentCustomActivityString = Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index];
+                mPicker.pickShortcut();
+            } else {
+                Settings.System.putString(getContentResolver(),
+                        Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index], (String) newValue);
+                Settings.System.putString(getContentResolver(),
+                        Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[index], "");
+                refreshSettings();
+            }
             return true;
         }
         return false;

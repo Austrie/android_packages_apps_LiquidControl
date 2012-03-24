@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
+ * Copyright (C) 2012 The LiquidSmoothROMs Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,6 +80,8 @@ public class CreateShortcut extends LauncherActivity {
             return R.drawable.ic_general_ui;
         else if (c.equals("Propmodder"))
             return R.drawable.ic_propmodder;
+        else if (c.equals("Backup Restore"))
+            return R.drawable.ic_backup;
         else
             return R.mipmap.ic_launcher;
     }
@@ -89,4 +91,3 @@ public class CreateShortcut extends LauncherActivity {
         return false;
     }
 }
-

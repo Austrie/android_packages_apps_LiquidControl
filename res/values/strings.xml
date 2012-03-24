@@ -434,7 +434,7 @@
     <string name="exiled_theme_0">exiled_0</string>
     <string name="unaffiliated_theme_0">unaffiliated_0</string>
 
-    <!-- with BRT goes FilePicker -->
+    <!-- File Picker -->
     <string name="cancel">Cancel</string>
     <string name="clear">Clear screen</string>
     <string name="empty_text">No Data</string>

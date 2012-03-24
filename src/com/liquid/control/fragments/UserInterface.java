@@ -52,7 +52,6 @@ public class UserInterface extends SettingsPreferenceFragment implements
     private static final String PREF_ROTATION_ANIMATION = "rotation_animation_delay";
     private static final String PREF_180 = "rotate_180";
     private static final String PREF_DISABLE_SCREENSHOT_SOUND = "screenshot_sound";
-    private static final String PREF_USB_FAST_CHARGE = "usb_fast_charge";
 
     CheckBoxPreference mAllow180Rotation;
     ListPreference mAnimationRotationDelay;
@@ -67,7 +66,6 @@ public class UserInterface extends SettingsPreferenceFragment implements
     CheckBoxPreference mEnableVolumeOptions;
     CheckBoxPreference mLongPressAppTasker;
     CheckBoxPreference mDisableScreenshotSound;
-    CheckBoxPreference mUSBFastCharge;
     String mCustomLabelText = null;
 
     @Override
@@ -140,20 +138,6 @@ public class UserInterface extends SettingsPreferenceFragment implements
         } else {
             // can't get this working in ICS just yet
             ((PreferenceGroup) findPreference("crt")).removePreference(mCrtOnAnimation);
-        }
-
-        mUSBFastCharge = (CheckBoxPreference) findPreference(PREF_USB_FAST_CHARGE);
-        boolean fast = false;
-        if (Helpers.isFastCharge() == 1) fast = true; 
-        mUSBFastCharge.setChecked(fast);
-        int fastOnOff = Helpers.isFastCharge();
-        switch (fastOnOff) {
-            case 0:
-                mUSBFastCharge.setSummary("OFF: USB is in normal MTS mode");
-                break;
-            case 1:
-                mUSBFastCharge.setSummary("ON: no data transfer via USB will be allowed till turned off");
-                break;
         }
 
         // update summeries that should be dynamic
@@ -280,19 +264,9 @@ public class UserInterface extends SettingsPreferenceFragment implements
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.SCREENSHOT_CAMERA_SOUND, checked ? 1 : 0);
-        } else if (preference == mUSBFastCharge) {
-            boolean checked = mUSBFastCharge.isChecked();
-            String formatter = "echo %d > /sys/kernel/fast_charge/force_fast_charge";
-            if (checked) {
-                new CMDProcessor().su.runWaitFor(String.format(formatter, 1));
-                mUSBFastCharge.setSummary("ON: no data transfer via USB will be allowed till turned off");
-            } else {
-                new CMDProcessor().su.runWaitFor(String.format(formatter, 0));
-                mUSBFastCharge.setSummary("OFF: USB is in normal MTS mode");
-            }
         }
         /* DISABLED TILL WE SUPPORT WITH FRAMEWORKS
-          else if (preference == mLongPressAppTasker) {
+        }  else if (preference == mLongPressAppTasker) {
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.Secure.putInt(getActivity().getContentResolver(),
                     Settings.Secure.LONGPRESS_APP_TASKER_INTENT, checked ? 1 : 0);

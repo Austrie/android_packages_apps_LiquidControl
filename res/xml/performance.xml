@@ -87,4 +87,20 @@
             android:entryValues="@array/values_scrollingcache" />
 	</PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="kernel"
+        android:title="@string/kernel">
+
+         <com.liquid.control.fragments.ColorTuningPreference
+             android:key="color_tuning"
+             android:title="@string/color_tuning_title_head"
+             android:summary="@string/color_tuning_summary_head" />
+
+        <com.liquid.control.fragments.GammaTuningPreference
+            android:key="gamma_tuning"
+            android:title="@string/gamma_tuning_title_head"
+            android:summary="@string/gamma_tuning_summary_head" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

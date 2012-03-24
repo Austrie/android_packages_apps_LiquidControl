@@ -105,12 +105,4 @@
 
 	</PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/usb_title" >
-        <CheckBoxPreference
-            android:key="usb_fast_charge"
-            android:title="@string/usb_fast_charge_title" />
-
-    </PreferenceCategory>
-
 </PreferenceScreen>

@@ -243,6 +243,8 @@
     <string name="hide_signal_summary">Hides data indicator for now</string>
     <string name="sixbar_signal_title">Sixbar Signal</string>
     <string name="sixbar_signal_summary">Use sixbar signal strength mod</string>
+    <string name="wifi_signal_style">WiFi Text Style</string>
+    <string name="wifi_signal_color_title">WiFi Text Color</string>
 
     <!-- Powerwidget -->
     <string name="power_widget_title">Power Widget</string>

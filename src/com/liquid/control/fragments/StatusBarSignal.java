@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
+ * Copyright (C) 2012 The LiquidSmoothROMs Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.liquid.control.fragments;
 
-import net.margaritov.preference.colorpicker.ColorPickerPreference;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -28,19 +27,21 @@ import android.util.Log;
 
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 public class StatusBarSignal extends SettingsPreferenceFragment implements
         OnPreferenceChangeListener {
 
     ListPreference mDbmStyletyle;
-    ColorPickerPreference mColorPicker;
-    //  CheckBoxPreference mHideSignal;
+    ListPreference mWifiStyle;
+    // CheckBoxPreference mHideSignal;
     CheckBoxPreference mSixbarSignal;
+    ColorPickerPreference mColorPicker;
+    ColorPickerPreference mWifiColorPicker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.prefs_statusbar_signal);
 
@@ -52,24 +53,32 @@ public class StatusBarSignal extends SettingsPreferenceFragment implements
         mColorPicker = (ColorPickerPreference) findPreference("signal_color");
         mColorPicker.setOnPreferenceChangeListener(this);
 
-        //  mHideSignal = (CheckBoxPreference) findPreference("hide_signal");
-        //  mHideSignal.setChecked(Settings.System.getInt(getActivity()
-        //          .getContentResolver(), Settings.System.STATUSBAR_HIDE_SIGNAL_BARS, 0) != 0);
+        // mHideSignal = (CheckBoxPreference) findPreference("hide_signal");
+        // mHideSignal.setChecked(Settings.System.getInt(getActivity()
+        //      .getContentResolver(), Settings.System.STATUSBAR_HIDE_SIGNAL_BARS, 0) != 0);
 
         mSixbarSignal = (CheckBoxPreference) findPreference("sixbar_signal");
         mSixbarSignal.setChecked(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.STATUSBAR_SIXBAR_SIGNAL, 0) == 1);
+
+        mWifiStyle = (ListPreference) findPreference("wifi_signal_style");
+        mWifiStyle.setOnPreferenceChangeListener(this);
+        mWifiStyle.setValue(Integer.toString(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT, 0)));
+
+        mWifiColorPicker = (ColorPickerPreference) findPreference("wifi_signal_color");
+        mWifiColorPicker.setOnPreferenceChangeListener(this);
     }
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
             Preference preference) {
-        //  if (preference == mHideSignal) {
-        //      Settings.System.putInt(getActivity().getContentResolver(),
-        //              Settings.System.STATUSBAR_HIDE_SIGNAL_BARS,
-        //              ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
-        //      return true;
-        //  }
+        // if (preference == mHideSignal) {
+        //     Settings.System.putInt(getActivity().getContentResolver(),
+        //             Settings.System.STATUSBAR_HIDE_SIGNAL_BARS,
+        //             ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+        //     return true;
+        // }
         if (preference == mSixbarSignal) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_SIXBAR_SIGNAL,
@@ -94,8 +103,20 @@ public class StatusBarSignal extends SettingsPreferenceFragment implements
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_SIGNAL_TEXT_COLOR, intHex);
             return true;
+        } else if (preference == mWifiStyle) {
+            int val = Integer.parseInt((String) newValue);
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT, val);
+            return true;
+        } else if (preference == mWifiColorPicker) {
+            String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String
+                    .valueOf(newValue)));
+            preference.setSummary(hex);
+            int intHex = ColorPickerPreference.convertToColorInt(hex);
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT_COLOR, intHex);
+            return true;
         }
         return false;
     }
 }
-

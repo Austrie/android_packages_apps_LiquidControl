@@ -116,6 +116,10 @@
             android:title="@string/statusbar_unexpanded_color_title"
             android:defaultValue="#FF111111" />
 
+        <com.liquid.control.widgets.SeekBarPreference
+            android:key="statusbar_handle_alpha"
+            android:title="@string/statusbar_handle_alpha_title" />
+
         <ListPreference
             android:key="status_bar_layout"
             android:title="@string/statusbar_layout"

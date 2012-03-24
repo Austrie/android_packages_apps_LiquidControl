@@ -44,6 +44,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.ClassCastException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -552,8 +555,10 @@ public class BackupRestore extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.Secure.ADB_ICON);
         intSettingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND);
         intSettingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_COLOR);
+        intSettingsArray.add(Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR);
         intSettingsArray.add(Settings.System.STATUS_BAR_LAYOUT);
         intSettingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE);
+
         // StatusBarToggles
         intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS);
         intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_BRIGHTNESS_LOC);
@@ -585,5 +590,25 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // StatusBarGeneral
         floatSettingsArray.add(Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA);
         floatSettingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_ALPHA);
+        floatSettingsArray.add(Settings.System.STATUSBAR_HANDLE_ALPHA);
+
+/*        // put arrays in lists
+        List stringsList = Arrays.asList(stringSettingsArray);
+        List intsList = Arrays.asList(intSettingsArray);
+        List floatsList = Arrays.asList(floatSettingsArray);
+
+        // randomize arrays so we don't overly annoy any one area
+        Collections.shuffle(stringsList);
+        Collections.shuffle(intsList);
+        Collections.shuffle(floatsList);
+
+        // clear out our arrays and then repopulate with our randomized lists
+        stringSettingsArray.clear();
+        intSettingsArray.clear();
+        floatSettingsArray.clear();
+        stringSettingsArray = new ArrayList(stringsList);
+        intSettingsArray = new ArrayList(intsList);
+        floatSettingsArray = new ArrayList(floatsList);
+*/
     }
 }

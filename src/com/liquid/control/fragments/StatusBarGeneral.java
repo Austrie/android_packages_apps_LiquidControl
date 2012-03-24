@@ -73,6 +73,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_STATUSBAR_UNEXPANDED_ALPHA = "statusbar_unexpanded_alpha";
     private static final String PREF_TEST_NOTICE = "test_notice";
     private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
+    private static final String PREF_STATUSBAR_HANDLE_ALPHA = "statusbar_handle_alpha";
     private static final String PREF_LAYOUT = "status_bar_layout";
     private static String STATUSBAR_COLOR_SUMMARY_HOLDER;
     private static final String TEST_SHORT = "Alpha Test";
@@ -89,6 +90,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final float STATUSBAR_EXPANDED_ALPHA_DEFAULT = 0.7f; //TODO update
     private static final int STATUSBAR_EXPANDED_COLOR_DEFAULT = 0xFF000000; //TODO update
     private static final int STATUSBAR_UNEXPANDED_COLOR_DEFAULT = 0xFF000000; //TODO update
+    private static final float STATUSBAR_HANDLE_ALPHA_DEFAULT = 0.85f;
 
 
     CheckBoxPreference mShowDate;
@@ -108,6 +110,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     ListPreference mLayout;
     Preference mUserBackground;
     ListPreference mWindowshadeHandle;
+    SeekBarPreference mStatusbarHandleAlpha;
 
     NotificationManager mNoticeManager;
     Context mContext;
@@ -158,6 +161,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                 return true;
             }
         });
+        mStatusbarHandleAlpha = (SeekBarPreference) findPreference(PREF_STATUSBAR_HANDLE_ALPHA);
+        mStatusbarHandleAlpha.setOnPreferenceChangeListener(this);
 
         mUserBackground = (Preference) findPreference(PREF_USER_BACKGROUND);
         mWindowshadeHandle = (ListPreference) findPreference(PREF_WINDOWSHADE_HANDLE);
@@ -203,6 +208,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                         Settings.System.STATUSBAR_UNEXPANDED_COLOR, STATUSBAR_UNEXPANDED_COLOR_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE, 0);
+                Settings.System.putFloat(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_HANDLE_ALPHA, STATUSBAR_HANDLE_ALPHA_DEFAULT);
 
                 updateSettings();
                 return true;
@@ -260,8 +267,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                 date = "Tues Feb 14";
             break;
         }
-
         mDateFormat.setSummary(String.format(displayFormat, date));
+
         float expandedAlpha = Settings.System.getFloat(getActivity()
                 .getContentResolver(), Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, 1f);
         mStatusbarAlpha.setInitValue((int) (expandedAlpha * 100));
@@ -305,6 +312,12 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                 imageName = mContext.getString(R.string.windowshade_handle_default);
         }
         mWindowshadeHandle.setSummary(imageName);
+
+        // update statusbar handle alpha
+        float handleAlpha = Settings.System.getFloat(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_HANDLE_ALPHA, STATUSBAR_HANDLE_ALPHA_DEFAULT);
+        mStatusbarHandleAlpha.setInitValue((int) (handleAlpha * 100));
+        mStatusbarHandleAlpha.setSummary(String.format("%f", handleAlpha * 100));
     }
 
     public boolean onPreferenceChange(Preference pref, Object newValue) {
@@ -350,6 +363,11 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             int val = Integer.parseInt((String) newValue);
             success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE, val);
+        } else if (pref == mStatusbarHandleAlpha) {
+            float handleValue = Float.parseFloat((String) newValue);
+            if (DEBUG) Log.d(TAG, "value:" + handleValue / 100 + "    raw:" + handleValue);
+            success = Settings.System.putFloat(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_HANDLE_ALPHA, handleValue / 100);
         }
 
         updateSettings();

@@ -212,15 +212,13 @@
     <string-array name="statusbar_layout_entries">
         <item>Regular</item>
         <item>Reversed</item>
-        <!-- <item>Tabs</item>
-        <item>Bottom Tabs</item> -->
+        <item>Traditional</item>
     </string-array>
 
     <string-array name="statusbar_layout_values">
         <item>0</item>
         <item>1</item>
-        <!-- <item>2</item>
-        <item>3</item> -->
+        <item>2</item>
     </string-array>
 
 	<string-array name="clock_style_entries">
@@ -423,6 +421,7 @@
 		<item>SILENT</item>
 		<item>TORCH</item>
 		<item>SYNC</item>
+        <item>FCHARGE</item>
 	</string-array>
 	
 	<string-array name="available_toggles_values">
@@ -430,11 +429,12 @@
 		<item>BT</item>
 		<item>GPS</item>
 		<item>Wi-Fi</item>
-		<item>Airplane mode</item>
+		<item>Airplane</item>
 		<item>Vibrate</item>
 		<item>Silent</item>
 		<item>Torch</item>
 		<item>Sync</item>
+        <item>Fastcharge</item>
 	</string-array>
 
 	<string-array name="lockscreen_choice_entries">
@@ -1065,8 +1065,8 @@
     </string-array>
 
     <string-array name="windowshade_handle_entries">
-        <item>Liquid example 0</item>
-        <item>Liquid example 1</item>
+        <item>Liquid Example 0</item>
+        <item>Liquid Example 1</item>
     </string-array>
 
     <string-array name="windowshade_handle_values" translatable="false">

@@ -501,12 +501,12 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             if (DEBUG)
                 Log.d(TAG, String.format("new color hex value: %d", intHex));
             return true;
-        } else if (preference.getKey().startsWith("lockscreen_target")) {
-            int index = Integer.parseInt(preference.getKey().substring(
-                    preference.getKey().lastIndexOf("_") + 1));
+        } else if (pref.getKey().startsWith("lockscreen_target")) {
+            int index = Integer.parseInt(pref.getKey().substring(
+                    pref.getKey().lastIndexOf("_") + 1));
 
             if (newValue.equals("**app**")) {
-                mCurrentCustomActivityPreference = preference;
+                mCurrentCustomActivityPreference = pref;
                 mCurrentCustomActivityString = Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index];
                 mPicker.pickShortcut();
             } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
+ * Copyright (C) 2012 The LiquidSmoothROMs Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,21 @@
 
 package com.liquid.control.fragments;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -38,6 +39,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
+import android.provider.CalendarContract.Calendars;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
@@ -46,13 +48,24 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Toast;
 
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.ShortcutPickerHelper;
-
+import com.liquid.control.widgets.LockscreenItemPreference;
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 public class Lockscreens extends SettingsPreferenceFragment implements
         ShortcutPickerHelper.OnPickListener, OnPreferenceChangeListener {
@@ -70,6 +83,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     private static final String PREF_SHOW_LOCK_BEFORE_UNLOCK = "show_lock_before_unlock";
 
     public static final int REQUEST_PICK_WALLPAPER = 199;
+    public static final int REQUEST_PICK_CUSTOM_ICON = 200
     public static final int SELECT_ACTIVITY = 2;
     public static final int SELECT_WALLPAPER = 3;
     private static final String WALLPAPER_NAME = "lockscreen_wallpaper.jpg";
@@ -85,6 +99,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     ColorPickerPreference mLockscreenTextColor;
     CheckBoxPreference mShowLockBeforeUnlock;
 
+    private int currentIconIndex;
     private Preference mCurrentCustomActivityPreference;
     private String mCurrentCustomActivityString;
     private ShortcutPickerHelper mPicker;
@@ -207,7 +222,11 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         } else if (keys.contains(preference.getKey())) {
             return Settings.System.putInt(getActivity().getContentResolver(), preference.getKey(),
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+        } else if (preference.getKey().startsWith("lockscreen_icon")) {
+            return true;
+        } else if (preference.getKey().startsWith("lockscreen_target")) {
         }
+
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
@@ -237,6 +256,12 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         return Uri.fromFile(wallpaper);
     }
 
+    private Uri getExternalIconUri() {
+        File dir = mContext.getExternalCacheDir();
+        dir.mkdirs();
+        return Uri.fromFile(new File(dir, "icon_" + currentIconIndex + ".png"));
+    }
+
     public void refreshSettings() {
         int lockscreenTargets = Settings.System.getInt(getContentResolver(),
                 Settings.System.LOCKSCREEN_LAYOUT, 2);
@@ -254,11 +279,13 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             lockscreenTargets = 4;
         }
 
+        PackageManager pm = mContext.getPackageManager();
+        Resources res = mContext.getResources();
+
         for (int i = 0; i < lockscreenTargets; i++) {
-            ListPreference p = new ListPreference(getActivity());
+            LockscreenItemPreference p = new LockscreenItemPreference(getActivity());
             String dialogTitle = String.format(
                     getResources().getString(R.string.custom_app_n_dialog_title), i + 1);
-            ;
             p.setDialogTitle(dialogTitle);
             p.setEntries(R.array.lockscreen_choice_entries);
             p.setEntryValues(R.array.lockscreen_choice_values);
@@ -268,7 +295,103 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             p.setSummary(getProperSummary(i));
             p.setOnPreferenceChangeListener(this);
             targetGroup.addPreference(p);
+            final int index = i;
+            p.setImageListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    currentIconIndex = index;
+
+                    int width = 100;
+                    int height = width;
+
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+                    intent.setType("image/*");
+                    intent.putExtra("crop", "true");
+                    intent.putExtra("aspectX", width);
+                    intent.putExtra("aspectY", height);
+                    intent.putExtra("outputX", width);
+                    intent.putExtra("outputY", height);
+                    intent.putExtra("scale", true);
+                    // intent.putExtra("return-data", false);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, getExternalIconUri());
+                    intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
+
+                    Log.i(TAG, "started for result, should output to: " + getExternalIconUri());
+
+                    startActivityForResult(intent, REQUEST_PICK_CUSTOM_ICON);
+                }
+            });
+
+            String customIconUri = Settings.System.getString(getContentResolver(),
+                    Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[i]);
+            if (customIconUri != null && customIconUri.length() > 0) {
+                File f = new File(Uri.parse(customIconUri).getPath());
+                if (f.exists())
+                    p.setIcon(new BitmapDrawable(res, f.getAbsolutePath()));
+            }
+
+            if (customIconUri != null && !customIconUri.equals("")
+                    && customIconUri.startsWith("file")) {
+                // it's an icon the user chose from the gallery here
+                File icon = new File(Uri.parse(customIconUri).getPath());
+                if (icon.exists())
+                    p.setIcon(resize(new BitmapDrawable(getResources(), icon.getAbsolutePath())));
+
+            } else if (customIconUri != null && !customIconUri.equals("")) {
+                // here they chose another app icon
+                try {
+                    p.setIcon(resize(pm.getActivityIcon(Intent.parseUri(customIconUri, 0))));
+                } catch (NameNotFoundException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // ok use default icons here
+                p.setIcon(resize(getLockscreenIconImage(i)));
+            }
         }
+    }
+
+    private Drawable resize(Drawable image) {
+        int size = 100;
+        Bitmap d = ((BitmapDrawable) image).getBitmap();
+        Bitmap bitmapOrig = Bitmap.createScaledBitmap(d, size, size, false);
+        return new BitmapDrawable(mContext.getResources(), bitmapOrig);
+    }
+
+    private Drawable getLockscreenIconImage(int index) {
+        String uri = Settings.System.getString(getActivity().getContentResolver(),
+                Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index]);
+
+        if (uri == null)
+            return getResources().getDrawable(R.drawable.ic_null);
+
+        if (uri.startsWith("**")) {
+            if (uri.equals("**unlock**"))
+                return getResources().getDrawable(R.drawable.ic_lockscreen_unlock);
+            else if (uri.equals("**sound**"))
+                return getResources().getDrawable(R.drawable.ic_lockscreen_soundon);
+            else if (uri.equals("**camera**"))
+                return getResources().getDrawable(R.drawable.ic_lockscreen_camera);
+            else if (uri.equals("**phone**"))
+                return getResources().getDrawable(R.drawable.ic_lockscreen_phone);
+            else if (uri.equals("**mms**"))
+                return getResources().getDrawable(R.drawable.ic_lockscreen_sms);
+            else if (uri.equals("**null**"))
+                return getResources().getDrawable(R.drawable.ic_null);
+        } else {
+            try {
+                return mContext.getPackageManager().getActivityIcon(Intent.parseUri(uri, 0));
+            } catch (NameNotFoundException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return getResources().getDrawable(R.drawable.ic_null);
     }
 
     private String getProperSummary(int i) {
@@ -299,6 +422,12 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     public void shortcutPicked(String uri, String friendlyName, boolean isApplication) {
         if (Settings.System.putString(getActivity().getContentResolver(),
                 mCurrentCustomActivityString, uri)) {
+
+            String i = mCurrentCustomActivityString.substring(mCurrentCustomActivityString
+                    .lastIndexOf("_") + 1);
+            Log.i(TAG, "shortcut picked, index: " + i);
+            Settings.System.putString(getContentResolver(),
+                    Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[Integer.parseInt(i)], "");
             mCurrentCustomActivityPreference.setSummary(friendlyName);
         }
     }
@@ -314,7 +443,6 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             return true;
         } else if (pref.getKey().startsWith("lockscreen_target")) {
             int index = Integer.parseInt(pref.getKey().substring(pref.getKey().lastIndexOf("_") + 1));
-            Log.e("LIQUID", "lockscreen target, index: " + index);
             if (newValue.equals("**app**")) {
                 mCurrentCustomActivityPreference = pref;
                 mCurrentCustomActivityString = Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index];
@@ -322,16 +450,20 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             } else {
                 Settings.System.putString(getContentResolver(),
                         Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index], (String) newValue);
+                Settings.System.putString(getContentResolver(),
+                        Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[index], "");
                 refreshSettings();
             }
             return true;
         } else if (pref == mLockscreenTextColor) {
-            String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
+            String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String
+                    .valueOf(newValue)));
             pref.setSummary(hex);
             int intHex = ColorPickerPreference.convertToColorInt(hex);
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.LOCKSCREEN_CUSTOM_TEXT_COLOR, intHex);
-            if (DEBUG) Log.d(TAG, String.format("new color hex value: %d", intHex));
+            if (DEBUG)
+                Log.d(TAG, String.format("new color hex value: %d", intHex));
             return true;
         }
         return false;
@@ -340,21 +472,52 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_PICK_WALLPAPER) {
+
                 FileOutputStream wallpaperStream = null;
                 try {
                     wallpaperStream = mContext.openFileOutput(WALLPAPER_NAME, Context.MODE_PRIVATE);
                 } catch (FileNotFoundException e) {
-                    return;
+                    return; // NOOOOO
                 }
 
                 Uri selectedImageUri = getLockscreenExternalUri();
                 Log.e(TAG, "Selected image uri: " + selectedImageUri);
                 Bitmap bitmap = BitmapFactory.decodeFile(selectedImageUri.getPath());
+
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, wallpaperStream);
+
             } else if (requestCode == ShortcutPickerHelper.REQUEST_PICK_SHORTCUT
                     || requestCode == ShortcutPickerHelper.REQUEST_PICK_APPLICATION
                     || requestCode == ShortcutPickerHelper.REQUEST_CREATE_SHORTCUT) {
                 mPicker.onActivityResult(requestCode, resultCode, data);
+
+            } else if (requestCode == REQUEST_PICK_CUSTOM_ICON) {
+
+                FileOutputStream iconStream = null;
+                try {
+                    iconStream = mContext.openFileOutput("icon_" + currentIconIndex + ".png",
+                            Context.MODE_WORLD_READABLE);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    return; // NOOOOO
+                }
+
+                Uri selectedImageUri = getExternalIconUri();
+                Log.e(TAG, "Selected icon uri: " + selectedImageUri.getPath());
+                Bitmap bitmap = BitmapFactory.decodeFile(selectedImageUri.getPath());
+
+                if (bitmap == null) {
+                    Log.e(TAG, "bitmap was null");
+                } else
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, iconStream);
+
+                Settings.System.putString(getContentResolver(),
+                        Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[currentIconIndex],
+                        getExternalIconUri().toString());
+                Toast.makeText(getActivity(), currentIconIndex + "'s icon set successfully!",
+                        Toast.LENGTH_LONG).show();
+                refreshSettings();
+
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

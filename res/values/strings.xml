@@ -202,6 +202,7 @@
     <string name="windowshade_handle_summary">customize the statusbar close handle bar image</string>
     <string name="windowshade_handle_default">ICS Default</string>
     <string name="windowshade_handle_liquid_1">Exiled option</string>
+    <string name="statusbar_handle_alpha_title">Statusbar handle alpha</string>
 
     <!-- Battery -->
     <string name="battery_icon">Battery Style</string>

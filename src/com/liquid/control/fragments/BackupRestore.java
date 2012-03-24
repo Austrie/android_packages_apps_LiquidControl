@@ -592,23 +592,9 @@ public class BackupRestore extends SettingsPreferenceFragment {
         floatSettingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_ALPHA);
         floatSettingsArray.add(Settings.System.STATUSBAR_HANDLE_ALPHA);
 
-/*        // put arrays in lists
-        List stringsList = Arrays.asList(stringSettingsArray);
-        List intsList = Arrays.asList(intSettingsArray);
-        List floatsList = Arrays.asList(floatSettingsArray);
-
         // randomize arrays so we don't overly annoy any one area
-        Collections.shuffle(stringsList);
-        Collections.shuffle(intsList);
-        Collections.shuffle(floatsList);
-
-        // clear out our arrays and then repopulate with our randomized lists
-        stringSettingsArray.clear();
-        intSettingsArray.clear();
-        floatSettingsArray.clear();
-        stringSettingsArray = new ArrayList(stringsList);
-        intSettingsArray = new ArrayList(intsList);
-        floatSettingsArray = new ArrayList(floatsList);
-*/
+        Collections.shuffle(stringSettingsArray);
+        Collections.shuffle(intSettingsArray);
+        Collections.shuffle(floatSettingsArray);
     }
 }

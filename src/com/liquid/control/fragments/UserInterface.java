@@ -46,6 +46,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     private static final String PREF_CRT_OFF = "crt_off";
     private static final String PREF_CUSTOM_CARRIER_LABEL = "custom_carrier_label";
     private static final String PREF_IME_SWITCHER = "ime_switcher";
+    private static final String PREF_ENABLE_VOLUME_OPTIONS = "enable_volume_options";
     private static final String PREF_LONGPRESS_TO_KILL = "longpress_to_kill";
     private static final String PREF_LONGPRESS_APP_TASKER = "longpress_app_tasker";
     private static final String PREF_ROTATION_ANIMATION = "rotation_animation_delay";
@@ -63,6 +64,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     CheckBoxPreference mHorizontalAppSwitcher;
     CheckBoxPreference mLongPressToKill;
     CheckBoxPreference mShowImeSwitcher;
+    CheckBoxPreference mEnableVolumeOptions;
     CheckBoxPreference mLongPressAppTasker;
     CheckBoxPreference mDisableScreenshotSound;
     CheckBoxPreference mUSBFastCharge;
@@ -86,6 +88,10 @@ public class UserInterface extends SettingsPreferenceFragment implements
         mShowImeSwitcher = (CheckBoxPreference) findPreference(PREF_IME_SWITCHER);
         mShowImeSwitcher.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.SHOW_STATUSBAR_IME_SWITCHER, 1) == 1);
+
+        mEnableVolumeOptions = (CheckBoxPreference) findPreference(PREF_ENABLE_VOLUME_OPTIONS);
+        mEnableVolumeOptions.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.ENABLE_VOLUME_OPTIONS, 0) == 1);
 
         mCustomLabel = findPreference(PREF_CUSTOM_CARRIER_LABEL);
         updateCustomLabelTextSummary();
@@ -182,6 +188,11 @@ public class UserInterface extends SettingsPreferenceFragment implements
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.SHOW_STATUSBAR_IME_SWITCHER, checked ? 1 : 0);
+            return true;
+        } else if (preference == mEnableVolumeOptions) {
+            boolean checked = ((CheckBoxPreference) preference).isChecked();
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.ENABLE_VOLUME_OPTIONS, checked ? 1 : 0);
             return true;
         } else if (preference == mCustomLabel) {
             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());

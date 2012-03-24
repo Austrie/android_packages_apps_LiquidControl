@@ -80,6 +80,10 @@
 			android:title="@string/longpress_to_kill_title"
 			android:summary="@string/longpress_to_kill_summary" />
 
+        <CheckBoxPreference
+            android:key="enable_volume_options"
+            android:title="@string/enable_volume_options" />
+
 		<ListPreference
 			android:entries="@array/rotation_animation_delay_entries"
 			android:entryValues="@array/rotation_animation_delay_values"

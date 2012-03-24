@@ -88,6 +88,7 @@
     <string name="screenshot_sound_summary">Disable sound when capturing screen</string>
     <string name="usb_title">USB</string>
     <string name="usb_fast_charge_title">USB fast charging mode</string>
+    <string name="enable_volume_options">Volume Options</string>
 
     <!-- Lockscreen -->
     <string name="title_pref_lockscreen_quad_targets">Quad Lockscreen</string>	

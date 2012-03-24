@@ -44,6 +44,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -378,9 +379,10 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     }
 
     private Drawable resize(Drawable image) {
-        int size = 100;
+        int size = 50;
+        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
         Bitmap d = ((BitmapDrawable) image).getBitmap();
-        Bitmap bitmapOrig = Bitmap.createScaledBitmap(d, size, size, false);
+        Bitmap bitmapOrig = Bitmap.createScaledBitmap(d, px, px, false);
         return new BitmapDrawable(mContext.getResources(), bitmapOrig);
     }
 

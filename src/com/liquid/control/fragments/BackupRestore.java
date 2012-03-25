@@ -105,7 +105,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // be sure we have the directories we need or everything fails
         File makeDirs = new File(PATH_TO_VALUES);
         File themersDirs = new File(PATH_TO_THEMES);
-        if (!makeDirs.exists() || !themersDir.exists()) {
+        if (!makeDirs.exists() || !themersDirs.exists()) {
             if (!makeDirs.mkdirs() || !themersDirs.mkdirs()) {
                 Log.d(TAG, "failed to create the required directories");
             }
@@ -113,9 +113,9 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
         // TODO: improve logic this is silly and is inaccurate when one
         //        theme is present and the other is absent :-/
-        if (!themerDir.exists()) {
-            mExiledThemer.setVisibility(View.GONE);
-            mUnaffiliated.setVisibility(View.GONE);
+        if (!themersDirs.exists()) {
+            prefs.removePreference(mExiledThemer);
+            prefs.removePreference(mUnaffiliated);
         }
     }
 
@@ -499,8 +499,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
         stringSettingsArray.add(Settings.System.STATUSBAR_TOGGLES);
         // Misc
         stringSettingsArray.add(Settings.System.WIDGET_BUTTONS);
-        stringSettingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS);
-        stringSettingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES);
+        //stringSettingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS); // TODO String[] can't be handled yet
+        //stringSettingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES); // TODO String[] can't be handled yet
 
         // ints next
         // UserInterface
@@ -517,7 +517,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.System.NAVIGATION_BAR_TINT);
         intSettingsArray.add(Settings.System.NAVIGATION_BAR_BACKGROUND_COLOR);
         intSettingsArray.add(Settings.System.NAVIGATION_BAR_HOME_LONGPRESS);
-        //intSettingsArray.add(Settings.System.NAVIGATION_BAR_GLOW_DURATION); TODO String[] can't be backed up yet
+        //intSettingsArray.add(Settings.System.NAVIGATION_BAR_GLOW_DURATION); // TODO String[] can't be handled yet
         intSettingsArray.add(Settings.System.NAVIGATION_BAR_WIDTH);
         intSettingsArray.add(Settings.System.NAVIGATION_BAR_HEIGHT);
         // Lockscreen

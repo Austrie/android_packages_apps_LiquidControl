@@ -69,6 +69,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static String CONFIG_CHECK_PASS = "/sdcard/LiquidControl/%s and dependant restore files have been created";
     private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl/";
     private static final String PATH_TO_VALUES = "/sdcard/LiquidControl/backup";
+    private static final String PATH_TO_THEMES = "/sdcard/LiquidControl/themes";
     private static boolean success = false;
     private final String OPEN_FILENAME = "open_filepath";
 
@@ -99,6 +100,23 @@ public class BackupRestore extends SettingsPreferenceFragment {
         mExiledThemer = (PreferenceScreen) prefs.findPreference(THEME_EXILED_PREF);
         mUnaffiliated = (PreferenceScreen) prefs.findPreference(THEME_UNAFFILIATED_PREF);
         setupArrays();
+
+        // make required dirs and disable themes if unavailable
+        // be sure we have the directories we need or everything fails
+        File makeDirs = new File(PATH_TO_VALUES);
+        File themersDirs = new File(PATH_TO_THEMES);
+        if (!makeDirs.exists() || !themersDir.exists()) {
+            if (!makeDirs.mkdirs() || !themersDirs.mkdirs()) {
+                Log.d(TAG, "failed to create the required directories");
+            }
+        }
+
+        // TODO: improve logic this is silly and is inaccurate when one
+        //        theme is present and the other is absent :-/
+        if (!themerDir.exists()) {
+            mExiledThemer.setVisibility(View.GONE);
+            mUnaffiliated.setVisibility(View.GONE);
+        }
     }
 
     private boolean runBackup() {
@@ -161,14 +179,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
                             if (DEBUG) notFound.printStackTrace();
                         } catch (ClassCastException cce) {
                             if (CLASS_DEBUG) cce.printStackTrace();
-                        }
-                    }
-
-                    // be sure we have the directories we need or everything fails
-                    File makeDirs = new File(PATH_TO_VALUES);
-                    if (!makeDirs.exists()) {
-                        if (!makeDirs.mkdirs()) {
-                            Log.d(TAG, "failed to create the required directories");
                         }
                     }
 
@@ -489,6 +499,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
         stringSettingsArray.add(Settings.System.STATUSBAR_TOGGLES);
         // Misc
         stringSettingsArray.add(Settings.System.WIDGET_BUTTONS);
+        stringSettingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS);
+        stringSettingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES);
 
         // ints next
         // UserInterface
@@ -521,6 +533,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.System.LOCKSCREEN_LANDSCAPE);
         intSettingsArray.add(Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL);
         intSettingsArray.add(Settings.System.ENABLE_FAST_TORCH);
+        intSettingsArray.add(Settings.System.LOCKSCREEN_LOW_BATTERY);
         // Powermenu
         intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_AIRPLANE);
         intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_EASTEREGG);
@@ -580,6 +593,10 @@ public class BackupRestore extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.System.STATUSBAR_SIGNAL_TEXT);
         intSettingsArray.add(Settings.System.STATUSBAR_SIGNAL_TEXT_COLOR);
         intSettingsArray.add(Settings.System.STATUSBAR_SIXBAR_SIGNAL);
+        intSettingsArray.add(Settings.System.STATUSBAR_HIDE_SIGNAL_BARS);
+        intSettingsArray.add(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT);
+        intSettingsArray.add(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT_COLOR);
+
         // Misc
         intSettingsArray.add(Settings.System.EXPANDED_VIEW_WIDGET);
         intSettingsArray.add(Settings.System.IS_TABLET);

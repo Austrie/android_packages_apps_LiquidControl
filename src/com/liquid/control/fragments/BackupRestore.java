@@ -532,7 +532,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.System.LOCKSCREEN_LANDSCAPE);
         intSettingsArray.add(Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL);
         intSettingsArray.add(Settings.System.ENABLE_FAST_TORCH);
-        intSettingsArray.add(Settings.System.LOCKSCREEN_LOW_BATTERY);
         // Powermenu
         intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_AIRPLANE);
         intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_EASTEREGG);
@@ -570,7 +569,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR);
         intSettingsArray.add(Settings.System.STATUS_BAR_LAYOUT);
         intSettingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE);
-
         // StatusBarToggles
         intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS);
         intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_BRIGHTNESS_LOC);
@@ -595,7 +593,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.System.STATUSBAR_HIDE_SIGNAL_BARS);
         intSettingsArray.add(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT);
         intSettingsArray.add(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT_COLOR);
-
         // Misc
         intSettingsArray.add(Settings.System.EXPANDED_VIEW_WIDGET);
         intSettingsArray.add(Settings.System.IS_TABLET);

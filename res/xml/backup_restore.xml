@@ -32,7 +32,7 @@
             android:summary="@string/restore_summary" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/theme_category_title">
+<!--    <PreferenceCategory android:title="@string/theme_category_title">
 
         <PreferenceScreen
             android:key="theme_exiled"
@@ -43,5 +43,5 @@
             android:key="theme_unaffiliated"
             android:title="@string/theme_unaffiliated_title"
             android:summary="@string/theme_unaffiliated_summary" />
-    </PreferenceCategory>
+    </PreferenceCategory> -->
 </PreferenceScreen>

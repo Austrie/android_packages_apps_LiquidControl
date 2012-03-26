@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.os.SystemProperties;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -44,7 +45,7 @@ public class Performance extends SettingsPreferenceFragment implements
     public static final String KEY_GOV = "gov";
     public static final String KEY_CPU_BOOT = "cpu_boot";
     public static final String KEY_MINFREE = "free_memory";
-    public static final String KEY_FASTCHARGE = "fast_charge_boot";
+    public static final String KEY_FASTCHARGE = "fast_charge";
 
     private static final String STEPS = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies";
     private static final String MAX_FREQ = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq";
@@ -62,6 +63,7 @@ public class Performance extends SettingsPreferenceFragment implements
     private ListPreference mMaxCpu;
     private ListPreference mSetGov;
     private ListPreference mFreeMem;
+    private CheckBoxPreference mFastCharge;
     private ListPreference mScrollingCachePref;
     private SharedPreferences preferences;
     private boolean doneLoading = false;
@@ -130,6 +132,19 @@ public class Performance extends SettingsPreferenceFragment implements
         if (!new File(VoltageControl.MV_TABLE0).exists()) {
             ((PreferenceCategory) getPreferenceScreen().findPreference("cpu"))
                     .removePreference(ps);
+        }
+
+        mFastCharge = (CheckBoxPreference) findPreference(KEY_FASTCHARGE);
+        if (Helpers.isFastCharge() == 1) mFastCharge.setChecked(true);
+        int fastOnOff = Helpers.isFastCharge();
+
+        switch (fastOnOff) {
+            case 0:
+                mFastCharge.setSummary("OFF: USB is in normal MTS mode");
+                break;
+            case 1:
+                mFastCharge.setSummary("ON: no data transfer via USB mode");
+                break;
         }
 
         doneLoading = true;
@@ -294,6 +309,16 @@ public class Performance extends SettingsPreferenceFragment implements
             if (newValue != null) {
                 SystemProperties.set(SCROLLINGCACHE_PERSIST_PROP, (String) newValue);
                 return true;
+            }
+        } else if (preference == mFastCharge) {
+            boolean checked = mFastCharge.isChecked();
+            String formatter = "echo %d > /sys/kernel/fast_charge/force_fast_charge";
+            if (checked) {
+                new CMDProcessor().su.runWaitFor(String.format(formatter, 1));
+                mFastCharge.setSummary("ON: no data transfer via USB mode");
+            } else {
+                new CMDProcessor().su.runWaitFor(String.format(formatter, 0));
+                mFastCharge.setSummary("OFF: USB is in normal MTS mode");
             }
         }
         return false;

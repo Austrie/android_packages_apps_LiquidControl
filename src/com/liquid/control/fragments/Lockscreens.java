@@ -72,7 +72,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         ShortcutPickerHelper.OnPickListener, OnPreferenceChangeListener {
 
     private static final String TAG = "Lockscreens";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static final String PREF_MENU = "pref_lockscreen_menu_unlock";
     private static final String PREF_USER_OVERRIDE = "lockscreen_user_timeout_override";

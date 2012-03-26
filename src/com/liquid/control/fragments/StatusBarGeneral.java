@@ -58,7 +58,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         OnPreferenceChangeListener {
 
     private static final String TAG = "LiquidControl :StatusBarGeneral";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final String PREF_SHOW_DATE = "show_date";
     private static final String PREF_DATE_FORMAT = "date_format";
     private static final String PREF_SETTINGS_BUTTON_BEHAVIOR = "settings_behavior";

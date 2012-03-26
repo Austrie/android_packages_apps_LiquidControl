@@ -104,9 +104,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // make required dirs and disable themes if unavailable
         // be sure we have the directories we need or everything fails
         File makeDirs = new File(PATH_TO_VALUES);
-        File themersDirs = new File(PATH_TO_THEMES);
-        if (!makeDirs.exists() || !themersDirs.exists()) {
-            if (!makeDirs.mkdirs() || !themersDirs.mkdirs()) {
+        if (!makeDirs.exists()) {
+            if (!makeDirs.mkdirs()) {
                 Log.d(TAG, "failed to create the required directories");
             }
         }

@@ -31,7 +31,7 @@ import com.liquid.control.R;
 public class ColorPickerDialog extends Dialog implements
         ColorPickerView.OnColorChangedListener, View.OnClickListener {
     private static final String TAG = "ColorPickerDialog";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
 
     private ColorPickerView mColorPicker;

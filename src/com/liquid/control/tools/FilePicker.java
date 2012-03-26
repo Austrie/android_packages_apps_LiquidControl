@@ -28,7 +28,7 @@ import com.liquid.control.R;
 public class FilePicker extends ListActivity {
 
     private static final String TAG = "Liquid: FilePicker";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final boolean DEFAULT = false;
 
     private Button saveButton;

@@ -32,16 +32,20 @@
             android:summary="@string/restore_summary" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/theme_category_title">
+    <PreferenceCategory
+        android:key="theme_cat"
+        android:title="@string/theme_category_title">
 
         <PreferenceScreen
             android:key="theme_exiled"
             android:title="@string/theme_exiled_title"
-            android:summary="@string/theme_exiled_summary" />
+            android:summary="@string/theme_exiled_summary"
+            android:visibility="gone" />
 
         <PreferenceScreen
             android:key="theme_unaffiliated"
             android:title="@string/theme_unaffiliated_title"
-            android:summary="@string/theme_unaffiliated_summary" />
+            android:summary="@string/theme_unaffiliated_summary"
+            android:visibility="gone" />
     </PreferenceCategory>
 </PreferenceScreen>

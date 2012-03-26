@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
@@ -61,6 +62,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static final String BLANK = "";
     private static final String BACKUP_PREF = "backup";
     private static final String RESTORE_PREF = "restore";
+    private static final String THEME_CAT_PREF = "theme_cat";
     private static final String THEME_EXILED_PREF = "theme_exiled";
     private static final String THEME_UNAFFILIATED_PREF = "theme_unaffiliated";
     private static final int EXILED = 1;
@@ -70,6 +72,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl/";
     private static final String PATH_TO_VALUES = "/sdcard/LiquidControl/backup";
     private static final String PATH_TO_THEMES = "/sdcard/LiquidControl/themes";
+    private static final String PATH_TO_EXILED_0 = "/sdcard/LiquidControl/themes/exiled_0";
+    private static final String PATH_TO_UNAFFILIATED_0 = "/sdcard/LiquidControl/themes/unaffiliated_0";
     private static boolean success = false;
     private final String OPEN_FILENAME = "open_filepath";
 
@@ -79,8 +83,10 @@ public class BackupRestore extends SettingsPreferenceFragment {
     ArrayList<String> intSettingsArray = new ArrayList<String>();
     ArrayList<String> floatSettingsArray = new ArrayList<String>();
 
+    PreferenceScreen prefs;
     PreferenceScreen mBackup;
     PreferenceScreen mRestore;
+    PreferenceCategory mThemeCat;
     PreferenceScreen mExiledThemer;
     PreferenceScreen mUnaffiliated;
 
@@ -88,33 +94,63 @@ public class BackupRestore extends SettingsPreferenceFragment {
     Properties mIntProps = new Properties();
     Properties mFloatProps = new Properties();
     Properties mNameHolder = new Properties();
+    
 
     @Override
     public void onCreate(Bundle didOrientationChange) {
         super.onCreate(didOrientationChange);
 
         addPreferencesFromResource(R.xml.backup_restore);
-        PreferenceScreen prefs = getPreferenceScreen();
+        prefs = getPreferenceScreen();
         mBackup = (PreferenceScreen) prefs.findPreference(BACKUP_PREF);
         mRestore = (PreferenceScreen) prefs.findPreference(RESTORE_PREF);
         mExiledThemer = (PreferenceScreen) prefs.findPreference(THEME_EXILED_PREF);
         mUnaffiliated = (PreferenceScreen) prefs.findPreference(THEME_UNAFFILIATED_PREF);
+
+        // gain reference to theme category so we can drop our prefs if not found
+        mThemeCat = (PreferenceCategory) prefs.findPreference(THEME_CAT_PREF);
+
+        // go ahead and drop the Themes we can add them back later if needed
+        mThemeCat.removePreference(mExiledThemer);
+        mThemeCat.removePreference(mUnaffiliated);
+        prefs.removePreference(mThemeCat);
         setupArrays();
 
         // make required dirs and disable themes if unavailable
         // be sure we have the directories we need or everything fails
         File makeDirs = new File(PATH_TO_VALUES);
+        File themersDirs = new File(PATH_TO_THEMES);
+        File exiledTheme0 = new File(PATH_TO_EXILED_0);
+        File unaffiliated0 = new File(PATH_TO_UNAFFILIATED_0);
+
         if (!makeDirs.exists()) {
             if (!makeDirs.mkdirs()) {
                 Log.d(TAG, "failed to create the required directories");
             }
         }
 
-        // TODO: improve logic this is silly and is inaccurate when one
-        //        theme is present and the other is absent :-/
-        if (!themersDirs.exists()) {
-            prefs.removePreference(mExiledThemer);
-            prefs.removePreference(mUnaffiliated);
+        // add themes if found
+        // TODO: read and load these dynamically
+        if (prefs.removePreference(mThemeCat)) {
+            if (exiledTheme0.isFile() || unaffiliated0.isFile()) {
+                prefs.addPreference(mThemeCat);
+            }
+            if (exiledTheme0.isFile()) {
+                mThemeCat.addPreference(mExiledThemer);
+            }
+            if (unaffiliated0.isFile()) {
+                mThemeCat.addPreference(mUnaffiliated);
+            }
+        } else {
+            if (exiledTheme0.isFile() || unaffiliated0.isFile()) {
+                prefs.addPreference(mThemeCat);
+            }
+            if (exiledTheme0.isFile()) {
+                mThemeCat.addPreference(mExiledThemer);
+            }
+            if (unaffiliated0.isFile()) {
+                mThemeCat.addPreference(mUnaffiliated);
+            }
         }
     }
 
@@ -532,7 +568,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.System.LOCKSCREEN_LANDSCAPE);
         intSettingsArray.add(Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL);
         intSettingsArray.add(Settings.System.ENABLE_FAST_TORCH);
-        intSettingsArray.add(Settings.System.LOCKSCREEN_LOW_BATTERY);
+        //intSettingsArray.add(Settings.System.LOCKSCREEN_LOW_BATTERY);
         // Powermenu
         intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_AIRPLANE);
         intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_EASTEREGG);

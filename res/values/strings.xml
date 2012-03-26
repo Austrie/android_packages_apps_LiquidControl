@@ -432,8 +432,11 @@
     <string name="theme_exiled_summary">Custom settings by ExiledThemer</string>
     <string name="theme_unaffiliated_title">Team Unaffiliated</string>
     <string name="theme_unaffiliated_summary">Custom settings by TeamUnaffiliated</string>
+    <string name="theme_nitroz_title">Nitroz</string>
+    <string name="theme_nitroz_summary">Black Exodus settings by Nitroz</string>
     <string name="exiled_theme_0">exiled_0</string>
     <string name="unaffiliated_theme_0">unaffiliated_0</string>
+    <string name="nitroz_theme_0">nitroz_0</string>
 
     <!-- File Picker -->
     <string name="cancel">Cancel</string>

@@ -45,5 +45,10 @@
             android:key="theme_unaffiliated"
             android:title="@string/theme_unaffiliated_title"
             android:summary="@string/theme_unaffiliated_summary" />
+
+        <PreferenceScreen
+            android:key="theme_nitroz"
+            android:title="@string/theme_nitroz_title"
+            android:summary="@string/theme_nitroz_summary" />
     </PreferenceCategory> -->
 </PreferenceScreen>

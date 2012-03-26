@@ -65,8 +65,10 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static final String THEME_CAT_PREF = "theme_cat";
     private static final String THEME_EXILED_PREF = "theme_exiled";
     private static final String THEME_UNAFFILIATED_PREF = "theme_unaffiliated";
+    private static final String THEME_NITROZ_PREF = "theme_nitroz";
     private static final int EXILED = 1;
     private static final int UNAFFILIATED = 2;
+    private static final int NITROZ = 3;
     private static String CONFIG_FILENAME = null;
     private static String CONFIG_CHECK_PASS = "/sdcard/LiquidControl/%s and dependant restore files have been created";
     private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl/";
@@ -74,6 +76,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static final String PATH_TO_THEMES = "/sdcard/LiquidControl/themes";
     private static final String PATH_TO_EXILED_0 = "/sdcard/LiquidControl/themes/exiled_0";
     private static final String PATH_TO_UNAFFILIATED_0 = "/sdcard/LiquidControl/themes/unaffiliated_0";
+    private static final String PATH_TO_NITROZ_0 = "/sdcard/LiquidControl/themes/nitroz_0";
     private static boolean success = false;
     private final String OPEN_FILENAME = "open_filepath";
 
@@ -89,6 +92,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
     PreferenceCategory mThemeCat;
     PreferenceScreen mExiledThemer;
     PreferenceScreen mUnaffiliated;
+    PreferenceScreen mNitroz;
 
     Properties mStringProps = new Properties();
     Properties mIntProps = new Properties();
@@ -106,6 +110,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         mRestore = (PreferenceScreen) prefs.findPreference(RESTORE_PREF);
         mExiledThemer = (PreferenceScreen) prefs.findPreference(THEME_EXILED_PREF);
         mUnaffiliated = (PreferenceScreen) prefs.findPreference(THEME_UNAFFILIATED_PREF);
+        mNitroz = (PreferenceScreen) prefs.findPreference(THEME_NITROZ_PREF);
 
         // gain reference to theme category so we can drop our prefs if not found
         mThemeCat = (PreferenceCategory) prefs.findPreference(THEME_CAT_PREF);
@@ -113,6 +118,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // go ahead and drop the Themes we can add them back later if needed
         mThemeCat.removePreference(mExiledThemer);
         mThemeCat.removePreference(mUnaffiliated);
+        mThemeCat.removePreference(mNitroz);
         // themes live in the theme category while the theme category lives on the PreferenceScreen
         prefs.removePreference(mThemeCat);
         setupArrays();
@@ -123,6 +129,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         File themersDirs = new File(PATH_TO_THEMES);
         File exiledTheme0 = new File(PATH_TO_EXILED_0);
         File unaffiliated0 = new File(PATH_TO_UNAFFILIATED_0);
+        File nitroz0 = new File(PATH_TO_NITROZ_0);
 
         if (!makeDirs.exists()) {
             if (!makeDirs.mkdirs()) {
@@ -132,7 +139,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
         // add themes if found
         // TODO: read and load these dynamically
-        if (exiledTheme0.isFile() || unaffiliated0.isFile()) {
+        if (exiledTheme0.isFile() || unaffiliated0.isFile() || nitroz0.isFile()) {
             prefs.addPreference(mThemeCat);
         }
         if (exiledTheme0.isFile()) {
@@ -141,6 +148,10 @@ public class BackupRestore extends SettingsPreferenceFragment {
         if (unaffiliated0.isFile()) {
             mThemeCat.addPreference(mUnaffiliated);
         }
+        if (nitroz0.isFile()) {
+            mThemeCat.addPreference(mNitroz);
+        }
+
     }
 
     private boolean runBackup() {
@@ -296,6 +307,10 @@ public class BackupRestore extends SettingsPreferenceFragment {
                 restore(getString(R.string.unaffiliated_theme_0), true);
                 handledInt = true;
                 break;
+            case NITROZ:
+                restore(getString(R.string.nitroz_theme_0), true);
+                handledInt = true;
+                break;
         }
         return handledInt;
     }
@@ -317,6 +332,9 @@ public class BackupRestore extends SettingsPreferenceFragment {
         } else if (pref == mUnaffiliated) {
             if (DEBUG) Log.d(TAG, "calling applyTheme(UNAFFILIATED) method");
             return applyTheme(UNAFFILIATED);
+        } else if (pref == mNitroz) {
+            if (DEBUG) Log.d(TAG, "calling applyTheme(NITROZ) method");
+            return applyTheme(NITROZ);
         } //TODO: we should also have a complete return to fresh wipe
         return super.onPreferenceTreeClick(prefScreen, pref);
     }

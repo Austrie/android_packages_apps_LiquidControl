@@ -113,6 +113,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // go ahead and drop the Themes we can add them back later if needed
         mThemeCat.removePreference(mExiledThemer);
         mThemeCat.removePreference(mUnaffiliated);
+        // themes live in the theme category while the theme category lives on the PreferenceScreen
         prefs.removePreference(mThemeCat);
         setupArrays();
 
@@ -131,26 +132,14 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
         // add themes if found
         // TODO: read and load these dynamically
-        if (prefs.removePreference(mThemeCat)) {
-            if (exiledTheme0.isFile() || unaffiliated0.isFile()) {
-                prefs.addPreference(mThemeCat);
-            }
-            if (exiledTheme0.isFile()) {
-                mThemeCat.addPreference(mExiledThemer);
-            }
-            if (unaffiliated0.isFile()) {
-                mThemeCat.addPreference(mUnaffiliated);
-            }
-        } else {
-            if (exiledTheme0.isFile() || unaffiliated0.isFile()) {
-                prefs.addPreference(mThemeCat);
-            }
-            if (exiledTheme0.isFile()) {
-                mThemeCat.addPreference(mExiledThemer);
-            }
-            if (unaffiliated0.isFile()) {
-                mThemeCat.addPreference(mUnaffiliated);
-            }
+        if (exiledTheme0.isFile() || unaffiliated0.isFile()) {
+            prefs.addPreference(mThemeCat);
+        }
+        if (exiledTheme0.isFile()) {
+            mThemeCat.addPreference(mExiledThemer);
+        }
+        if (unaffiliated0.isFile()) {
+            mThemeCat.addPreference(mUnaffiliated);
         }
     }
 
@@ -606,7 +595,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR);
         intSettingsArray.add(Settings.System.STATUS_BAR_LAYOUT);
         intSettingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE);
-
         // StatusBarToggles
         intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS);
         intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_BRIGHTNESS_LOC);
@@ -631,7 +619,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
         intSettingsArray.add(Settings.System.STATUSBAR_HIDE_SIGNAL_BARS);
         intSettingsArray.add(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT);
         intSettingsArray.add(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT_COLOR);
-
         // Misc
         intSettingsArray.add(Settings.System.EXPANDED_VIEW_WIDGET);
         intSettingsArray.add(Settings.System.IS_TABLET);

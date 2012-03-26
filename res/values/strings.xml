@@ -101,8 +101,6 @@
     <string name="show_lock_before_unlock_summary">Show lockscreen before secure unlock</string>
     <string name="lockscreen_battery_title">Battery Percent</string>
     <string name="lockscreen_battery_summary">Always show percentage on lockscreen</string>
-    <string name="lockscreen_low_battery_title">Low Battery Percent</string>
-    <string name="lockscreen_low_battery_summary">Show low battery percentage on lockscreen</string>
     <string name="volume_wake_title">Volume Wake</string>
     <string name="volume_wake_summary">Tapping volume keys wakes phone</string>
     <string name="volume_music_controls_title">Volume Controls</string>
@@ -458,9 +456,9 @@
     <string name="location_tracker">Location: %s</string>
 
     <!-- Kernel Tweaks -->
-    <string name="pt_fast_charge_boot">Fast Charge</string>
+    <string name="pt_fast_charge_boot">Fastcharge</string>
     <string name="ps_fast_charge_boot">Enable fast charge at boot</string>
-    <string name="kernel">Kernel Tweaks (if supported)</string>
+    <string name="kernel">Kernel Tweaks</string>
     <string name="color_tuning_title_head">Color Multipliers Tuning</string>
     <string name="color_tuning_summary_head">Calibrate multipliers screen color</string>
     <string name="gamma_tuning_title_head">Color Gamma Tuning</string>

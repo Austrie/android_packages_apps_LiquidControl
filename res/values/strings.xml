@@ -428,10 +428,10 @@
     <string name="backup_summary">save your settings</string>
     <string name="restore_title">Restore LiquidControl</string>
     <string name="restore_summary">apply your backup</string>
-    <string name="theme_exiled_title">ExiledThemer\'s theme</string>
-    <string name="theme_exiled_summary">Exileds awesome ThemeName</string>
-    <string name="theme_unaffiliated_title">Team Unaffiliated\'s theme</string>
-    <string name="theme_unaffiliated_summary">TeamUnaffiliated awesome ThemeName</string>
+    <string name="theme_exiled_title">ExiledThemer</string>
+    <string name="theme_exiled_summary">Custom settings by ExiledThemer</string>
+    <string name="theme_unaffiliated_title">Team Unaffiliated</string>
+    <string name="theme_unaffiliated_summary">Custom settings by TeamUnaffiliated</string>
     <string name="exiled_theme_0">exiled_0</string>
     <string name="unaffiliated_theme_0">unaffiliated_0</string>
 

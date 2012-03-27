@@ -322,7 +322,6 @@ public class Performance extends SettingsPreferenceFragment implements
                 new CMDProcessor().su.runWaitFor(String.format(formatter, 0));
                 mFastCharge.setSummary("OFF: USB is in normal MTS mode");
             }
-            return true;
         }
         return false;
     }

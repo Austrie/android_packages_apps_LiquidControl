@@ -284,7 +284,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
 
     public void refreshSettings() {
         int lockscreenTargets = Settings.System.getInt(getContentResolver(),
-                Settings.System.LOCKSCREEN_LAYOUT, 2);
+                Settings.System.LOCKSCREEN_LAYOUT, 0);
         PreferenceGroup targetGroup = (PreferenceGroup) findPreference("lockscreen_targets");
         targetGroup.removeAll();
 

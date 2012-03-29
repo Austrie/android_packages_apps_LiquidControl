@@ -35,20 +35,7 @@
     <PreferenceCategory
         android:key="theme_cat"
         android:title="@string/theme_category_title">
-
-        <PreferenceScreen
-            android:key="theme_exiled"
-            android:title="@string/theme_exiled_title"
-            android:summary="@string/theme_exiled_summary" />
-
-        <PreferenceScreen
-            android:key="theme_unaffiliated"
-            android:title="@string/theme_unaffiliated_title"
-            android:summary="@string/theme_unaffiliated_summary" />
-
-        <PreferenceScreen
-            android:key="theme_nitroz"
-            android:title="@string/theme_nitroz_title"
-            android:summary="@string/theme_nitroz_summary" />
+    <!-- we leave this blank and draw the PreferenceScreens for themes
+         dynamically as found within the class -->
     </PreferenceCategory> -->
 </PreferenceScreen>

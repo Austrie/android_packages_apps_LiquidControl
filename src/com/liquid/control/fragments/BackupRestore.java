@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
@@ -53,7 +54,6 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-
 public class BackupRestore extends SettingsPreferenceFragment {
 
     private static final String TAG = "BackupRestore";
@@ -74,31 +74,22 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl/";
     private static final String PATH_TO_VALUES = "/sdcard/LiquidControl/backup";
     private static final String PATH_TO_THEMES = "/sdcard/LiquidControl/themes";
-    private static final String PATH_TO_EXILED_0 = "/sdcard/LiquidControl/themes/exiled_0";
-    private static final String PATH_TO_UNAFFILIATED_0 = "/sdcard/LiquidControl/themes/unaffiliated_0";
-    private static final String PATH_TO_NITROZ_0 = "/sdcard/LiquidControl/themes/nitroz_0";
     private static boolean success = false;
     private final String OPEN_FILENAME = "open_filepath";
+    private final String SAVE_FILENAME = "save_filepath";
+    private static boolean FOUND_CLASS = false;
+    private static final String MESSAAGE_TO_HEAD_FILE = "~XXX~ BE CAREFUL EDITING BY HAND ~XXX~ you have been warned!";
 
     // to hold our lists
     String[] array;
-    ArrayList<String> stringSettingsArray = new ArrayList<String>();
-    ArrayList<String> intSettingsArray = new ArrayList<String>();
-    ArrayList<String> floatSettingsArray = new ArrayList<String>();
+    ArrayList<String> settingsArray = new ArrayList<String>();
 
     PreferenceScreen prefs;
     PreferenceScreen mBackup;
     PreferenceScreen mRestore;
     PreferenceCategory mThemeCat;
-    PreferenceScreen mExiledThemer;
-    PreferenceScreen mUnaffiliated;
-    PreferenceScreen mNitroz;
 
-    Properties mStringProps = new Properties();
-    Properties mIntProps = new Properties();
-    Properties mFloatProps = new Properties();
-    Properties mNameHolder = new Properties();
-    
+    Properties mProperties = new Properties();
 
     @Override
     public void onCreate(Bundle didOrientationChange) {
@@ -108,17 +99,10 @@ public class BackupRestore extends SettingsPreferenceFragment {
         prefs = getPreferenceScreen();
         mBackup = (PreferenceScreen) prefs.findPreference(BACKUP_PREF);
         mRestore = (PreferenceScreen) prefs.findPreference(RESTORE_PREF);
-        mExiledThemer = (PreferenceScreen) prefs.findPreference(THEME_EXILED_PREF);
-        mUnaffiliated = (PreferenceScreen) prefs.findPreference(THEME_UNAFFILIATED_PREF);
-        mNitroz = (PreferenceScreen) prefs.findPreference(THEME_NITROZ_PREF);
 
         // gain reference to theme category so we can drop our prefs if not found
         mThemeCat = (PreferenceCategory) prefs.findPreference(THEME_CAT_PREF);
 
-        // go ahead and drop the Themes we can add them back later if needed
-        mThemeCat.removePreference(mExiledThemer);
-        mThemeCat.removePreference(mUnaffiliated);
-        mThemeCat.removePreference(mNitroz);
         // themes live in the theme category while the theme category lives on the PreferenceScreen
         prefs.removePreference(mThemeCat);
         setupArrays();
@@ -127,9 +111,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // be sure we have the directories we need or everything fails
         File makeDirs = new File(PATH_TO_VALUES);
         File themersDirs = new File(PATH_TO_THEMES);
-        File exiledTheme0 = new File(PATH_TO_EXILED_0);
-        File unaffiliated0 = new File(PATH_TO_UNAFFILIATED_0);
-        File nitroz0 = new File(PATH_TO_NITROZ_0);
+        String[] allThemesFound = themersDirs.list();
+        if (DEBUG) Log.d(TAG, themersDirs.list().toString());
 
         if (!makeDirs.exists()) {
             if (!makeDirs.mkdirs()) {
@@ -139,180 +122,153 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
         // add themes if found
         // TODO: read and load these dynamically
-        if (exiledTheme0.isFile() || unaffiliated0.isFile() || nitroz0.isFile()) {
+        if (allThemesFound != null) {
             prefs.addPreference(mThemeCat);
-        }
-        if (exiledTheme0.isFile()) {
-            mThemeCat.addPreference(mExiledThemer);
-        }
-        if (unaffiliated0.isFile()) {
-            mThemeCat.addPreference(mUnaffiliated);
-        }
-        if (nitroz0.isFile()) {
-            mThemeCat.addPreference(mNitroz);
-        }
-
-    }
-
-    private boolean runBackup() {
-        if (DEBUG) Log.d(TAG, "runBackup has been called");
-        // setup the edit text dialog
-        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setTitle(getString(R.string.backup_alert_title));
-        alert.setMessage(getString(R.string.backup_alert_message));
-
-        // name the config file
-        final EditText input = new EditText(getActivity());
-        success = false;
-        input.setText(CONFIG_FILENAME != null ? CONFIG_FILENAME : "");
-        alert.setView(input);
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                final String value = ((Spannable) input.getText()).toString();
-
-                // I'm sure there is some way to check for bad chars in filename
-                if (value != null || value != "" || !value.contains("!") || !value.contains("@") ||
-                        !value.contains("#") || !value.contains("$") || !value.contains("%") ||
-                        !value.contains("^") || !value.contains("&") || !value.contains("*") ||
-                        !value.contains("(") || !value.contains(")") || !value.contains(" ")) {
-                    String string_setting = null;
-                    int int_setting;
-                    float float_setting;
-                    for (final String liquid_string_setting : stringSettingsArray) {
-                        try {
-                            string_setting = Settings.System.getString(getActivity().getContentResolver(), liquid_string_setting);
-                            if (string_setting != null) mStringProps.setProperty(liquid_string_setting, string_setting);
-                            Log.d(TAG, String.format("Strings: {%s} returned value {%s}", liquid_string_setting, string_setting));
-                        } catch (ClassCastException cce) {
-                            if (CLASS_DEBUG) cce.printStackTrace();
-                        } catch (NullPointerException npe) {
-                            // since we check above for null this should never happen
-                            npe.printStackTrace();
-                        }
-                    }
-
-                    for (final String liquid_int_setting : intSettingsArray) {
-                        Log.d(TAG, "looking for int value of: " + liquid_int_setting);
-                        try {
-                            int int_ = Settings.System.getInt(getActivity().getContentResolver(), liquid_int_setting);
-                            mIntProps.setProperty(liquid_int_setting, String.format("%d", int_));
-                            if (DEBUG) Log.d(TAG, "ints: {" + liquid_int_setting + "} returned value {" + int_ + "}");
-                        } catch (SettingNotFoundException notFound) {
-                            if (CLASS_DEBUG) notFound.printStackTrace();
-                        } catch (ClassCastException cce) {
-                            if (CLASS_DEBUG) cce.printStackTrace();
-                        }
-                    }
-
-                    for (final String liquid_float_setting : floatSettingsArray) {
-                        Log.d(TAG, "looking for float value of: " + liquid_float_setting);
-                        try {
-                            float float_ = Settings.System.getFloat(getActivity().getContentResolver(), liquid_float_setting);
-                            mFloatProps.setProperty(liquid_float_setting, String.format("%f", float_));
-                            if (DEBUG) Log.d(TAG, "floats:  {" + liquid_float_setting + "} returned value {" + float_ + "}");
-                        } catch (SettingNotFoundException notFound) {
-                            if (DEBUG) notFound.printStackTrace();
-                        } catch (ClassCastException cce) {
-                            if (CLASS_DEBUG) cce.printStackTrace();
-                        }
-                    }
-
-                    if (mStringProps != null) {
-                        try {
-                            File storeStringFile = new File(String.format("/sdcard/LiquidControl/backup/string_%s", value));
-                            mStringProps.store(new FileOutputStream(storeStringFile), null);
-                            if (DEBUG) Log.d(TAG, "Does storeStringFile exist? " + storeStringFile.exists());
-                            success = true;
-                        } catch (FileNotFoundException fnfe) {
-                            fnfe.printStackTrace();
-                        } catch (IOException ioe) {
-                            ioe.printStackTrace();
-                        }
-                    } else {
-                        if (DEBUG) Log.d(TAG, "mStringProps was null");
-                    }
-
-                    if (mIntProps != null) {
-                        try {
-                            File storeIntFile = new File(String.format("/sdcard/LiquidControl/backup/int_%s", value));
-                            mIntProps.store(new FileOutputStream(storeIntFile), null);
-                            if (DEBUG) Log.d(TAG, "Does storeIntFile exist? " + storeIntFile.exists());
-                            success = true;
-                        } catch (FileNotFoundException fnfe) {
-                            fnfe.printStackTrace();
-                        } catch (IOException ioe) {
-                            ioe.printStackTrace();
-                        }
-                    } else {
-                        if (DEBUG) Log.d(TAG, "mIntProps was null");
-                    }
-
-                    if (mFloatProps != null) {
-                        try {
-                            File storeFloatFile = new File(String.format("/sdcard/LiquidControl/backup/float_%s", value));
-                            mFloatProps.store(new FileOutputStream(storeFloatFile), null);
-                            if (DEBUG) Log.d(TAG, "Does storeFloatFile exist? " + storeFloatFile.exists());
-                            success = true;
-                        } catch (FileNotFoundException fnfe) {
-                            fnfe.printStackTrace();
-                        } catch (IOException ioe) {
-                            ioe.printStackTrace();
-                        }
-                    } else {
-                        if (DEBUG) Log.d(TAG, "mFloatProps was null");
-                    }
-
-                    // we save the real settings in /sdcard/LiquidControl/backup/
-                    // and a name place holder in /sdcard/LiquidControl
-                    mNameHolder.setProperty(value, value);
+            for (final String theme_ : allThemesFound) {
+                // don't try to load directories as themes
+                File tf = new File(PATH_TO_THEMES, theme_);
+                if (!tf.isDirectory()) {
                     try {
-                        File nameSpaceFile = new File(String.format("/sdcard/LiquidControl/%s", value));
-                        mNameHolder.store(new FileOutputStream(nameSpaceFile), null);
-                        if (DEBUG) Log.d(TAG, "Does nameSpaceFile exist? " + nameSpaceFile.exists());
-                    } catch (FileNotFoundException fnfe) {
-                        fnfe.printStackTrace();
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
-                    }
+                        File themeFile = new File(PATH_TO_THEMES, theme_);
+                        PreferenceScreen newTheme = getPreferenceManager().createPreferenceScreen(mContext);
+                        // use namespace for key
+                        newTheme.setKey(theme_);
+                        FileReader fReader = new FileReader(themeFile);
+                        Properties mThemeProps = new Properties();
+                        mThemeProps.load(fReader);
+                        // look for some strings to set title and summary in config file
+                        String returnedTitle = ((String) mThemeProps.get("title"));
+                        String returnedSummary = ((String) mThemeProps.get("summary"));
+                        if (returnedTitle != null) newTheme.setTitle(returnedTitle);
+                        // use the filename is we have nothing else
+                        else newTheme.setTitle(theme_);
 
-                    // Notify user if files were created correctly
-                    if (checkConfigFiles(value)) {
-                        Toast.makeText(mContext, String.format(CONFIG_CHECK_PASS,
-                                value), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(mContext, "We encountered a problem, restore not created",
-                                Toast.LENGTH_SHORT).show();
+                        if (returnedSummary != null) newTheme.setSummary(returnedSummary);
+                        else newTheme.setSummary(BLANK);
+                        newTheme.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                                @Override
+                                public boolean onPreferenceClick(Preference newTheme) {
+                                    return restore(theme_, true);
+                                }
+                        });
+
+                        // now we have all the info lets add our new preference to the screen
+                        mThemeCat.addPreference(newTheme);
+                    } catch (NullPointerException npe){
+                        // theme file was not found this shouldn't happen but just in case
+                        npe.printStackTrace();
+                    } catch (FileNotFoundException noFile) {
+                        if (DEBUG) noFile.printStackTrace();
+                    } catch (IOException io) {
+                        if (DEBUG) io.printStackTrace();
                     }
                 }
             }
-        });
-        alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // no one cares
-            }
-        });
-
-        alert.show();
-        return success;
+        }
     }
 
-    private boolean applyTheme(int theme) {
-        boolean handledInt = false;
-        switch (theme) {
-            case EXILED:
-                restore(getString(R.string.exiled_theme_0), true);
-                handledInt = true;
-                break;
-            case UNAFFILIATED:
-                restore(getString(R.string.unaffiliated_theme_0), true);
-                handledInt = true;
-                break;
-            case NITROZ:
-                restore(getString(R.string.nitroz_theme_0), true);
-                handledInt = true;
-                break;
+    private boolean runBackup(String bkname) {
+        // for debugging
+        FOUND_CLASS = false;
+
+        if (DEBUG) Log.d(TAG, "runBackup has been called: " + bkname);
+        String string_setting = null;
+        int int_setting;
+        float float_setting;
+
+        int foundStrings = 0;
+        int foundInts = 0;
+        int foundFloats = 0;
+
+        // use army of clones so we don't waste time reading files
+        ArrayList<String> stringArray = new ArrayList<String>(settingsArray);
+        ArrayList<String> floatArray = new ArrayList<String>(settingsArray);
+
+        // handle floats first and remove the handled values from stringArray
+        for (final String liquid_float_setting : floatArray) {
+            // only alpha is kept as a float so don't bother with the rest
+            if (liquid_float_setting.contains("alpha")) {
+                try {
+                    float float_ = Settings.System.getFloat(getActivity().getContentResolver(), liquid_float_setting);
+                    mProperties.setProperty(liquid_float_setting, String.format("%f", float_));
+                    if (DEBUG) Log.d(TAG, "floats:  {" + liquid_float_setting + "} returned value {" + float_ + "}");
+                    stringArray.remove(liquid_float_setting);
+                    foundFloats = foundFloats + 1;
+                } catch (SettingNotFoundException notFound) {
+                    if (CLASS_DEBUG) notFound.printStackTrace();
+                } catch (ClassCastException cce) {
+                    if (CLASS_DEBUG) cce.printStackTrace();
+                } catch (NumberFormatException badFloat) {
+                    if (CLASS_DEBUG) badFloat.printStackTrace();
+                }
+            }
         }
-        return handledInt;
+
+        // strings can almost always be handled so do it last
+        for (final String liquid_string_setting : stringArray) {
+            try {
+                string_setting = Settings.System.getString(getActivity().getContentResolver(), liquid_string_setting);
+                try {
+                    // it's an int so set it as so
+                    int testIsANumber = Integer.valueOf(string_setting);
+                    try {
+                        testIsANumber = Settings.System.getInt(getActivity().getContentResolver(), liquid_string_setting);
+                        mProperties.setProperty(liquid_string_setting, String.format("%d", testIsANumber));
+                        foundInts = foundInts + 1;
+                        Log.d(TAG, String.format("Ints: {%s} returned value {%s}",
+                                liquid_string_setting, string_setting));
+                    } catch (SettingNotFoundException noSetting) {
+                        // not found
+                    }
+                } catch (NumberFormatException ne) {
+                    // it's a string not a number
+                    if (string_setting != null) {
+                        mProperties.setProperty(liquid_string_setting, string_setting);
+                        foundStrings = foundStrings + 1;
+                        Log.d(TAG, String.format("Strings: {%s} returned value {%s}",
+                                liquid_string_setting, string_setting));
+                    }
+                }
+                FOUND_CLASS = true;
+            } catch (ClassCastException cce) {
+                if (CLASS_DEBUG) cce.printStackTrace();
+            } catch (NullPointerException npe) {
+                npe.printStackTrace();
+            }
+        }
+
+        if (DEBUG) {
+            Log.d(TAG, "How many properties were found and handled? Strings: " + foundStrings
+                    + "	Ints: " + foundInts + "	Floats: " + foundFloats);
+            Log.d(TAG, "how long are our lists? Strings: " + stringArray.size() + "	Floats: " + floatArray.size());
+        }
+
+        if (mProperties != null) {
+           try {
+               // TODO fix paths
+               File storeFile = new File(bkname);
+               mProperties.store(new FileOutputStream(storeFile), MESSAAGE_TO_HEAD_FILE);
+               if (DEBUG) Log.d(TAG, "Does storeFile exist? " + storeFile.exists() + "	AbsolutPath: " + storeFile.getAbsolutePath());
+               success = true;
+           } catch (FileNotFoundException fnfe) {
+               fnfe.printStackTrace();
+           } catch (IOException ioe) {
+               ioe.printStackTrace();
+           }
+        } else {
+           if (DEBUG) Log.d(TAG, "mProperties was null");
+        }
+
+        // Notify user if files were created correctly
+        if (checkConfigFiles(bkname)) {
+            Toast.makeText(mContext, String.format(CONFIG_CHECK_PASS,
+                    bkname), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mContext, "We encountered a problem, restore not created",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        return success;
     }
 
     @Override
@@ -320,22 +276,15 @@ public class BackupRestore extends SettingsPreferenceFragment {
             Preference pref) {
         if (pref == mBackup) {
             if (DEBUG) Log.d(TAG, "calling backup method");
-            return runBackup();
+            saveConfig();
+            return true;
         } else if (pref == mRestore) {
             if (DEBUG) Log.d(TAG, "calling restore method");
             // we don't boolean this one because we must involve another class
             runRestore();
             return true;
-        } else if (pref == mExiledThemer) {
-            if (DEBUG) Log.d(TAG, "calling applyTheme(EXILED) method");
-            return applyTheme(EXILED);
-        } else if (pref == mUnaffiliated) {
-            if (DEBUG) Log.d(TAG, "calling applyTheme(UNAFFILIATED) method");
-            return applyTheme(UNAFFILIATED);
-        } else if (pref == mNitroz) {
-            if (DEBUG) Log.d(TAG, "calling applyTheme(NITROZ) method");
-            return applyTheme(NITROZ);
-        } //TODO: we should also have a complete return to fresh wipe
+        }
+        //TODO: we should also have a complete return to fresh wipe
         return super.onPreferenceTreeClick(prefScreen, pref);
     }
 
@@ -344,12 +293,21 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // TODO this prob should be given to a Handler() as to be async because this makes the system freak out
         if (DEBUG) Log.d(TAG, "requestCode=" + requestCode + "	resultCode=" + resultCode + "	Intent data=" + data);
         if (requestCode == 1) {
-            //send stuff to restore
+            // restore
             try {
                 String supplied = data.getStringExtra(OPEN_FILENAME);
+                // false because user saved configs are not themes
                 restore(supplied, false);
             } catch (NullPointerException np) {
                 // user backed out of filepicker just move on
+            }
+        } else if (requestCode == 2) {
+            // save
+            try {
+                String supplied = data.getStringExtra(SAVE_FILENAME);
+                runBackup(supplied);
+            } catch (NullPointerException np) {
+                // user backed out of filepicker nothing to see here
             }
         } else {
             // request code wasn't what we sent
@@ -357,23 +315,29 @@ public class BackupRestore extends SettingsPreferenceFragment {
         }
     }
 
-    private boolean checkConfigFiles(String userName) {
-        String base = "%s/LiquidControl/backup/%s_%s";
-        String nameSpaceHolder = "%s/LiquidControl/%s";
-        File configNameSpace = new File(String.format(nameSpaceHolder, Environment.getExternalStorageDirectory(), userName));
-        File configStrings = new File(String.format(base, Environment.getExternalStorageDirectory(), "string", userName));
-        File configInts = new File(String.format(base, Environment.getExternalStorageDirectory(), "int", userName));
-        File configFloats = new File(String.format(base, Environment.getExternalStorageDirectory(), "float", userName));
-        // this is long but prevents errors later
-        if (configNameSpace.exists() && !configNameSpace.isDirectory() && configNameSpace.canRead() && configStrings.exists() &&
-                configStrings.canRead() && configInts.exists() && configInts.canRead() &&
-                configFloats.exists() && configFloats.canRead()) {
-            if (DEBUG) Log.d(TAG, "config files have been saved");
+    private boolean checkConfigFiles(String pathToConfig) {
+        File configNameSpace = new File(pathToConfig);
+        if (configNameSpace.exists() && configNameSpace.isFile() && configNameSpace.canRead()) {
+            if (DEBUG) Log.d(TAG, "config files have been saved for: {" + configNameSpace.getAbsolutePath() + "}");
             return true;
         } else {
-            if (DEBUG) Log.d(TAG, "config checks failed");
+            if (DEBUG) Log.d(TAG, "config checks failed for: {" + configNameSpace.getAbsolutePath() + "}");
             return false;
         }
+    }
+
+    private void saveConfig() {
+        // call the file picker then apply in the result
+        Intent save_file = new Intent(mContext, com.liquid.control.tools.FilePicker.class);
+        save_file.putExtra(SAVE_FILENAME, BLANK);
+        // true because we are saving
+        save_file.putExtra("action", true);
+        // provide a path to start the user off on
+        save_file.putExtra("path", PATH_TO_CONFIGS);
+        // let users go where ever they want
+        save_file.putExtra("lock_dir", false);
+        // result code can be whatever but must match requestCode in onActivityResult
+        startActivityForResult(save_file, 2);
     }
 
     private void runRestore() {
@@ -384,8 +348,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
         open_file.putExtra("action", false);
         // provide a path to start the user off on
         open_file.putExtra("path", PATH_TO_CONFIGS);
-        // force the user to stay in the provided directory
-        open_file.putExtra("lock_dir", true);
+        // let users go where ever they want
+        open_file.putExtra("lock_dir", false);
         // result code can be whatever but must match requestCode in onActivityResult
         startActivityForResult(open_file, 1);
     }
@@ -406,18 +370,9 @@ public class BackupRestore extends SettingsPreferenceFragment {
                 Log.d(TAG, "Do our directories exist? " + testDirectories.isDirectory());
             }
 
-            // are we applying a theme? use alt path if so
-            final String filename_strings = String.format("%s/LiquidControl/backup/string_%s",
-                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
-            final String theme_filename_strings = String.format("%s/LiquidControl/themes/values/string_%s",
-                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
-            final String filename_ints = String.format("%s/LiquidControl/backup/int_%s",
-                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
-            final String theme_filename_ints = String.format("%s/LiquidControl/themes/values/int_%s",
-                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
-            final String filename_floats = String.format("%s/LiquidControl/backup/float_%s",
-                    Environment.getExternalStorageDirectory(), userSuppliedFilename);
-            final String theme_filename_floats = String.format("%s/LiquidControl/themes/values/float_%s",
+            // theme path is final but let user restores can come from anywhere
+            final String filename_strings = open_data_string;
+            final String theme_filename_strings = String.format("%s/LiquidControl/themes/%s",
                     Environment.getExternalStorageDirectory(), userSuppliedFilename);
 
             // TODO handle missing files
@@ -427,101 +382,92 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
             // first the strings
             try {
-                File configStringFile;
+                File configFile;
                 if (isTheme) {
-                    configStringFile = new File(theme_filename_strings);
+                    configFile = new File(theme_filename_strings);
                     if (DEBUG) Log.d(TAG, "Theme detected " + theme_filename_strings);
                 } else {
-                    configStringFile = new File(filename_strings);
+                    configFile = new File(filename_strings);
                 }
-                if (DEBUG) Log.d(TAG, String.format("Strings config file {%s}	Exists? %s	CanRead? %s",
-                        configStringFile.getPath(), configStringFile.exists(), configStringFile.canRead()));
-                FileReader stringReader = new FileReader(configStringFile);
-                mStringProps.load(stringReader);
-                for (String stringPropCheck : stringSettingsArray) {
-                    // null is returned if no setting is found
-                    if ((String) mStringProps.get(stringPropCheck) != null) {
+                if (DEBUG) Log.d(TAG, String.format("Config file {%s}	Exists? %s	CanRead? %s",
+                        configFile.getPath(), configFile.exists(), configFile.canRead()));
+                FileReader reader = new FileReader(configFile);
+                mProperties.load(reader);
+
+                // reset our indexes
+                setupArrays();
+
+                // use an army of clones for our dirty work -I think this is how the deathstar was started
+                ArrayList<String> array_strings = new ArrayList<String>(settingsArray);
+                ArrayList<String> array_ints = new ArrayList<String>(settingsArray);
+                ArrayList<String> array_floats = new ArrayList<String>(settingsArray);
+
+                int stringsHandled = 0;
+                int intsHandled = 0;
+                int floatsHandled = 0;
+
+                for (String intPropCheck : array_ints) {
+                    // don't handle floats here
+                    if (!intPropCheck.contains("alpha")) {
+                        if ((String) mProperties.get(intPropCheck) != null) {
+                            try {
+                                if (DEBUG) Log.d(TAG, String.format("Int property found: %s	value: %s",
+                                        intPropCheck, (String) mProperties.get(intPropCheck)));
+                                Settings.System.putInt(mContext.getContentResolver(), intPropCheck,
+                                        Integer.parseInt((String) mProperties.get(intPropCheck)));
+                                intsHandled = intsHandled + 1;
+                                // if we handle the property remove it from the other lists
+                                array_strings.remove(intPropCheck);
+                                array_floats.remove(intPropCheck);
+                            } catch  (NumberFormatException nfe) {
+                                if (CLASS_DEBUG) nfe.printStackTrace();
+                            } catch (ClassCastException cce) {
+                                // ok it's not a int
+                            }
+                        }
+                    }
+                }
+
+                for (String floatPropCheck : array_floats) {
+                    if (floatPropCheck.contains("alpha")) {
+                        if ((String) mProperties.get(floatPropCheck) != null) {
+                            if (DEBUG) Log.d(TAG, String.format("Float property found: %s	value: %s",
+                                    floatPropCheck, (String) mProperties.get(floatPropCheck)));
+                            try {
+                                Settings.System.putFloat(mContext.getContentResolver(), floatPropCheck,
+                                        Float.parseFloat((String) mProperties.get(floatPropCheck)));
+                                array_strings.remove(floatPropCheck);
+                            } catch  (NumberFormatException nfe) {
+                                if (DEBUG) nfe.printStackTrace();
+                            } catch (ClassCastException cce) {
+                                // ok it's not a float
+                            }
+                        }
+                    }
+                }
+
+                // we now have an array that contains only strings
+                for (String stringPropCheck : array_strings) {
+                    if ((String) mProperties.get(stringPropCheck) != null) {
                         if (DEBUG) Log.d(TAG, String.format("String Property found: %s	value: %s",
-                                stringPropCheck, (String) mStringProps.get(stringPropCheck)));
+                                stringPropCheck, (String) mProperties.get(stringPropCheck)));
                         try {
                             Settings.System.putString(mContext.getContentResolver(), stringPropCheck,
-                                    (String) mStringProps.get(stringPropCheck));
+                                    (String) mProperties.get(stringPropCheck));
                         } catch (NumberFormatException nfe) {
                             if (DEBUG) nfe.printStackTrace();
+                        } catch (ClassCastException cce) {
+                            // this really shouldn't happen at this point
                         }
                     }
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
+                // TODO covering all my bases not sure what this could throw ...lazy
                 if (DEBUG) e.printStackTrace();
             }
-
-            // next ints
-            try {
-                File configIntFile;
-                if (isTheme) {
-                    configIntFile = new File(theme_filename_ints);
-                    if (DEBUG) Log.d(TAG, "Theme detected " + theme_filename_ints);
-                } else {
-                    configIntFile = new File(filename_ints);
-                }
-                if (DEBUG) Log.d(TAG, String.format("Ints config file {%s}	Exists? %s	CanRead? %s",
-                        configIntFile.getPath(), configIntFile.exists(), configIntFile.canRead()));
-                FileReader intsReader = new FileReader(configIntFile);
-                mIntProps.load(intsReader);
-                for (String intPropCheck : intSettingsArray) {
-                    // null is returned if no setting is found
-                    if ((String) mIntProps.get(intPropCheck) != null) {
-                        if (DEBUG) Log.d(TAG, String.format("Int property found: %s	value: %s",
-                                intPropCheck, (String) mIntProps.get(intPropCheck)));
-                        // TODO lots of deferencing going on here is this hurting performace?
-                        try {
-                            Settings.System.putInt(mContext.getContentResolver(), intPropCheck,
-                                    Integer.parseInt((String) mIntProps.get(intPropCheck)));
-                        } catch  (NumberFormatException nfe) {
-                            if (DEBUG) nfe.printStackTrace();
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                if (DEBUG) e.printStackTrace();
-            }
-
-            // last floats
-            try {
-                File configFloatFile;
-                if (isTheme) {
-                    configFloatFile = new File(theme_filename_floats);
-                    if (DEBUG) Log.d(TAG, "Theme detected " + theme_filename_floats);
-                } else {
-                    configFloatFile = new File(filename_floats);
-                }
-                if (DEBUG) Log.d(TAG, String.format("Floats config file {%s} 	Exists? %s	CanRead? %s",
-                        configFloatFile.getPath(), configFloatFile.exists(), configFloatFile.canRead()));
-                if (DEBUG) Log.d(TAG, "{" + filename_floats + "}");
-                FileReader floatReader = new FileReader(configFloatFile);
-                mFloatProps.load(floatReader);
-                for (String floatPropCheck : floatSettingsArray) {
-                    // null is returned if no setting is found
-                    if ((String) mFloatProps.get(floatPropCheck) != null) {
-                        if (DEBUG) Log.d(TAG, String.format("Float property found: %s	value: %s",
-                                floatPropCheck, (String) mFloatProps.get(floatPropCheck)));
-                        try {
-                            Settings.System.putFloat(mContext.getContentResolver(), floatPropCheck,
-                                    Float.parseFloat((String) mFloatProps.get(floatPropCheck)));
-                        } catch  (NumberFormatException nfe) {
-                            if (DEBUG) nfe.printStackTrace();
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                if (DEBUG) e.printStackTrace();
-            }
-            Toast.makeText(mContext, String.format("Finished restoring %s", open_data_string), Toast.LENGTH_SHORT).show();
         } catch (NullPointerException npe) {
             // let the user know and move on
             Toast.makeText(mContext, "no file was returned", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            if (DEBUG) e.printStackTrace();
         }
         // TODO return a real value here
         return true;
@@ -529,129 +475,125 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
     private void setupArrays() {
         // be sure we start fresh each time we load
-        stringSettingsArray.clear();
-        intSettingsArray.clear();
-        floatSettingsArray.clear();
+        settingsArray.clear();
 
         /* XXX These data sets are a pain to maintain so PLEASE KEEP UP TODATE!!! XXX */
         // Strings first
         // UserInterface
-        stringSettingsArray.add(Settings.System.CUSTOM_CARRIER_LABEL);
+        settingsArray.add(Settings.System.CUSTOM_CARRIER_LABEL);
         // StatusBarToggles
-        stringSettingsArray.add(Settings.System.STATUSBAR_TOGGLES);
+        settingsArray.add(Settings.System.STATUSBAR_TOGGLES);
         // Misc
-        stringSettingsArray.add(Settings.System.WIDGET_BUTTONS);
-        //stringSettingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS); // TODO String[] can't be handled yet
-        //stringSettingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES); // TODO String[] can't be handled yet
+        settingsArray.add(Settings.System.WIDGET_BUTTONS);
+        //settingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS); // TODO String[] can't be handled yet
+        //settingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES); // TODO String[] can't be handled yet
 
         // ints next
         // UserInterface
-        intSettingsArray.add(Settings.System.ACCELEROMETER_ROTATION_ANGLES);
-        intSettingsArray.add(Settings.System.HORIZONTAL_RECENTS_TASK_PANEL);
-        intSettingsArray.add(Settings.System.CRT_OFF_ANIMATION);
-        intSettingsArray.add(Settings.System.SCREENSHOT_CAMERA_SOUND);
-        intSettingsArray.add(Settings.System.SHOW_STATUSBAR_IME_SWITCHER);
-        intSettingsArray.add(Settings.Secure.KILL_APP_LONGPRESS_BACK);
-        intSettingsArray.add(Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME);
+        settingsArray.add(Settings.System.ACCELEROMETER_ROTATION_ANGLES);
+        settingsArray.add(Settings.System.HORIZONTAL_RECENTS_TASK_PANEL);
+        settingsArray.add(Settings.System.CRT_OFF_ANIMATION);
+        settingsArray.add(Settings.System.SCREENSHOT_CAMERA_SOUND);
+        settingsArray.add(Settings.System.SHOW_STATUSBAR_IME_SWITCHER);
+        settingsArray.add(Settings.Secure.KILL_APP_LONGPRESS_BACK);
+        settingsArray.add(Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME);
         // Navbar
-        intSettingsArray.add(Settings.System.MENU_LOCATION);
-        intSettingsArray.add(Settings.System.MENU_VISIBILITY);
-        intSettingsArray.add(Settings.System.NAVIGATION_BAR_TINT);
-        intSettingsArray.add(Settings.System.NAVIGATION_BAR_BACKGROUND_COLOR);
-        intSettingsArray.add(Settings.System.NAVIGATION_BAR_HOME_LONGPRESS);
-        //intSettingsArray.add(Settings.System.NAVIGATION_BAR_GLOW_DURATION); // TODO String[] can't be handled yet
-        intSettingsArray.add(Settings.System.NAVIGATION_BAR_WIDTH);
-        intSettingsArray.add(Settings.System.NAVIGATION_BAR_HEIGHT);
+        settingsArray.add(Settings.System.MENU_LOCATION);
+        settingsArray.add(Settings.System.MENU_VISIBILITY);
+        settingsArray.add(Settings.System.NAVIGATION_BAR_TINT);
+        settingsArray.add(Settings.System.NAVIGATION_BAR_BACKGROUND_COLOR);
+        settingsArray.add(Settings.System.NAVIGATION_BAR_HOME_LONGPRESS);
+        //settingsArray.add(Settings.System.NAVIGATION_BAR_GLOW_DURATION); // TODO String[] can't be handled yet
+        settingsArray.add(Settings.System.NAVIGATION_BAR_WIDTH);
+        settingsArray.add(Settings.System.NAVIGATION_BAR_HEIGHT);
         // Lockscreen
-        intSettingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_TEXT_COLOR);
-        intSettingsArray.add(Settings.System.LOCKSCREEN_LAYOUT);
-        intSettingsArray.add(Settings.System.LOCKSCREEN_ENABLE_MENU_KEY);
-        intSettingsArray.add(Settings.Secure.LOCK_SCREEN_LOCK_USER_OVERRIDE);
-        intSettingsArray.add(Settings.System.SHOW_LOCK_BEFORE_UNLOCK);
-        intSettingsArray.add(Settings.System.LOCKSCREEN_BATTERY);
-        intSettingsArray.add(Settings.System.VOLUME_WAKE_SCREEN);
-        intSettingsArray.add(Settings.System.VOLUME_MUSIC_CONTROLS);
-        intSettingsArray.add(Settings.System.LOCKSCREEN_HIDE_NAV);
-        intSettingsArray.add(Settings.System.LOCKSCREEN_LANDSCAPE);
-        intSettingsArray.add(Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL);
-        intSettingsArray.add(Settings.System.ENABLE_FAST_TORCH);
-        //intSettingsArray.add(Settings.System.LOCKSCREEN_LOW_BATTERY);
+        settingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_TEXT_COLOR);
+        settingsArray.add(Settings.System.LOCKSCREEN_LAYOUT);
+        settingsArray.add(Settings.System.LOCKSCREEN_ENABLE_MENU_KEY);
+        settingsArray.add(Settings.Secure.LOCK_SCREEN_LOCK_USER_OVERRIDE);
+        settingsArray.add(Settings.System.SHOW_LOCK_BEFORE_UNLOCK);
+        settingsArray.add(Settings.System.LOCKSCREEN_BATTERY);
+        settingsArray.add(Settings.System.VOLUME_WAKE_SCREEN);
+        settingsArray.add(Settings.System.VOLUME_MUSIC_CONTROLS);
+        settingsArray.add(Settings.System.LOCKSCREEN_HIDE_NAV);
+        settingsArray.add(Settings.System.LOCKSCREEN_LANDSCAPE);
+        settingsArray.add(Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL);
+        settingsArray.add(Settings.System.ENABLE_FAST_TORCH);
+        //settingsArray.add(Settings.System.LOCKSCREEN_LOW_BATTERY);
         // Powermenu
-        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_AIRPLANE);
-        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_EASTEREGG);
-        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_FLASHLIGHT);
-        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_HIDENAVBAR);
-        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_POWERSAVER);
-        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_PROFILES);
-        intSettingsArray.add(Settings.System.POWER_DIALOG_SHOW_SCREENSHOT);
+        settingsArray.add(Settings.System.POWER_DIALOG_SHOW_AIRPLANE);
+        settingsArray.add(Settings.System.POWER_DIALOG_SHOW_EASTEREGG);
+        settingsArray.add(Settings.System.POWER_DIALOG_SHOW_FLASHLIGHT);
+        settingsArray.add(Settings.System.POWER_DIALOG_SHOW_HIDENAVBAR);
+        settingsArray.add(Settings.System.POWER_DIALOG_SHOW_POWERSAVER);
+        settingsArray.add(Settings.System.POWER_DIALOG_SHOW_PROFILES);
+        settingsArray.add(Settings.System.POWER_DIALOG_SHOW_SCREENSHOT);
         // Powersaver
-        intSettingsArray.add(Settings.Secure.POWER_SAVER_MODE);
-        intSettingsArray.add(Settings.Secure.POWER_SAVER_DATA_MODE);
-        intSettingsArray.add(Settings.Secure.POWER_SAVER_DATA_DELAY);
-        intSettingsArray.add(Settings.Secure.POWER_SAVER_SYNC_MODE);
-        intSettingsArray.add(Settings.Secure.POWER_SAVER_SYNC_INTERVAL);
-        intSettingsArray.add(Settings.Secure.POWER_SAVER_WIFI_MODE);
-        intSettingsArray.add(Settings.Secure.POWER_SAVER_SYNC_DATA_MODE);
-        intSettingsArray.add(Settings.Secure.POWER_SAVER_SYNC_MOBILE_PREFERENCE);
+        settingsArray.add(Settings.Secure.POWER_SAVER_MODE);
+        settingsArray.add(Settings.Secure.POWER_SAVER_DATA_MODE);
+        settingsArray.add(Settings.Secure.POWER_SAVER_DATA_DELAY);
+        settingsArray.add(Settings.Secure.POWER_SAVER_SYNC_MODE);
+        settingsArray.add(Settings.Secure.POWER_SAVER_SYNC_INTERVAL);
+        settingsArray.add(Settings.Secure.POWER_SAVER_WIFI_MODE);
+        settingsArray.add(Settings.Secure.POWER_SAVER_SYNC_DATA_MODE);
+        settingsArray.add(Settings.Secure.POWER_SAVER_SYNC_MOBILE_PREFERENCE);
         //Led
-        intSettingsArray.add(Settings.System.NOTIFICATION_LIGHT_OFF);
-        intSettingsArray.add(Settings.System.NOTIFICATION_LIGHT_ON);
-        intSettingsArray.add(Settings.Secure.LED_SCREEN_ON);
-        intSettingsArray.add(Settings.System.NOTIFICATION_LIGHT_COLOR);
+        settingsArray.add(Settings.System.NOTIFICATION_LIGHT_OFF);
+        settingsArray.add(Settings.System.NOTIFICATION_LIGHT_ON);
+        settingsArray.add(Settings.Secure.LED_SCREEN_ON);
+        settingsArray.add(Settings.System.NOTIFICATION_LIGHT_COLOR);
         // StatusBarGeneral
-        intSettingsArray.add(Settings.System.STATUSBAR_SHOW_DATE);
-        intSettingsArray.add(Settings.System.STATUSBAR_DATE_FORMAT);
-        intSettingsArray.add(Settings.System.STATUSBAR_REMOVE_AOSP_SETTINGS_LINK);
-        intSettingsArray.add(Settings.System.STATUSBAR_SETTINGS_BEHAVIOR);
-        intSettingsArray.add(Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE);
-        intSettingsArray.add(Settings.System.STATUSBAR_DATE_BEHAVIOR);
-        intSettingsArray.add(Settings.System.STATUS_BAR_BRIGHTNESS_TOGGLE);
-        intSettingsArray.add(Settings.System.STATUSBAR_REMOVE_LIQUIDCONTROL_LINK);
-        intSettingsArray.add(Settings.Secure.ADB_ICON);
-        intSettingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND);
-        intSettingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_COLOR);
-        intSettingsArray.add(Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR);
-        intSettingsArray.add(Settings.System.STATUS_BAR_LAYOUT);
-        intSettingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE);
+        settingsArray.add(Settings.System.STATUSBAR_SHOW_DATE);
+        settingsArray.add(Settings.System.STATUSBAR_DATE_FORMAT);
+        settingsArray.add(Settings.System.STATUSBAR_REMOVE_AOSP_SETTINGS_LINK);
+        settingsArray.add(Settings.System.STATUSBAR_SETTINGS_BEHAVIOR);
+        settingsArray.add(Settings.System.STATUSBAR_QUICKTOGGLES_AUTOHIDE);
+        settingsArray.add(Settings.System.STATUSBAR_DATE_BEHAVIOR);
+        settingsArray.add(Settings.System.STATUS_BAR_BRIGHTNESS_TOGGLE);
+        settingsArray.add(Settings.System.STATUSBAR_REMOVE_LIQUIDCONTROL_LINK);
+        settingsArray.add(Settings.Secure.ADB_ICON);
+        settingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND);
+        settingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_COLOR);
+        settingsArray.add(Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR);
+        settingsArray.add(Settings.System.STATUS_BAR_LAYOUT);
+        settingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE);
         // StatusBarToggles
-        intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS);
-        intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_BRIGHTNESS_LOC);
-        intSettingsArray.add(Settings.System.STATUSBAR_TOGGLES_STYLE);
+        settingsArray.add(Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS);
+        settingsArray.add(Settings.System.STATUSBAR_TOGGLES_BRIGHTNESS_LOC);
+        settingsArray.add(Settings.System.STATUSBAR_TOGGLES_STYLE);
         // StatusBarClock
-        intSettingsArray.add(Settings.System.STATUSBAR_CLOCK_STYLE);
-        intSettingsArray.add(Settings.System.STATUSBAR_CLOCK_AM_PM_STYLE);
-        intSettingsArray.add(Settings.System.STATUSBAR_SHOW_ALARM);
-        intSettingsArray.add(Settings.System.STATUSBAR_CLOCK_COLOR);
-        intSettingsArray.add(Settings.System.STATUSBAR_CLOCK_WEEKDAY);
+        settingsArray.add(Settings.System.STATUSBAR_CLOCK_STYLE);
+        settingsArray.add(Settings.System.STATUSBAR_CLOCK_AM_PM_STYLE);
+        settingsArray.add(Settings.System.STATUSBAR_SHOW_ALARM);
+        settingsArray.add(Settings.System.STATUSBAR_CLOCK_COLOR);
+        settingsArray.add(Settings.System.STATUSBAR_CLOCK_WEEKDAY);
         // StatusBarBattery
-        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_ICON);
-        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR);
-        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_STYLE);
-        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_ANIMATE);
-        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_THICKNESS);
-        intSettingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_COLOR);
+        settingsArray.add(Settings.System.STATUSBAR_BATTERY_ICON);
+        settingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR);
+        settingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_STYLE);
+        settingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_ANIMATE);
+        settingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_THICKNESS);
+        settingsArray.add(Settings.System.STATUSBAR_BATTERY_BAR_COLOR);
         // StatusBarSignal
-        intSettingsArray.add(Settings.System.STATUSBAR_SIGNAL_TEXT);
-        intSettingsArray.add(Settings.System.STATUSBAR_SIGNAL_TEXT_COLOR);
-        intSettingsArray.add(Settings.System.STATUSBAR_SIXBAR_SIGNAL);
-        intSettingsArray.add(Settings.System.STATUSBAR_HIDE_SIGNAL_BARS);
-        intSettingsArray.add(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT);
-        intSettingsArray.add(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT_COLOR);
+        settingsArray.add(Settings.System.STATUSBAR_SIGNAL_TEXT);
+        settingsArray.add(Settings.System.STATUSBAR_SIGNAL_TEXT_COLOR);
+        settingsArray.add(Settings.System.STATUSBAR_SIXBAR_SIGNAL);
+        settingsArray.add(Settings.System.STATUSBAR_HIDE_SIGNAL_BARS);
+        settingsArray.add(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT);
+        settingsArray.add(Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT_COLOR);
         // Misc
-        intSettingsArray.add(Settings.System.EXPANDED_VIEW_WIDGET);
-        intSettingsArray.add(Settings.System.IS_TABLET);
+        settingsArray.add(Settings.System.EXPANDED_VIEW_WIDGET);
+        settingsArray.add(Settings.System.IS_TABLET);
 
         // floats next
         // Navbar
-        floatSettingsArray.add(Settings.System.NAVIGATION_BAR_BUTTON_ALPHA);
+        settingsArray.add(Settings.System.NAVIGATION_BAR_BUTTON_ALPHA);
         // StatusBarGeneral
-        floatSettingsArray.add(Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA);
-        floatSettingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_ALPHA);
-        floatSettingsArray.add(Settings.System.STATUSBAR_HANDLE_ALPHA);
+        settingsArray.add(Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA);
+        settingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_ALPHA);
+        settingsArray.add(Settings.System.STATUSBAR_HANDLE_ALPHA);
 
         // randomize arrays so we don't overly annoy any one area
-        Collections.shuffle(stringSettingsArray);
-        Collections.shuffle(intSettingsArray);
-        Collections.shuffle(floatSettingsArray);
+        Collections.shuffle(settingsArray);
     }
 }

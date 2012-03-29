@@ -129,7 +129,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         mLockscreenOption = (ListPreference) findPreference(PREF_LOCKSCREEN_LAYOUT);
         mLockscreenOption.setOnPreferenceChangeListener(this);
         mLockscreenOption.setValue(Settings.System.getInt(
-                getActivity().getContentResolver(), Settings.System.LOCKSCREEN_LAYOUT, 2) == 1);
+                getActivity().getContentResolver(), Settings.System.LOCKSCREEN_LAYOUT, 2) + "");
 
         mShowLockBeforeUnlock = (CheckBoxPreference) findPreference(PREF_SHOW_LOCK_BEFORE_UNLOCK);
         mShowLockBeforeUnlock.setChecked(Settings.System.getInt(getActivity().getContentResolver(),

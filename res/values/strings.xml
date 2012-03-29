@@ -428,15 +428,11 @@
     <string name="backup_summary">save your settings</string>
     <string name="restore_title">Restore LiquidControl</string>
     <string name="restore_summary">apply your backup</string>
-    <string name="theme_exiled_title">ExiledThemer</string>
-    <string name="theme_exiled_summary">Custom settings by ExiledThemer</string>
-    <string name="theme_unaffiliated_title">Team Unaffiliated</string>
-    <string name="theme_unaffiliated_summary">Custom settings by TeamUnaffiliated</string>
-    <string name="theme_nitroz_title">Nitroz</string>
-    <string name="theme_nitroz_summary">Black Exodus settings by Nitroz</string>
-    <string name="exiled_theme_0">exiled_0</string>
-    <string name="unaffiliated_theme_0">unaffiliated_0</string>
-    <string name="nitroz_theme_0">nitroz_0</string>
+    <string name="name_theme_title">Name your theme!</string>
+    <string name="positive_button">Make Theme</string>
+    <string name="negative_button">I\'m scared</string>
+    <string name="title_prompt">Title: </string>
+    <string name="summary_prompt">Summary: </string>
 
     <!-- File Picker -->
     <string name="cancel">Cancel</string>

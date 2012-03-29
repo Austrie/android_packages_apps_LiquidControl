@@ -18,6 +18,7 @@ package com.liquid.control.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +33,10 @@ import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.text.Spannable;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -167,7 +171,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         }
     }
 
-    private boolean runBackup(String bkname) {
+    private boolean runBackup(String bkname, String title_text, String summary_text) {
         // for debugging
         FOUND_CLASS = false;
 
@@ -183,6 +187,13 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // use army of clones so we don't waste time reading files
         ArrayList<String> stringArray = new ArrayList<String>(settingsArray);
         ArrayList<String> floatArray = new ArrayList<String>(settingsArray);
+
+        if (title_text != null) {
+            mProperties.setProperty("title", title_text);
+        }
+        if (summary_text != null) {
+            mProperties.setProperty("summary", summary_text);
+        }
 
         // handle floats first and remove the handled values from stringArray
         for (final String liquid_float_setting : floatArray) {
@@ -305,7 +316,11 @@ public class BackupRestore extends SettingsPreferenceFragment {
             // save
             try {
                 String supplied = data.getStringExtra(SAVE_FILENAME);
-                runBackup(supplied);
+                if (supplied.contains("LiquidControl/themes/")) {
+                    getUserSuppliedThemeInfo(supplied);
+                } else {
+                    runBackup(supplied, null, null);
+                }
             } catch (NullPointerException np) {
                 // user backed out of filepicker nothing to see here
             }
@@ -471,6 +486,34 @@ public class BackupRestore extends SettingsPreferenceFragment {
         }
         // TODO return a real value here
         return true;
+    }
+
+    private void getUserSuppliedThemeInfo(final String filePath) {
+        // get a view to work with
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View customLayout = inflater.inflate(R.layout.save_theme_dialog, null);
+        final EditText titleText = (EditText) customLayout.findViewById(R.id.title_input_edittext);
+        final EditText summaryText = (EditText) customLayout.findViewById(R.id.summary_input_edittext);
+
+        AlertDialog.Builder getInfo = new AlertDialog.Builder(getActivity());
+        getInfo.setTitle(getString(R.string.name_theme_title));
+        getInfo.setView(customLayout);
+
+        getInfo.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // get supplied info
+                String value_title = ((Spannable) titleText.getText()).toString();
+                String value_summary = ((Spannable) summaryText.getText()).toString();
+                runBackup(filePath, value_title, value_summary);
+            }
+        });
+        getInfo.setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // just run a normal backup in the theme dir
+                runBackup(filePath, null, null);
+            }
+        });
+        getInfo.show();
     }
 
     private void setupArrays() {

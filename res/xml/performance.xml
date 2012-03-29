@@ -91,11 +91,6 @@
         android:key="kernel"
         android:title="@string/kernel">
 
-		<CheckBoxPreference
-			android:key="fast_charge"
-			android:title="@string/pt_fast_charge_boot"
-			android:summary="@string/ps_fast_charge_boot" />
-
          <com.liquid.control.fragments.ColorTuningPreference
              android:key="color_tuning"
              android:title="@string/color_tuning_title_head"

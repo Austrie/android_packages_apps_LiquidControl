@@ -159,14 +159,14 @@ public class PowerWidget extends PreferenceFragment implements
         private static final String EXP_NETWORK_MODE = "pref_network_mode";
         private static final String EXP_SCREENTIMEOUT_MODE = "pref_screentimeout_mode";
         private static final String EXP_RING_MODE = "pref_ring_mode";
-//        private static final String EXP_FLASH_MODE = "pref_flash_mode";
+        private static final String EXP_FLASH_MODE = "pref_flash_mode";
         private HashMap<CheckBoxPreference, String> mCheckBoxPrefs = new HashMap<CheckBoxPreference, String>();
 
         ListPreferenceMultiSelect mBrightnessMode;
         ListPreference mNetworkMode;
         ListPreference mScreentimeoutMode;
         ListPreferenceMultiSelect mRingMode;
-//        ListPreference mFlashMode;
+        ListPreference mFlashMode;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -197,8 +197,8 @@ public class PowerWidget extends PreferenceFragment implements
             mRingMode.setValue(Settings.System.getString(getActivity().getApplicationContext()
                     .getContentResolver(), Settings.System.EXPANDED_RING_MODE));
             mRingMode.setOnPreferenceChangeListener(this);
-//            mFlashMode = (ListPreference) prefSet.findPreference(EXP_FLASH_MODE);
-//            mFlashMode.setOnPreferenceChangeListener(this);
+            mFlashMode = (ListPreference) prefSet.findPreference(EXP_FLASH_MODE);
+            mFlashMode.setOnPreferenceChangeListener(this);
             PreferenceCategory prefButtons = (PreferenceCategory) prefSet
                     .findPreference(BUTTONS_CATEGORY);
             prefButtons.removeAll();
@@ -226,7 +226,6 @@ public class PowerWidget extends PreferenceFragment implements
                 }
 
                 mCheckBoxPrefs.put(cb, button.getId());
-
                 /* if (PowerWidgetUtil.BUTTON_FLASHLIGHT.equals(button.getId()) &&
                         !getResources().getBoolean(R.bools.has_led_flash)) {
                     cb.setEnabled(false);
@@ -304,10 +303,10 @@ public class PowerWidget extends PreferenceFragment implements
                 Settings.System.putString(getActivity().getApplicationContext()
                         .getContentResolver(), Settings.System.EXPANDED_RING_MODE,
                         (String) newValue);
-          /*  } else if (preference == mFlashMode) {
+            } else if (preference == mFlashMode) {
                 int value = Integer.valueOf((String) newValue);
                 Settings.System.putInt(getActivity().getApplicationContext().getContentResolver(),
-                        Settings.System.EXPANDED_FLASH_MODE, value); */
+                        Settings.System.EXPANDED_FLASH_MODE, value);
             }
             return true;
         }
@@ -449,4 +448,3 @@ public class PowerWidget extends PreferenceFragment implements
         }
     }
 }
-

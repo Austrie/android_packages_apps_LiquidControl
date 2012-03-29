@@ -22,7 +22,7 @@
 
     <!-- horizontal layouts for our textview and edittext -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -30,7 +30,7 @@
             android:id="@+id/title_textview_id"
             android:layout_gravity="left"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:text="@string/title_prompt"
             android:padding="10dip" />
 

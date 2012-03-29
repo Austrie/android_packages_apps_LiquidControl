@@ -504,6 +504,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
                 // get supplied info
                 String value_title = ((Spannable) titleText.getText()).toString();
                 String value_summary = ((Spannable) summaryText.getText()).toString();
+                if (DEBUG) Log.d(TAG, String.format("found title: %s 	found summary: %s", value_title, value_summary));
                 runBackup(filePath, value_title, value_summary);
             }
         });

@@ -404,6 +404,8 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 return getResources().getDrawable(R.drawable.ic_lockscreen_phone);
             else if (uri.equals("**mms**"))
                 return getResources().getDrawable(R.drawable.ic_lockscreen_sms);
+            else if (uri.equals("**torch**"))
+                return getResources().getDrawable(R.drawable.ic_lockscreen_torch);
             else if (uri.equals("**null**"))
                 return getResources().getDrawable(R.drawable.ic_null);
         } else {
@@ -435,6 +437,8 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 return getResources().getString(R.string.lockscreen_action_phone);
             else if (uri.equals("**mms**"))
                 return getResources().getString(R.string.lockscreen_action_mms);
+            else if (uri.equals("**torch**"))
+                return getResources().getString(R.string.lockscreen_action_torch);
             else if (uri.equals("**null**"))
                 return getResources().getString(R.string.lockscreen_action_none);
         } else {
@@ -576,4 +580,3 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         out.close();
     }
 }
-

@@ -314,19 +314,19 @@
 	</string-array>
 
     <string-array name="pref_lockscreen_options_values">
+        <item>1</item>
+        <item>0</item>
 		<item>2</item>
 		<item>6</item>
         <item>8</item>
-        <item>1</item>
-        <item>0</item>
 	</string-array>
 
-        <string-array name="pref_lockscreen_options_entries">
+    <string-array name="pref_lockscreen_options_entries">
+        <item>Slider</item>
+        <item>Honey</item>
 		<item>Stock</item>
 		<item>Quad</item>
         <item>Octo</item>
-        <item>AOSP</item>
-        <item>Honeycomb</item>
 	</string-array>
 
 	<string-array name="minfree">

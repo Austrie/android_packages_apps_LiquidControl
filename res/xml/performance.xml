@@ -93,7 +93,6 @@
 
 		<CheckBoxPreference
 			android:key="fast_charge"
-			android:defaultValue="false"
 			android:title="@string/pt_fast_charge_boot"
 			android:summary="@string/ps_fast_charge_boot" />
 

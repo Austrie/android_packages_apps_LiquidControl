@@ -134,11 +134,13 @@ public class Performance extends SettingsPreferenceFragment implements
                     .removePreference(ps);
         }
 
+        boolean isFastChargeOn = false;
         mFastCharge = (CheckBoxPreference) findPreference(KEY_FASTCHARGE);
-        if (Helpers.isFastCharge() == 1) mFastCharge.setChecked(true);
-        int fastOnOff = Helpers.isFastCharge();
+        if (Helpers.isFastCharge() == 1) isFastChargeOn = true;
+        mFastCharge.setChecked(isFastChargeOn);
+        int isFastOn = Helpers.isFastCharge();
 
-        switch (fastOnOff) {
+        switch (isFastOn) {
             case 0:
                 mFastCharge.setSummary("OFF: USB is in normal MTS mode");
                 break;

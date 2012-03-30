@@ -81,8 +81,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static boolean success = false;
     private final String OPEN_FILENAME = "open_filepath";
     private final String SAVE_FILENAME = "save_filepath";
-    private static boolean FOUND_CLASS = false;
     private static final String MESSAAGE_TO_HEAD_FILE = "~XXX~ BE CAREFUL EDITING BY HAND ~XXX~ you have been warned!";
+    private static String makeThemFeelAtHome = null;
 
     // to hold our lists
     String[] array;
@@ -124,8 +124,11 @@ public class BackupRestore extends SettingsPreferenceFragment {
             }
         }
 
+        // for that personal touch
+        makeThemFeelAtHome = Settings.System.getString(getActivity().getContentResolver(),
+                Settings.System.CUSTOM_CARRIER_LABEL);
+
         // add themes if found
-        // TODO: read and load these dynamically
         if (allThemesFound != null) {
             prefs.addPreference(mThemeCat);
             for (final String theme_ : allThemesFound) {
@@ -149,6 +152,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
                         if (returnedSummary != null) newTheme.setSummary(returnedSummary);
                         else newTheme.setSummary(BLANK);
+
                         newTheme.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                                 @Override
                                 public boolean onPreferenceClick(Preference newTheme) {
@@ -172,9 +176,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
     }
 
     private boolean runBackup(String bkname, String title_text, String summary_text) {
-        // for debugging
-        FOUND_CLASS = false;
-
         if (DEBUG) Log.d(TAG, "runBackup has been called: " + bkname);
         String string_setting = null;
         int int_setting;
@@ -240,7 +241,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
                                 liquid_string_setting, string_setting));
                     }
                 }
-                FOUND_CLASS = true;
             } catch (ClassCastException cce) {
                 if (CLASS_DEBUG) cce.printStackTrace();
             } catch (NullPointerException npe) {
@@ -494,6 +494,9 @@ public class BackupRestore extends SettingsPreferenceFragment {
         View customLayout = inflater.inflate(R.layout.save_theme_dialog, null);
         final EditText titleText = (EditText) customLayout.findViewById(R.id.title_input_edittext);
         final EditText summaryText = (EditText) customLayout.findViewById(R.id.summary_input_edittext);
+
+        // for that personal touch
+        if (makeThemFeelAtHome != null) titleText.setHint(makeThemFeelAtHome);
 
         AlertDialog.Builder getInfo = new AlertDialog.Builder(getActivity());
         getInfo.setTitle(getString(R.string.name_theme_title));

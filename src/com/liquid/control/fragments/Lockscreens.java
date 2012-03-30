@@ -129,7 +129,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         mLockscreenOption = (ListPreference) findPreference(PREF_LOCKSCREEN_LAYOUT);
         mLockscreenOption.setOnPreferenceChangeListener(this);
         mLockscreenOption.setValue(Settings.System.getInt(
-                getActivity().getContentResolver(), Settings.System.LOCKSCREEN_LAYOUT, 0) + "");
+                getActivity().getContentResolver(), Settings.System.LOCKSCREEN_LAYOUT, 2) + "");
 
         mShowLockBeforeUnlock = (CheckBoxPreference) findPreference(PREF_SHOW_LOCK_BEFORE_UNLOCK);
         mShowLockBeforeUnlock.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
@@ -405,7 +405,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             else if (uri.equals("**mms**"))
                 return getResources().getDrawable(R.drawable.ic_lockscreen_sms);
             else if (uri.equals("**torch**"))
-                return getResources().getDrawable(R.drawable.ic_lockscreen_torch);
+                return getResources().getDrawable(R.drawable.ic_lockscreen_flashlight);
             else if (uri.equals("**null**"))
                 return getResources().getDrawable(R.drawable.ic_null);
         } else {
@@ -438,7 +438,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             else if (uri.equals("**mms**"))
                 return getResources().getString(R.string.lockscreen_action_mms);
             else if (uri.equals("**torch**"))
-                return getResources().getString(R.string.lockscreen_action_torch);
+                return getResources().getString(R.string.lockscreen_action_flashlight);
             else if (uri.equals("**null**"))
                 return getResources().getString(R.string.lockscreen_action_none);
         } else {

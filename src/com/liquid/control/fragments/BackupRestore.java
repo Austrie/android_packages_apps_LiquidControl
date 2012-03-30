@@ -61,7 +61,7 @@ import java.util.StringTokenizer;
 public class BackupRestore extends SettingsPreferenceFragment {
 
     private static final String TAG = "BackupRestore";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final boolean CLASS_DEBUG = false;
     private static final String BLANK = "";
     private static final String BACKUP_PREF = "backup";

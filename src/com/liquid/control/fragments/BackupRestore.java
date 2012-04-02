@@ -75,7 +75,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static final int NITROZ = 3;
     private static String CONFIG_FILENAME = null;
     private static String CONFIG_CHECK_PASS = "/sdcard/LiquidControl/%s and dependant restore files have been created";
-    private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl/";
+    private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl";
     private static final String PATH_TO_VALUES = "/sdcard/LiquidControl/backup";
     private static final String PATH_TO_THEMES = "/sdcard/LiquidControl/themes";
     private static boolean success = false;
@@ -107,16 +107,13 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // gain reference to theme category so we can drop our prefs if not found
         mThemeCat = (PreferenceCategory) prefs.findPreference(THEME_CAT_PREF);
 
-        // themes live in the theme category while the theme category lives on the PreferenceScreen
-        prefs.removePreference(mThemeCat);
         setupArrays();
 
+        // TODO add themes dir to mkdirs
         // make required dirs and disable themes if unavailable
         // be sure we have the directories we need or everything fails
         File makeDirs = new File(PATH_TO_VALUES);
         File themersDirs = new File(PATH_TO_THEMES);
-        String[] allThemesFound = themersDirs.list();
-        if (DEBUG) Log.d(TAG, themersDirs.list().toString());
 
         if (!makeDirs.exists()) {
             if (!makeDirs.mkdirs()) {
@@ -124,11 +121,30 @@ public class BackupRestore extends SettingsPreferenceFragment {
             }
         }
 
+        if (!themersDirs.exists()) {
+            if (!themersDirs.mkdirs()) {
+                Log.d(TAG, "failed to create theme directory");
+            }
+        }
+
         // for that personal touch
         makeThemFeelAtHome = Settings.System.getString(getActivity().getContentResolver(),
                 Settings.System.CUSTOM_CARRIER_LABEL);
 
-        // add themes if found
+        // setup initial themes view
+        findThemes();
+    }
+
+    private void findThemes() {
+        // themes live in the theme category while the theme category lives on the PreferenceScreen
+
+        // start with a clean slate
+        mThemeCat.removeAll();
+        prefs.removePreference(mThemeCat);
+
+        File themerDirs = new File(PATH_TO_THEMES);
+        String[] allThemesFound = themerDirs.list();
+        if (DEBUG) Log.d(TAG, themerDirs.list().toString());
         if (allThemesFound != null) {
             prefs.addPreference(mThemeCat);
             for (final String theme_ : allThemesFound) {
@@ -216,7 +232,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
             }
         }
 
-        // strings can almost always be handled so do it last
+        // TODO can strings handle everything?!?! ...for saving only of coarse
         for (final String liquid_string_setting : stringArray) {
             try {
                 string_setting = Settings.System.getString(getActivity().getContentResolver(), liquid_string_setting);
@@ -248,6 +264,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
             }
         }
 
+        // Unstead of if (DEBUG) lets just inform the user with a toast
         if (DEBUG) {
             Log.d(TAG, "How many properties were found and handled? Strings: " + foundStrings
                     + "	Ints: " + foundInts + "	Floats: " + foundFloats);
@@ -275,9 +292,13 @@ public class BackupRestore extends SettingsPreferenceFragment {
             Toast.makeText(mContext, String.format(CONFIG_CHECK_PASS,
                     bkname), Toast.LENGTH_SHORT).show();
         } else {
+            // TODO this provides no info to help debug THIS IS IMPORTANT it's all the users see ...maybe we give them counts of vars handled also?
             Toast.makeText(mContext, "We encountered a problem, restore not created",
                     Toast.LENGTH_SHORT).show();
         }
+
+        // update the screen
+        findThemes();
 
         return success;
     }
@@ -287,6 +308,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
             Preference pref) {
         if (pref == mBackup) {
             if (DEBUG) Log.d(TAG, "calling backup method");
+
+            // TODO Launch an alert dialog asking for reg backup or theme and respond accordingly for theme launch straight into dialog and ask for filename there
             saveConfig();
             return true;
         } else if (pref == mRestore) {
@@ -316,11 +339,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
             // save
             try {
                 String supplied = data.getStringExtra(SAVE_FILENAME);
-                if (supplied.contains("LiquidControl/themes/")) {
-                    getUserSuppliedThemeInfo(supplied);
-                } else {
-                    runBackup(supplied, null, null);
-                }
+                runBackup(supplied, null, null);
             } catch (NullPointerException np) {
                 // user backed out of filepicker nothing to see here
             }
@@ -342,17 +361,32 @@ public class BackupRestore extends SettingsPreferenceFragment {
     }
 
     private void saveConfig() {
-        // call the file picker then apply in the result
-        Intent save_file = new Intent(mContext, com.liquid.control.tools.FilePicker.class);
-        save_file.putExtra(SAVE_FILENAME, BLANK);
-        // true because we are saving
-        save_file.putExtra("action", true);
-        // provide a path to start the user off on
-        save_file.putExtra("path", PATH_TO_CONFIGS);
-        // let users go where ever they want
-        save_file.putExtra("lock_dir", false);
-        // result code can be whatever but must match requestCode in onActivityResult
-        startActivityForResult(save_file, 2);
+        // ask if user wants to make a theme
+        AlertDialog.Builder askTheme = new AlertDialog.Builder(getActivity());
+        askTheme.setTitle(getString(R.string.want_to_make_theme_title));
+        askTheme.setMessage(getString(R.string.want_to_make_theme_message));
+        askTheme.setPositiveButton(getString(R.string.positive_theme_button), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // launch theme maker
+                getUserSuppliedThemeInfo();
+            }
+        });
+        askTheme.setNegativeButton(getString(R.string.negative_theme_button), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // just run a normal backup
+                Intent save_file = new Intent(mContext, com.liquid.control.tools.FilePicker.class);
+                save_file.putExtra(SAVE_FILENAME, BLANK);
+                // true because we are saving
+                save_file.putExtra("action", true);
+                // provide a path to start the user off on
+                save_file.putExtra("path", PATH_TO_CONFIGS);
+                // let users go where ever they want
+                save_file.putExtra("lock_dir", false);
+                // result code can be whatever but must match requestCode in onActivityResult
+                startActivityForResult(save_file, 2);
+            }
+        });
+        askTheme.show();
     }
 
     private void runRestore() {
@@ -484,19 +518,27 @@ public class BackupRestore extends SettingsPreferenceFragment {
             // let the user know and move on
             Toast.makeText(mContext, "no file was returned", Toast.LENGTH_SHORT).show();
         }
+
+        // update screen
+        findThemes();
+
         // TODO return a real value here
         return true;
     }
 
-    private void getUserSuppliedThemeInfo(final String filePath) {
+    private void getUserSuppliedThemeInfo() {
         // get a view to work with
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View customLayout = inflater.inflate(R.layout.save_theme_dialog, null);
+
+        // TODO add filename and text watcher for valid filename
+        final EditText themeFilename = (EditText) customLayout.findViewById(R.id.filename_input_edittext);
         final EditText titleText = (EditText) customLayout.findViewById(R.id.title_input_edittext);
         final EditText summaryText = (EditText) customLayout.findViewById(R.id.summary_input_edittext);
 
-        // for that personal touch
+        // for that personal touch //TODO make setText not hint
         if (makeThemFeelAtHome != null) titleText.setHint(makeThemFeelAtHome);
+        // TODO add generic hint bs
 
         AlertDialog.Builder getInfo = new AlertDialog.Builder(getActivity());
         getInfo.setTitle(getString(R.string.name_theme_title));
@@ -507,14 +549,17 @@ public class BackupRestore extends SettingsPreferenceFragment {
                 // get supplied info
                 String value_title = ((Spannable) titleText.getText()).toString();
                 String value_summary = ((Spannable) summaryText.getText()).toString();
+                String value_filename = ((Spannable) themeFilename.getText()).toString();
                 if (DEBUG) Log.d(TAG, String.format("found title: %s 	found summary: %s", value_title, value_summary));
-                runBackup(filePath, value_title, value_summary);
+                String formatThemePath = String.format("%s/LiquidControl/themes/%s",
+                        Environment.getExternalStorageDirectory(), value_filename);
+                runBackup(formatThemePath, value_title, value_summary);
             }
         });
         getInfo.setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // just run a normal backup in the theme dir
-                runBackup(filePath, null, null);
+                runRestore();
             }
         });
         getInfo.show();

@@ -432,8 +432,13 @@
     <string name="name_theme_title">Name your theme!</string>
     <string name="positive_button">Make Theme</string>
     <string name="negative_button">I\'m scared</string>
+    <string name="positive_theme_button">Theme</string>
+    <string name="negative_theme_button">Backup</string>
+    <string name="theme_file_prompt">Filename: </string>
     <string name="title_prompt">Title: </string>
     <string name="summary_prompt">Summary: </string>
+    <string name="want_to_make_theme_message">Theme or backup</string>
+    <string name="want_to_make_theme_title">What would you like to do?</string>
 
     <!-- File Picker -->
     <string name="cancel">Cancel</string>

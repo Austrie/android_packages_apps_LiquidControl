@@ -17,14 +17,10 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+        <PreferenceScreen android:key="reboot" />
+
     <PreferenceCategory android:key="general_category"
         android:title="@string/buildprop_title">
-
-        <PreferenceScreen
-            android:key="reboot"
-            android:title="@null"
-            android:summary="@null">
-        </PreferenceScreen>
 
         <PreferenceScreen
             android:key="showbuildprop"

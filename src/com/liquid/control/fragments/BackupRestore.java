@@ -18,6 +18,7 @@ package com.liquid.control.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,7 +38,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.liquid.control.R;
@@ -83,6 +87,10 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private final String SAVE_FILENAME = "save_filepath";
     private static final String MESSAAGE_TO_HEAD_FILE = "~XXX~ BE CAREFUL EDITING BY HAND ~XXX~ you have been warned!";
     private static String makeThemFeelAtHome = null;
+    private static int DEFAULT_FLING_SPEED = 65;
+    private static String RETURN = "\n";
+    private static String LINE_SPACE = "\n\n";
+    private static String TWO_LINE_SPACE = "\n\n\n";
 
     // to hold our lists
     String[] array;
@@ -108,7 +116,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
         mThemeCat = (PreferenceCategory) prefs.findPreference(THEME_CAT_PREF);
 
         setupArrays();
-
         // TODO add themes dir to mkdirs
         // make required dirs and disable themes if unavailable
         // be sure we have the directories we need or everything fails
@@ -172,7 +179,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
                         newTheme.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                                 @Override
                                 public boolean onPreferenceClick(Preference newTheme) {
-                                    return restore(theme_, true);
+                                    wantToDeleteOrApply(theme_, true);
+                                    return true;
                                 }
                         });
 
@@ -191,6 +199,43 @@ public class BackupRestore extends SettingsPreferenceFragment {
         }
     }
 
+    private void wantToDeleteOrApply(final String filename, final boolean thisATheme) {
+        try {
+            // TODO fix so we don't need this path absolut we should inhearit from filename
+            final File dialogFile;
+            if (thisATheme) {
+                dialogFile = new File(PATH_TO_THEMES, filename);
+            } else {
+                dialogFile = new File(filename);
+            }
+            FileReader fr = new FileReader(dialogFile);
+            Properties dialogProps = new Properties();
+            dialogProps.load(fr);
+
+            AlertDialog.Builder shouldDelete = new AlertDialog.Builder(getActivity());
+            shouldDelete.setTitle(getString(R.string.delete_or_apply));
+            // complex but looks good TODO would be to simplify this setMessage()
+            shouldDelete.setMessage(String.format("Theme title: %s", ((String) dialogProps.get("title")))
+                    + RETURN + ((String) dialogProps.get("summary")));
+            shouldDelete.setPositiveButton(getString(R.string.apply_button), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    restore(filename, thisATheme);
+                }
+            });
+            shouldDelete.setNegativeButton(getString(R.string.delete_button), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    dialogFile.delete();
+                    findThemes();
+                }
+            });
+            shouldDelete.show();
+        } catch (FileNotFoundException fnfe) {
+            // we should have already coverd this
+        } catch (IOException io) {
+            // ditto
+        }
+    }
+
     private boolean runBackup(String bkname, String title_text, String summary_text) {
         if (DEBUG) Log.d(TAG, "runBackup has been called: " + bkname);
         String string_setting = null;
@@ -205,11 +250,59 @@ public class BackupRestore extends SettingsPreferenceFragment {
         ArrayList<String> stringArray = new ArrayList<String>(settingsArray);
         ArrayList<String> floatArray = new ArrayList<String>(settingsArray);
 
+        // so we can provide more info to the users about the backup
+        ArrayList<String> handledSettingsArray = new ArrayList<String>();
+        ArrayList<String> handledValuesArray = new ArrayList<String>();
+        ArrayList<String> unhandledSettingsArray = new ArrayList<String>(settingsArray);
+
+        // get a view to work with
+        LayoutInflater infoInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View backupDialogLayout = infoInflater.inflate(R.layout.what_happened_dialog, null);
+
+        // setup smooth scrolling within our info dialog
+        ScrollView scroll = (ScrollView) backupDialogLayout.findViewById(R.id.what_happened_scrollview);
+        scroll.setSmoothScrollingEnabled(true);
+        scroll.fling(DEFAULT_FLING_SPEED);
+
+        // get final reference so we can minuplate text in try blocks
+        final TextView mShowInfo = (TextView) scroll.findViewById(R.id.what_happened_more_info);
+
+        // structure a super simple dialog for our output
+        AlertDialog.Builder whatHappened = new AlertDialog.Builder(getActivity());
+        whatHappened.setTitle(getString(R.string.what_happened_title));
+        whatHappened.setView(backupDialogLayout);
+        whatHappened.setPositiveButton(getString(R.string.positive_thanks_button), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // user can't click here till we are done with work
+                // once user can click just dismiss we are done
+            }
+        });
+
+        // don't let the user stop this dialog till we are done running the backup
+        whatHappened.setCancelable(false);
+
+        // load builder into an AlertDialog so we can get the positive button
+        AlertDialog ad = whatHappened.create();
+        ad.show();
+
+        // Issue 6360 prevents us from referencing buttons till after we show dialog
+        // more info see --> http://code.google.com/p/android/issues/detail?id=6360
+        final Button mOkButton = (Button) ad.getButton(AlertDialog.BUTTON_POSITIVE);
+        mOkButton.setEnabled(false);
+
+        StringBuilder info = new StringBuilder(settingsArray.size());
+        final String formater = "Found value: %s=%s";
+        final String noValue = "Unresolved value: %s";
+
         if (title_text != null) {
             mProperties.setProperty("title", title_text);
+            info.append(String.format("Theme present named: %s", title_text) + RETURN);
+            mShowInfo.setText(info.toString());
         }
         if (summary_text != null) {
             mProperties.setProperty("summary", summary_text);
+            info.append(String.format("Summary provided: %s", summary_text) + RETURN);
+            mShowInfo.setText(info.toString());
         }
 
         // handle floats first and remove the handled values from stringArray
@@ -222,7 +315,19 @@ public class BackupRestore extends SettingsPreferenceFragment {
                     if (DEBUG) Log.d(TAG, "floats:  {" + liquid_float_setting + "} returned value {" + float_ + "}");
                     stringArray.remove(liquid_float_setting);
                     foundFloats = foundFloats + 1;
+
+                    // tracking
+                    handledSettingsArray.add(liquid_float_setting);
+                    handledValuesArray.add(String.format("%f", float_));
+                    info.append(String.format(formater, liquid_float_setting, float_) + RETURN);
+                    mShowInfo.setText(info.toString());
                 } catch (SettingNotFoundException notFound) {
+                    // we didn't find so add to out list of unhandledSettingsArray
+                    unhandledSettingsArray.add(liquid_float_setting);
+                    if (DEBUG) Log.d(TAG, String.format("should add this value? is floats unreliable reference point: %s",
+                            liquid_float_setting));
+                    info.append(String.format(noValue, liquid_float_setting) + RETURN);
+                    mShowInfo.setText(info.toString());
                     if (CLASS_DEBUG) notFound.printStackTrace();
                 } catch (ClassCastException cce) {
                     if (CLASS_DEBUG) cce.printStackTrace();
@@ -245,7 +350,14 @@ public class BackupRestore extends SettingsPreferenceFragment {
                         foundInts = foundInts + 1;
                         Log.d(TAG, String.format("Ints: {%s} returned value {%s}",
                                 liquid_string_setting, string_setting));
+
+                        // tracking
+                        handledSettingsArray.add(liquid_string_setting);
+                        handledValuesArray.add(String.format("%d", testIsANumber));
+                        info.append(String.format(formater, liquid_string_setting, string_setting) + RETURN);
+                        mShowInfo.setText(info.toString());
                     } catch (SettingNotFoundException noSetting) {
+                        unhandledSettingsArray.add(liquid_string_setting);
                         // not found
                     }
                 } catch (NumberFormatException ne) {
@@ -255,6 +367,12 @@ public class BackupRestore extends SettingsPreferenceFragment {
                         foundStrings = foundStrings + 1;
                         Log.d(TAG, String.format("Strings: {%s} returned value {%s}",
                                 liquid_string_setting, string_setting));
+
+                        // tracking
+                        handledSettingsArray.add(liquid_string_setting);
+                        handledValuesArray.add(string_setting);
+                        info.append(String.format(formater, liquid_string_setting, string_setting) + RETURN);
+                        mShowInfo.setText(info.toString());
                     }
                 }
             } catch (ClassCastException cce) {
@@ -264,12 +382,34 @@ public class BackupRestore extends SettingsPreferenceFragment {
             }
         }
 
+        // TODO do we need to do this or just show as part of user dialog?
         // Unstead of if (DEBUG) lets just inform the user with a toast
         if (DEBUG) {
             Log.d(TAG, "How many properties were found and handled? Strings: " + foundStrings
                     + "	Ints: " + foundInts + "	Floats: " + foundFloats);
             Log.d(TAG, "how long are our lists? Strings: " + stringArray.size() + "	Floats: " + floatArray.size());
         }
+
+        // move down 2 lines before summary
+        info.append(LINE_SPACE);
+        info.append(String.format("We handled %d values of %d values",
+                handledSettingsArray.size(), unhandledSettingsArray.size()) + RETURN);
+        mShowInfo.setText(info.toString());
+
+        // TODO use this to replace unhandledSettingsArray
+        ArrayList<String> arrayUnhandled = new ArrayList<String>(settingsArray);
+        info.append(LINE_SPACE);
+        info.append("Properties we didn't find values for:" + RETURN);
+        // remove what we handled from array and display rest
+        for (String foundIt : handledSettingsArray) {
+            arrayUnhandled.remove(foundIt);
+        }
+        for (String notFoundIt : arrayUnhandled) {
+            info.append(notFoundIt.toString() + RETURN);
+            mShowInfo.setText(info.toString());
+            if (DEBUG) Log.d(TAG, "Unresolved Property: " + notFoundIt);
+        }
+        info.append(LINE_SPACE);
 
         if (mProperties != null) {
            try {
@@ -278,6 +418,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
                mProperties.store(new FileOutputStream(storeFile), MESSAAGE_TO_HEAD_FILE);
                if (DEBUG) Log.d(TAG, "Does storeFile exist? " + storeFile.exists() + "	AbsolutPath: " + storeFile.getAbsolutePath());
                success = true;
+               info.append("Saved file: " + bkname + RETURN);
+               mShowInfo.setText(info.toString());
            } catch (FileNotFoundException fnfe) {
                fnfe.printStackTrace();
            } catch (IOException ioe) {
@@ -291,11 +433,23 @@ public class BackupRestore extends SettingsPreferenceFragment {
         if (checkConfigFiles(bkname)) {
             Toast.makeText(mContext, String.format(CONFIG_CHECK_PASS,
                     bkname), Toast.LENGTH_SHORT).show();
+            info.append(LINE_SPACE);
+            info.append(String.format("Settings saved!	%s", bkname) + RETURN);
+            mShowInfo.setText(info.toString());
         } else {
             // TODO this provides no info to help debug THIS IS IMPORTANT it's all the users see ...maybe we give them counts of vars handled also?
             Toast.makeText(mContext, "We encountered a problem, restore not created",
                     Toast.LENGTH_SHORT).show();
+            info.append(LINE_SPACE);
+            info.append(String.format("$#!+ we couldn't save to %s", bkname) + RETURN);
+            mShowInfo.setText(info.toString());
         }
+
+        // info is up; let user go away
+        info.append(LINE_SPACE);
+        info.append("Thank you come again!" + RETURN);
+        mShowInfo.setText(info.toString());
+        mOkButton.setEnabled(true);
 
         // update the screen
         findThemes();
@@ -308,30 +462,25 @@ public class BackupRestore extends SettingsPreferenceFragment {
             Preference pref) {
         if (pref == mBackup) {
             if (DEBUG) Log.d(TAG, "calling backup method");
-
-            // TODO Launch an alert dialog asking for reg backup or theme and respond accordingly for theme launch straight into dialog and ask for filename there
             saveConfig();
             return true;
         } else if (pref == mRestore) {
             if (DEBUG) Log.d(TAG, "calling restore method");
-            // we don't boolean this one because we must involve another class
             runRestore();
             return true;
         }
-        //TODO: we should also have a complete return to fresh wipe
         return super.onPreferenceTreeClick(prefScreen, pref);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO this prob should be given to a Handler() as to be async because this makes the system freak out
         if (DEBUG) Log.d(TAG, "requestCode=" + requestCode + "	resultCode=" + resultCode + "	Intent data=" + data);
         if (requestCode == 1) {
             // restore
             try {
                 String supplied = data.getStringExtra(OPEN_FILENAME);
                 // false because user saved configs are not themes
-                restore(supplied, false);
+                wantToDeleteOrApply(supplied, false);
             } catch (NullPointerException np) {
                 // user backed out of filepicker just move on
             }

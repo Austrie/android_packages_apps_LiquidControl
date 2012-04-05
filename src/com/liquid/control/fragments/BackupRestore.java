@@ -65,20 +65,14 @@ import java.util.StringTokenizer;
 public class BackupRestore extends SettingsPreferenceFragment {
 
     private static final String TAG = "BackupRestore";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final boolean CLASS_DEBUG = false;
     private static final String BLANK = "";
     private static final String BACKUP_PREF = "backup";
     private static final String RESTORE_PREF = "restore";
     private static final String THEME_CAT_PREF = "theme_cat";
-    private static final String THEME_EXILED_PREF = "theme_exiled";
-    private static final String THEME_UNAFFILIATED_PREF = "theme_unaffiliated";
-    private static final String THEME_NITROZ_PREF = "theme_nitroz";
-    private static final int EXILED = 1;
-    private static final int UNAFFILIATED = 2;
-    private static final int NITROZ = 3;
     private static String CONFIG_FILENAME = null;
-    private static String CONFIG_CHECK_PASS = "/sdcard/LiquidControl/%s and dependant restore files have been created";
+    private static String CONFIG_CHECK_PASS = "/sdcard/LiquidControl/%s has been created";
     private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl";
     private static final String PATH_TO_VALUES = "/sdcard/LiquidControl/backup";
     private static final String PATH_TO_THEMES = "/sdcard/LiquidControl/themes";
@@ -142,6 +136,16 @@ public class BackupRestore extends SettingsPreferenceFragment {
         findThemes();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
     private void findThemes() {
         // themes live in the theme category while the theme category lives on the PreferenceScreen
 
@@ -152,7 +156,16 @@ public class BackupRestore extends SettingsPreferenceFragment {
         File themerDirs = new File(PATH_TO_THEMES);
         String[] allThemesFound = themerDirs.list();
         if (DEBUG) Log.d(TAG, themerDirs.list().toString());
-        if (allThemesFound != null) {
+
+        // so Themes category won't show when we don't have themes
+        boolean doWeHaveThemes = false;
+        for (String findThemes : themerDirs.list()) {
+            File isDirOrTheme = new File(PATH_TO_THEMES, findThemes);
+            if (isDirOrTheme.isFile()) doWeHaveThemes = true;
+        }
+
+        if (doWeHaveThemes) {
+            doWeHaveThemes = false;
             prefs.addPreference(mThemeCat);
             for (final String theme_ : allThemesFound) {
                 // don't try to load directories as themes
@@ -575,9 +588,33 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
             // TODO handle missing files
 
-            // TODO/XXX should we consider filesystem space? our configs are very small (we don't save drawables, yet)
-            //    and our sdcard is 16gb so for now we won't worry about it
+            // get a view to work with
+            LayoutInflater i = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View restoreDialogLayout = i.inflate(R.layout.what_happened_dialog, null);
 
+            // setup smooth scrolling within our info dialog
+            ScrollView sv = (ScrollView) restoreDialogLayout.findViewById(R.id.what_happened_scrollview);
+            sv.setSmoothScrollingEnabled(true);
+            sv.fling(DEFAULT_FLING_SPEED);
+
+            // get final reference so we can minuplate text in try blocks
+            TextView mRestoreInfo = (TextView) sv.findViewById(R.id.what_happened_more_info);
+            // Show the user what happend
+            AlertDialog.Builder restoreDialog = new AlertDialog.Builder(getActivity());
+            restoreDialog.setTitle(getString(R.string.what_happened_title));
+            restoreDialog.setView(restoreDialogLayout);
+            restoreDialog.setPositiveButton(getString(R.string.positive_thanks_button), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                }
+            });
+            restoreDialog.setCancelable(false);
+            AlertDialog ad_ = restoreDialog.create();
+            ad_.show();
+
+            final Button mRestoreOk = (Button) ad_.getButton(AlertDialog.BUTTON_POSITIVE);
+            mRestoreOk.setEnabled(false);
+
+            StringBuilder collectInfo = new StringBuilder(settingsArray.size());
             // first the strings
             try {
                 File configFile;
@@ -599,6 +636,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
                 ArrayList<String> array_strings = new ArrayList<String>(settingsArray);
                 ArrayList<String> array_ints = new ArrayList<String>(settingsArray);
                 ArrayList<String> array_floats = new ArrayList<String>(settingsArray);
+                ArrayList<String> arrays_handled = new ArrayList<String>();
 
                 int stringsHandled = 0;
                 int intsHandled = 0;
@@ -614,6 +652,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
                                 Settings.System.putInt(mContext.getContentResolver(), intPropCheck,
                                         Integer.parseInt((String) mProperties.get(intPropCheck)));
                                 intsHandled = intsHandled + 1;
+                                arrays_handled.add(intPropCheck);
                                 // if we handle the property remove it from the other lists
                                 array_strings.remove(intPropCheck);
                                 array_floats.remove(intPropCheck);
@@ -621,6 +660,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
                                 if (CLASS_DEBUG) nfe.printStackTrace();
                             } catch (ClassCastException cce) {
                                 // ok it's not a int
+                            } catch (Exception e) {
+                                if (DEBUG) e.printStackTrace();
                             }
                         }
                     }
@@ -635,10 +676,13 @@ public class BackupRestore extends SettingsPreferenceFragment {
                                 Settings.System.putFloat(mContext.getContentResolver(), floatPropCheck,
                                         Float.parseFloat((String) mProperties.get(floatPropCheck)));
                                 array_strings.remove(floatPropCheck);
+                                arrays_handled.add(floatPropCheck);
                             } catch  (NumberFormatException nfe) {
                                 if (DEBUG) nfe.printStackTrace();
                             } catch (ClassCastException cce) {
                                 // ok it's not a float
+                            } catch (Exception e) {
+                                if (DEBUG) e.printStackTrace();
                             }
                         }
                     }
@@ -652,19 +696,59 @@ public class BackupRestore extends SettingsPreferenceFragment {
                         try {
                             Settings.System.putString(mContext.getContentResolver(), stringPropCheck,
                                     (String) mProperties.get(stringPropCheck));
+                            arrays_handled.add(stringPropCheck);
                         } catch (NumberFormatException nfe) {
                             if (DEBUG) nfe.printStackTrace();
                         } catch (ClassCastException cce) {
                             // this really shouldn't happen at this point
+                        } catch (Exception e) {
+                            if (DEBUG) e.printStackTrace();
                         }
                     }
                 }
+
+                // let the users know what happend
+                ArrayList<String> watcher = new ArrayList<String>(settingsArray);
+                String title_aquired = (String) mProperties.get("title");
+                String summary_aquired = (String) mProperties.get("summary");
+                if (title_aquired != null || summary_aquired != null) {
+                    collectInfo.append("Theme title: " + title_aquired + RETURN);
+                    collectInfo.append("Description: " + summary_aquired + RETURN);
+                    collectInfo.append(LINE_SPACE);
+                }
+
+                collectInfo.append("Properties handled:" + RETURN);
+                collectInfo.append(RETURN);
+                for (String sweetShit : arrays_handled) {
+                    collectInfo.append(sweetShit + "=" + (String) mProperties.get(sweetShit) + RETURN);
+                    watcher.remove(sweetShit);
+                }
+                collectInfo.append(LINE_SPACE);
+                collectInfo.append("Properties not handled:" + RETURN);
+                for (String moreSweetShit : watcher) {
+                    collectInfo.append(moreSweetShit + RETURN);
+                }
+                collectInfo.append(TWO_LINE_SPACE);
+                collectInfo.append(String.format("We restored %d properties of the available %d properties",
+                        settingsArray.size() - watcher.size(), settingsArray.size()) + RETURN);
+                collectInfo.append(LINE_SPACE);
+                if (isTheme) {
+                    collectInfo.append("Theme file: " + theme_filename_strings);
+                } else {
+                    collectInfo.append("Backup file: " + filename_strings + RETURN);
+                }
+                collectInfo.append(LINE_SPACE);
+                collectInfo.append("Thank you come again!");
+                mRestoreInfo.setText(collectInfo.toString());
+                mRestoreOk.setEnabled(true);
+                if (DEBUG) Log.d(TAG, "Message found:" + LINE_SPACE + collectInfo.toString());
             } catch (Exception e) {
                 // TODO covering all my bases not sure what this could throw ...lazy
                 if (DEBUG) e.printStackTrace();
             }
         } catch (NullPointerException npe) {
             // let the user know and move on
+            if (DEBUG) npe.printStackTrace();
             Toast.makeText(mContext, "no file was returned", Toast.LENGTH_SHORT).show();
         }
 
@@ -738,6 +822,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         settingsArray.add(Settings.System.SHOW_STATUSBAR_IME_SWITCHER);
         settingsArray.add(Settings.Secure.KILL_APP_LONGPRESS_BACK);
         settingsArray.add(Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME);
+        settingsArray.add(Settings.System.TORCH_STATE);
         // Navbar
         settingsArray.add(Settings.System.MENU_LOCATION);
         settingsArray.add(Settings.System.MENU_VISIBILITY);
@@ -747,6 +832,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         //settingsArray.add(Settings.System.NAVIGATION_BAR_GLOW_DURATION); // TODO String[] can't be handled yet
         settingsArray.add(Settings.System.NAVIGATION_BAR_WIDTH);
         settingsArray.add(Settings.System.NAVIGATION_BAR_HEIGHT);
+        //settingsArray.add(Settings.System.NAVIGATION_BAR_HOME_LONGPRESS_CUSTOMAPP); // TODO update R.
         // Lockscreen
         settingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_TEXT_COLOR);
         settingsArray.add(Settings.System.LOCKSCREEN_LAYOUT);

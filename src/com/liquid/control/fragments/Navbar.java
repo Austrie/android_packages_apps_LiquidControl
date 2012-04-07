@@ -19,12 +19,14 @@ package com.liquid.control.fragments;
 import java.util.ArrayList;
 
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -50,11 +52,12 @@ import android.widget.TextView;
 
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
+import com.liquid.control.util.ShortcutPickerHelper;
 import com.liquid.control.widgets.SeekBarPreference;
 import com.liquid.control.widgets.TouchInterceptor;
 
 public class Navbar extends SettingsPreferenceFragment implements
-        OnPreferenceChangeListener {
+        ShortcutPickerHelper.OnPickListener, OnPreferenceChangeListener {
 
     // move these later
     private static final String PREF_EANBLED_BUTTONS = "enabled_buttons";
@@ -63,6 +66,11 @@ public class Navbar extends SettingsPreferenceFragment implements
     private static final String PREF_MENU_UNLOCK = "pref_menu_display";
     private static final String PREF_HOME_LONGPRESS = "long_press_home";
     private static final String PREF_NAV_BACKGROUND_COLOR = "nav_button_background_color";
+    private static final String PREF_LONGPRESS_TO_KILL = "longpress_to_kill";
+    private static final String PREF_NAVBAR_QTY = "navbar_qty";
+
+    public static final int REQUEST_PICK_CUSTOM_ICON = 200;
+    public static final int REQUEST_PICK_LANDSCAPE_ICON = 201;
 
     private static final int DEFAULT_BACKGROUND_COLOR = 0xFF000000;
 
@@ -73,12 +81,17 @@ public class Navbar extends SettingsPreferenceFragment implements
     ListPreference mNavBarMenuDisplay;
     ListPreference mHomeLongpress;
     ListPreference mGlowTimes;
-    Preference mNavBarEnabledButtons;
     Preference mLayout;
     SeekBarPreference mButtonAlpha;
+    ListPreference mNavBarButtonQty;
+
     CheckBoxPreference mEnableNavigationBar;
     ListPreference mNavigationBarHeight;
     ListPreference mNavigationBarWidth;
+    CheckBoxPreference mLongPressToKill;
+    ShortcutPickerHelper mPicker;
+
+    String mCustomAppString;
 
     private final String[] buttons = {
         "HOME", "BACK", "TASKS", "SEARCH", "MENU_BIG"
@@ -91,6 +104,7 @@ public class Navbar extends SettingsPreferenceFragment implements
         addPreferencesFromResource(R.xml.prefs_navbar);
 
         PreferenceScreen prefs = getPreferenceScreen();
+        mPicker = new ShortcutPickerHelper(this, this);
 
         menuDisplayLocation = (ListPreference) findPreference(PREF_MENU_UNLOCK);
         menuDisplayLocation.setOnPreferenceChangeListener(this);
@@ -104,11 +118,17 @@ public class Navbar extends SettingsPreferenceFragment implements
                 .getContentResolver(), Settings.System.MENU_VISIBILITY,
                 0) + "");
 
+        mNavBarButtonQty = (ListPreference) findPreference(PREF_NAVBAR_QTY);
+        mNavBarButtonQty.setOnPreferenceChangeListener(this);
+        mNavBarButtonQty.setValue(Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 3) + "");
+
         mHomeLongpress = (ListPreference) findPreference(PREF_HOME_LONGPRESS);
         mHomeLongpress.setOnPreferenceChangeListener(this);
-        mHomeLongpress.setValue(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.NAVIGATION_BAR_HOME_LONGPRESS,
-                0) + "");
+        int lpv = Settings.System.getInt(getActivity().getContentResolver(),
+                Settings.System.NAVIGATION_BAR_HOME_LONGPRESS, 0);
+        mHomeLongpress.setValue(lpv + "");
+        mHomeLongpress.setSummary(getProperSummary(lpv));
 
         mNavigationBarColor = (ColorPickerPreference) findPreference(PREF_NAV_COLOR);
         mNavigationBarColor.setOnPreferenceChangeListener(this);
@@ -121,8 +141,6 @@ public class Navbar extends SettingsPreferenceFragment implements
         // mGlowTimes.setValue(Settings.System.getInt(getActivity()
         // .getContentResolver(), Settings.System.NAVIGATION_BAR_HOME_LONGPRESS,
         // 0) + "");
-
-        mNavBarEnabledButtons = findPreference(PREF_EANBLED_BUTTONS);
 
         float defaultAlpha = Settings.System.getFloat(getActivity()
                 .getContentResolver(), Settings.System.NAVIGATION_BAR_BUTTON_ALPHA,
@@ -146,10 +164,13 @@ public class Navbar extends SettingsPreferenceFragment implements
         mNavigationBarWidth.setOnPreferenceChangeListener(this);
         mLayout = findPreference("buttons");
 
+        mLongPressToKill = (CheckBoxPreference) findPreference(PREF_LONGPRESS_TO_KILL);
+        mLongPressToKill.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
+                Settings.Secure.KILL_APP_LONGPRESS_BACK, 0) == 1);
+
         if (mTablet) {
             Log.e("LIQUID", "is tablet");
             prefs.removePreference(mLayout);
-            prefs.removePreference(mNavBarEnabledButtons);
             prefs.removePreference(mHomeLongpress);
             prefs.removePreference(mNavBarMenuDisplay);
         }
@@ -187,50 +208,7 @@ public class Navbar extends SettingsPreferenceFragment implements
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
             Preference preference) {
-
-        if (preference == mNavBarEnabledButtons) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-
-            ArrayList<String> enabledToggles = getButtonsStringArray(this.getActivity()
-                    .getApplicationContext());
-
-            boolean checkedToggles[] = new boolean[buttons.length];
-
-            for (int i = 0; i < checkedToggles.length; i++) {
-                if (enabledToggles.contains(buttons[i])) {
-                    checkedToggles[i] = true;
-                }
-            }
-
-            builder.setTitle("Choose which buttons to use");
-            builder.setCancelable(false);
-            builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.setMultiChoiceItems(buttons,
-                    checkedToggles,
-                    new OnMultiChoiceClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                            String toggleKey = (buttons[which]);
-
-                            if (isChecked)
-                                addButton(getActivity(), toggleKey);
-                            else
-                                removeButton(getActivity(), toggleKey);
-                        }
-                    });
-
-            AlertDialog d = builder.create();
-            d.show();
-
-            return true;
-        } else if (preference == mLayout) {
+        if (preference == mLayout) {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             NavbarLayout fragment = new NavbarLayout();
             ft.addToBackStack("navbar_layout");
@@ -257,6 +235,11 @@ public class Navbar extends SettingsPreferenceFragment implements
                     })
                     .create()
                     .show();
+            return true;
+        } else if (preference == mLongPressToKill) {
+            boolean checked = ((CheckBoxPreference) preference).isChecked();
+            Settings.Secure.putInt(getActivity().getContentResolver(),
+                    Settings.Secure.KILL_APP_LONGPRESS_BACK, checked ? 1 : 0);
             return true;
         }
 
@@ -293,6 +276,18 @@ public class Navbar extends SettingsPreferenceFragment implements
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.NAVIGATION_BAR_HOME_LONGPRESS,
                     Integer.parseInt((String) newValue));
+            int nV = Integer.valueOf(String.valueOf(newValue));
+            if (nV == 3) {
+                mCustomAppString = Settings.System.NAVIGATION_BAR_HOME_LONGPRESS_CUSTOMAPP;
+                mPicker.pickShortcut();
+            } else {
+                preference.setSummary(getProperSummary(nV));
+            }
+            return true;
+        } else if (preference == mNavBarButtonQty) {
+            int val = Integer.parseInt((String) newValue);
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_BUTTONS_QTY, val);
             return true;
         } else if (preference == mGlowTimes) {
             // format is (on|off) both in MS
@@ -560,5 +555,36 @@ public class Navbar extends SettingsPreferenceFragment implements
 
         return iloveyou;
     }
-}
 
+    @Override
+    public void shortcutPicked(String uri, String friendlyName, boolean isApplication) {
+        if (Settings.System.putString(getActivity().getContentResolver(),
+                Settings.System.NAVIGATION_BAR_HOME_LONGPRESS_CUSTOMAPP, uri)) {
+                    mHomeLongpress.setSummary(friendlyName);
+        }
+    }
+    
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == ShortcutPickerHelper.REQUEST_PICK_SHORTCUT
+                    || requestCode == ShortcutPickerHelper.REQUEST_PICK_APPLICATION
+                    || requestCode == ShortcutPickerHelper.REQUEST_CREATE_SHORTCUT) {
+                mPicker.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    private String getProperSummary(int i) {
+        if (i < 3) {
+            return getResources().getStringArray(R.array.long_press_home_entries)[i];
+        } else {
+            String uri = Settings.System.getString(getActivity().getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_HOME_LONGPRESS_CUSTOMAPP);
+            if (uri == null)
+                return "-";
+
+            return mPicker.getFriendlyNameForUri(uri);
+        }
+    }
+}

@@ -45,15 +45,10 @@
 		android:title="@string/nav_button_background_color_title"
 		android:defaultValue="#FF000000" />
 
-	<Preference
-		android:key="enabled_buttons"
-		android:title="@string/enabled_navbar_buttons_title"
-		android:summary="@string/enabled_navbar_buttons_summary" />
-
-	<Preference
-		android:key="buttons"
-		android:title="@string/navbar_order_title"
-		android:summary="@string/navbar_order_summary" />
+        <CheckBoxPreference
+            android:key="longpress_to_kill"
+            android:title="@string/longpress_to_kill_title"
+            android:summary="@string/longpress_to_kill_summary" />
 
 	<PreferenceCategory
 		android:key="advanced_cat"

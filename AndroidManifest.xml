@@ -157,6 +157,14 @@
                 <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
+        <activity android:name=".fragments.About"
+            android:label="About LiquidSmoothROMs" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".tools.FilePicker">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

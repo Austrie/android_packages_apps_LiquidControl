@@ -347,11 +347,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
 
             String customIconUri = Settings.System.getString(getContentResolver(),
                     Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[i]);
-            if (customIconUri != null && customIconUri.length() > 0) {
-                File f = new File(Uri.parse(customIconUri).getPath());
-                if (f.exists())
-                    p.setIcon(new BitmapDrawable(res, f.getAbsolutePath()));
-            }
+            Log.i(TAG, "customIconUri: " + customIconUri);
 
             if (customIconUri != null && !customIconUri.equals("")
                     && customIconUri.startsWith("file")) {

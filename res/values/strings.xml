@@ -65,6 +65,8 @@
     <string name="long_press_home_summary">Long pressing the home softkey</string>
     <string name="glow_times_title">Button Glow</string>
     <string name="glow_times_summary">Adjust button animation speeds</string>
+    <string name="navbar_qty_title">Navigation bar buttons</string>
+    <string name="navbar_qty_summary">Customize your icons</string>
 
     <!-- Interface -->
     <string name="rotation_animation_delay_title">Rotation Delay</string>

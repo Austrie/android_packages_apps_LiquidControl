@@ -66,7 +66,18 @@
     <string name="glow_times_title">Button Glow</string>
     <string name="glow_times_summary">Adjust button animation speeds</string>
     <string name="navbar_qty_title">Navigation bar buttons</string>
-    <string name="navbar_qty_summary">Customize your icons</string>
+    <string name="navbar_qty_summary">Number of buttons</string>
+    <string name="navbar_action_title">Button %1$s action &amp; icon</string>
+    <string name="navbar_longpress_title">Button %1$s longpress action</string>
+    <string name="navbar_button_cat">Navigation bar buttons</string>
+    <string name="navbar_action_home">Home</string>
+    <string name="navbar_action_back">Back</string>
+    <string name="navbar_action_recents">Recents</string>
+    <string name="navbar_action_search">Search</string>
+    <string name="navbar_action_menu">Menu</string>
+    <string name="navbar_action_kill">Kill task</string>
+    <string name="navbar_action_power">Power</string>
+    <string name="navbar_action_none">Empty</string>
 
     <!-- Interface -->
     <string name="rotation_animation_delay_title">Rotation Delay</string>

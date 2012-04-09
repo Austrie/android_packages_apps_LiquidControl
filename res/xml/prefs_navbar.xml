@@ -58,6 +58,11 @@
             android:summary="@string/navbar_qty_summary" />
 
 	<PreferenceCategory
+		android:key="navbar_buttons"
+		android:title="@string/navbar_button_cat">
+	</PreferenceCategory>
+
+	<PreferenceCategory
 		android:key="advanced_cat"
 		android:title="@string/advanced_settings">
 

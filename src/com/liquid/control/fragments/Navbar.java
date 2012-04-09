@@ -111,9 +111,15 @@ public class Navbar extends SettingsPreferenceFragment implements
     CheckBoxPreference mLongPressToKill;
     ShortcutPickerHelper mPicker;
 
-    String mCustomAppString;
-    private Preference mCurrentCustomActivityPreference;
-    private String mCurrentCustomActivityString;
+    private int mPendingIconIndex = -1;
+    private NavBarCustomAction mPendingNavBarCustomAction = null;
+
+    private static class NavBarCustomAction {
+        String activitySettingName;
+        Preference preference;
+        int iconIndex = -1;
+    }
+>>>>>>> 64c71fe... Fix bug resetting custom icon on long-press change:src/com/aokp/romcontrol/fragments/Navbar.java
 
     private int mPendingIconIndex = -1;
     private NavBarCustomAction mPendingNavBarCustomAction = null;
@@ -375,14 +381,16 @@ public class Navbar extends SettingsPreferenceFragment implements
             } else {
                 if (longpress) {
                     Settings.System.putString(getContentResolver(),
-                            Settings.System.NAVIGATION_LONGPRESS_ACTIVITIES[index],
-                            (String) newValue);
+                        Settings.System.NAVIGATION_LONGPRESS_ACTIVITIES[index],
+                        (String) newValue);
                 } else {
                     Settings.System.putString(getContentResolver(),
-                            Settings.System.NAVIGATION_CUSTOM_ACTIVITIES[index],
+                        Settings.System.NAVIGATION_CUSTOM_ACTIVITIES[index],
                             (String) newValue);
+                        Settings.System.NAVIGATION_CUSTOM_ACTIVITIES[index],
+                        (String) newValue);
                     Settings.System.putString(getContentResolver(),
-                            Settings.System.NAVIGATION_CUSTOM_APP_ICONS[index], "");
+                        Settings.System.NAVIGATION_CUSTOM_APP_ICONS[index], "");
                 }
             }
             refreshSettings();
@@ -450,7 +458,7 @@ public class Navbar extends SettingsPreferenceFragment implements
             } else if ((requestCode == REQUEST_PICK_CUSTOM_ICON)
                     || (requestCode == REQUEST_PICK_LANDSCAPE_ICON)) {
 
-                String iconName = getIconFileName(mPendingIconIndex);
+                String iconName = "navbar_icon_" + mPendingIconIndex + ".png";
                 FileOutputStream iconStream = null;
                 try {
                     iconStream = mContext.openFileOutput(iconName, Context.MODE_WORLD_READABLE);
@@ -678,6 +686,12 @@ public class Navbar extends SettingsPreferenceFragment implements
                                     Uri.fromFile(mContext.getFileStreamPath(iconName)).toString());
                 }
             }
+        		mPendingNavBarCustomAction.activitySettingName, uri)) {
+                
+            if (mPendingNavBarCustomAction.iconIndex != -1)
+            	Settings.System.putString(getContentResolver(),
+Settings.System.NAVIGATION_CUSTOM_APP_ICONS[mPendingNavBarCustomAction.iconIndex], "");
+
             mPendingNavBarCustomAction.preference.setSummary(friendlyName);
         }
     }

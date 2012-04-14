@@ -504,11 +504,19 @@
     <string name="devs">Meet the developers</string>
     <string name="dev_liquid_title">Liquid</string>
     <string name="dev_liquid_twitter">liquid0624</string>
-    <string name="dev_liquid_donate"></string>
+    <string name="dev_liquid_donate">http://bit.ly/qGR38c</string>
     <string name="dev_jbird_title">JBirdVegas</string>
     <string name="dev_jbird_twitter">JBird_Vegas</string>
     <string name="dev_jbird_donate">http://bit.ly/oCWMo0</string>
     <string name="dev_n0coast_title">n0coast</string>
     <string name="dev_n0coast_twitter">n0coast</string>
-    <string name="dev_n0coast_donate"></string>
+    <string name="dev_n0coast_donate">http://bit.ly/HRA3Kc</string>
+    <string name="dev_exiled_themer_title">ExiledThemer</string>
+    <string name="dev_exiled_themer_donate">http://bit.ly/IvgIzW</string>
+    <string name="dev_liquidzgrl_title">Liquidzgrl</string>
+    <string name="dev_liquidzgrl_twitter">LiQuIDzGrL</string>
+    <string name="dev_liquidzgrl_donate">http://bit.ly/I9wHBA</string>
+    <string name="dev_amplified_title">amplified</string>
+    <string name="dev_amplified_twitter">JacobVanCleve</string>
+
 </resources>

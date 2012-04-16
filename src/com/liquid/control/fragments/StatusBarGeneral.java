@@ -74,8 +74,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String NOTIFICATION_COLOR = "notification_color";
     private static final String NOTIFICATION_ALPHA = "notification_alpha";
     private static final String PREF_STATUSBAR_UNEXPANDED_ALPHA = "statusbar_unexpanded_alpha";
-    private static final String PREF_TEST_NOTICE = "test_notice";
     private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
+    private static final String PREF_TEST_NOTICE = "test_notice";
     private static final String PREF_STATUSBAR_HANDLE_ALPHA = "statusbar_handle_alpha";
     private static final String PREF_LAYOUT = "status_bar_layout";
     private static final String PREF_FONTSIZE = "status_bar_fontsize";
@@ -97,6 +97,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     /* Default Color Schemes */
     private static final float STATUSBAR_EXPANDED_ALPHA_DEFAULT = 0.7f; //TODO update
     private static final int STATUSBAR_EXPANDED_COLOR_DEFAULT = 0xFF000000; //TODO update
+    private static final float STATUSBAR_UNEXPANDED_ALPHA_DEFAULT = 0.8f; //TODO update
     private static final int STATUSBAR_UNEXPANDED_COLOR_DEFAULT = 0xFF000000; //TODO update
     private static final float STATUSBAR_HANDLE_ALPHA_DEFAULT = 0.85f;
 
@@ -112,14 +113,14 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     ColorPickerPreference mWindowshadeBackground;
     SeekBarPreference mStatusbarAlpha;
     SeekBarPreference mStatusbarUnexpandedAlpha;
-    PreferenceScreen mTestNotification;
     ColorPickerPreference mStatusbarUnexpandedColor;
+    PreferenceScreen mTestNotification;
+
     ListPreference mLayout;
     Preference mUserBackground;
     ListPreference mWindowshadeHandle;
     SeekBarPreference mStatusbarHandleAlpha;
     ListPreference mFontsize;
-
     NotificationManager mNoticeManager;
     Context mContext;
 
@@ -154,7 +155,6 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mLayout.setOnPreferenceChangeListener(this);
         mLayout.setValue(Integer.toString(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.STATUS_BAR_LAYOUT, 0)));
-
         mFontsize = (ListPreference) findPreference(PREF_FONTSIZE);
         mFontsize.setOnPreferenceChangeListener(this);
         mFontsize.setValue(Integer.toString(Settings.System.getInt(getActivity()
@@ -221,6 +221,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                         Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, STATUSBAR_EXPANDED_ALPHA_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, STATUSBAR_EXPANDED_COLOR_DEFAULT);
+                Settings.System.putInt(getActivity().getContentResolver(),
+                        Settings.System.STATUSBAR_UNEXPANDED_ALPHA, STATUSBAR_UNEXPANDED_ALPHA_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_UNEXPANDED_COLOR, STATUSBAR_UNEXPANDED_COLOR_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
@@ -366,7 +368,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             success = Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_UNEXPANDED_ALPHA, val2 / 100);
         } else if (pref == mStatusbarUnexpandedColor) {
-            String statusbar_hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue)));
+            String statusbar_hex = ColorPickerPreference.convertToARGB(
+                    Integer.valueOf(String.valueOf(newValue)));
             pref.setSummary(statusbar_hex);
             int intHex = ColorPickerPreference.convertToColorInt(statusbar_hex);
             success = Settings.System.putInt(getActivity().getContentResolver(),
@@ -391,20 +394,20 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_FONT_SIZE, val);
             Helpers.restartSystemUI();
-        
         }  else if (preference == mNotificationColor) {
-            String hexColor = ColorPickerPreference.convertToARGB(Integer.valueOf(String
-                    .valueOf(newValue)));
+            String hexColor = ColorPickerPreference.convertToARGB(
+                    Integer.valueOf(String.valueOf(newValue)));
             preference.setSummary(hexColor);
             int color = ColorPickerPreference.convertToColorInt(hexColor);
             Settings.System.putInt(getContentResolver(),
-                    Settings.System.STATUSBAR_NOTIFICATION_COLOR, color);
+                    Settings.System.STATUSBAR_UNEXPANDED_COLOR, color);
         } else if (preference == mNotificationAlpha) {
             float val = Float.parseFloat((String) newValue);
             Settings.System.putFloat(getActivity().getContentResolver(),
-                    Settings.System.STATUSBAR_NOTIFICATION_ALPHA,
+                    Settings.System.STATUSBAR_UNEXPANDED_ALPHA,
                     val / 100);
             return true;
+        }
 
         updateSettings();
         return success;

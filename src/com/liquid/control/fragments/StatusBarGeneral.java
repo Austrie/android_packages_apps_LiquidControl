@@ -75,6 +75,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
     private static final String PREF_STATUSBAR_HANDLE_ALPHA = "statusbar_handle_alpha";
     private static final String PREF_LAYOUT = "status_bar_layout";
+    private static final String PREF_FONTSIZE = "status_bar_fontsize";
     private static String STATUSBAR_COLOR_SUMMARY_HOLDER;
     private static final String TEST_SHORT = "Alpha Test";
     private static final String TEST_TITLE = "Test Notice";
@@ -91,7 +92,6 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final int STATUSBAR_EXPANDED_COLOR_DEFAULT = 0xFF000000; //TODO update
     private static final int STATUSBAR_UNEXPANDED_COLOR_DEFAULT = 0xFF000000; //TODO update
     private static final float STATUSBAR_HANDLE_ALPHA_DEFAULT = 0.85f;
-
 
     CheckBoxPreference mShowDate;
     ListPreference mDateFormat;
@@ -111,6 +111,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     Preference mUserBackground;
     ListPreference mWindowshadeHandle;
     SeekBarPreference mStatusbarHandleAlpha;
+    ListPreference mFontsize;
 
     NotificationManager mNoticeManager;
     Context mContext;
@@ -144,6 +145,11 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mLayout.setOnPreferenceChangeListener(this);
         mLayout.setValue(Integer.toString(Settings.System.getInt(getActivity()
                 .getContentResolver(), Settings.System.STATUS_BAR_LAYOUT, 0)));
+
+        mFontsize = (ListPreference) findPreference(PREF_FONTSIZE);
+        mFontsize.setOnPreferenceChangeListener(this);
+        mFontsize.setValue(Integer.toString(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_FONT_SIZE, 16)));
 
         mTestNotification = (PreferenceScreen) findPreference(PREF_TEST_NOTICE);
         mTestNotification.setOnPreferenceClickListener(
@@ -369,6 +375,11 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             if (DEBUG) Log.d(TAG, "value:" + handleValue / 100 + "    raw:" + handleValue);
             success = Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_HANDLE_ALPHA, handleValue / 100);
+        } else if (preference == mFontsize) {
+            int val = Integer.parseInt((String) newValue);
+            result = Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_FONT_SIZE, val);
+            Helpers.restartSystemUI();
         }
 
         updateSettings();

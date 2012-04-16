@@ -217,6 +217,8 @@
     <string name="windowshade_handle_default">ICS Default</string>
     <string name="windowshade_handle_liquid_1">Exiled option</string>
     <string name="statusbar_handle_alpha_title">Statusbar handle alpha</string>
+    <string name="statusbar_fontsize">Font Size</string>
+    <string name="statusbar_fontsize_summary">Change size of text elements on statusbar</string>
 
     <!-- Battery -->
     <string name="battery_icon">Battery Style</string>

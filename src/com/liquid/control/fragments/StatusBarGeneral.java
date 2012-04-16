@@ -52,6 +52,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import com.android.settings.util.SeekBarPreference;
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 public class StatusBarGeneral extends SettingsPreferenceFragment implements
@@ -70,6 +71,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_ADB_ICON = "adb_icon";
     private static final String PREF_WINDOWSHADE_COLOR = "statusbar_windowshade_background_color";
     private static final String PREF_STATUSBAR_ALPHA = "statusbar_alpha";
+    private static final String NOTIFICATION_COLOR = "notification_color";
+    private static final String NOTIFICATION_ALPHA = "notification_alpha";
     private static final String PREF_STATUSBAR_UNEXPANDED_ALPHA = "statusbar_unexpanded_alpha";
     private static final String PREF_TEST_NOTICE = "test_notice";
     private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
@@ -80,6 +83,10 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String TEST_SHORT = "Alpha Test";
     private static final String TEST_TITLE = "Test Notice";
     private static final String TEST_MESSAGE = "Sent to test notification alpha";
+    
+    /*NotificationColor/Alpha */
+    private ColorPickerPreference mNotificationColor;
+    private SeekBarPreference mNotificationAlpha;
 
     private static final String PREF_USER_BACKGROUND = "user_background";
     private static final String PREF_WINDOWSHADE_HANDLE = "windowshade_handle"; //TODO finish
@@ -141,6 +148,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mStatusbarUnexpandedAlpha.setOnPreferenceChangeListener(this);
         mStatusbarUnexpandedColor = (ColorPickerPreference) findPreference(PREF_STATUSBAR_UNEXPANDED_COLOR);
         mStatusbarUnexpandedColor.setOnPreferenceChangeListener(this);
+        mNotificationColor = (ColorPickerPreference) prefSet.findPreference(NOTIFICATION_COLOR);
+        mNotificationColor.setOnPreferenceChangeListener(this);
         mLayout = (ListPreference) findPreference(PREF_LAYOUT);
         mLayout.setOnPreferenceChangeListener(this);
         mLayout.setValue(Integer.toString(Settings.System.getInt(getActivity()
@@ -165,6 +174,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                         0, intent, PendingIntent.FLAG_CANCEL_CURRENT));
                 mNoticeManager.notify(0, testNote);
                 return true;
+                
             }
         });
         mStatusbarHandleAlpha = (SeekBarPreference) findPreference(PREF_STATUSBAR_HANDLE_ALPHA);
@@ -183,7 +193,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
 
         setHasOptionsMenu(true);
         updateSettings();
-    }
+
+     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -294,7 +305,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                 .getContentResolver(), Settings.System.STATUSBAR_UNEXPANDED_ALPHA, 1f);
         mStatusbarUnexpandedAlpha.setInitValue((int) (unexpandedAlpha * 100));
         mStatusbarUnexpandedAlpha.setSummary(String.format("%f", unexpandedAlpha * 100));
-
+        
         try {
             int unexpandedColor = Settings.System.getInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_UNEXPANDED_COLOR);
@@ -375,12 +386,25 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             if (DEBUG) Log.d(TAG, "value:" + handleValue / 100 + "    raw:" + handleValue);
             success = Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_HANDLE_ALPHA, handleValue / 100);
-        } else if (preference == mFontsize) {
+        } else if (pref == mFontsize) {
             int val = Integer.parseInt((String) newValue);
-            result = Settings.System.putInt(getActivity().getContentResolver(),
+            success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_FONT_SIZE, val);
             Helpers.restartSystemUI();
-        }
+        
+        }  else if (preference == mNotificationColor) {
+            String hexColor = ColorPickerPreference.convertToARGB(Integer.valueOf(String
+                    .valueOf(newValue)));
+            preference.setSummary(hexColor);
+            int color = ColorPickerPreference.convertToColorInt(hexColor);
+            Settings.System.putInt(getContentResolver(),
+                    Settings.System.STATUSBAR_NOTIFICATION_COLOR, color);
+        } else if (preference == mNotificationAlpha) {
+            float val = Float.parseFloat((String) newValue);
+            Settings.System.putFloat(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_NOTIFICATION_ALPHA,
+                    val / 100);
+            return true;
 
         updateSettings();
         return success;

@@ -52,11 +52,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import com.android.settings.util.SeekBarPreference;
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 public class StatusBarGeneral extends SettingsPreferenceFragment implements
-        OnPreferenceChangeListener {
+                OnPreferenceChangeListener {
 
     private static final String TAG = "LiquidControl :StatusBarGeneral";
     private static final boolean DEBUG = false;
@@ -149,7 +148,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mStatusbarUnexpandedAlpha.setOnPreferenceChangeListener(this);
         mStatusbarUnexpandedColor = (ColorPickerPreference) findPreference(PREF_STATUSBAR_UNEXPANDED_COLOR);
         mStatusbarUnexpandedColor.setOnPreferenceChangeListener(this);
-        mNotificationColor = (ColorPickerPreference) prefSet.findPreference(NOTIFICATION_COLOR);
+        mNotificationColor = (ColorPickerPreference) findPreference(NOTIFICATION_COLOR);
         mNotificationColor.setOnPreferenceChangeListener(this);
         mLayout = (ListPreference) findPreference(PREF_LAYOUT);
         mLayout.setOnPreferenceChangeListener(this);
@@ -221,7 +220,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                         Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, STATUSBAR_EXPANDED_ALPHA_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, STATUSBAR_EXPANDED_COLOR_DEFAULT);
-                Settings.System.putInt(getActivity().getContentResolver(),
+                Settings.System.putFloat(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_UNEXPANDED_ALPHA, STATUSBAR_UNEXPANDED_ALPHA_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_UNEXPANDED_COLOR, STATUSBAR_UNEXPANDED_COLOR_DEFAULT);
@@ -394,18 +393,17 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_FONT_SIZE, val);
             Helpers.restartSystemUI();
-        }  else if (preference == mNotificationColor) {
+        }  else if (pref == mNotificationColor) {
             String hexColor = ColorPickerPreference.convertToARGB(
                     Integer.valueOf(String.valueOf(newValue)));
-            preference.setSummary(hexColor);
+            pref.setSummary(hexColor);
             int color = ColorPickerPreference.convertToColorInt(hexColor);
             Settings.System.putInt(getContentResolver(),
                     Settings.System.STATUSBAR_UNEXPANDED_COLOR, color);
-        } else if (preference == mNotificationAlpha) {
+        } else if (pref == mNotificationAlpha) {
             float val = Float.parseFloat((String) newValue);
             Settings.System.putFloat(getActivity().getContentResolver(),
-                    Settings.System.STATUSBAR_UNEXPANDED_ALPHA,
-                    val / 100);
+                    Settings.System.STATUSBAR_UNEXPANDED_ALPHA, val / 100);
             return true;
         }
 

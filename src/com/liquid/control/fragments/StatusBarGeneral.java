@@ -306,14 +306,6 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mStatusbarUnexpandedAlpha.setInitValue((int) (unexpandedAlpha * 100));
         mStatusbarUnexpandedAlpha.setSummary(String.format("%f", unexpandedAlpha * 100));
         
-        float defaultAlpha = Settings.System.getFloat(getActivity()
-                .getContentResolver(), Settings.System.STATUSBAR_NOTIFICATION_ALPHA,
-                0.55f);
-        mNotificationAlpha = (SeekBarPreference) findPreference(NOTIFICATION_ALPHA);
-        mNotificationAlpha.setInitValue((int) (defaultAlpha * 100));
-        mNotificationAlpha.setOnPreferenceChangeListener(this);
-        }
-
         try {
             int unexpandedColor = Settings.System.getInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_UNEXPANDED_COLOR);

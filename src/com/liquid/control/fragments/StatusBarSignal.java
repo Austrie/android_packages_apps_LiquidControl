@@ -34,7 +34,7 @@ public class StatusBarSignal extends SettingsPreferenceFragment implements
 
     ListPreference mDbmStyletyle;
     ListPreference mWifiStyle;
-    // CheckBoxPreference mHideSignal;
+    CheckBoxPreference mHideSignal;
     CheckBoxPreference mSixbarSignal;
     ColorPickerPreference mColorPicker;
     ColorPickerPreference mWifiColorPicker;
@@ -53,9 +53,9 @@ public class StatusBarSignal extends SettingsPreferenceFragment implements
         mColorPicker = (ColorPickerPreference) findPreference("signal_color");
         mColorPicker.setOnPreferenceChangeListener(this);
 
-        // mHideSignal = (CheckBoxPreference) findPreference("hide_signal");
-        // mHideSignal.setChecked(Settings.System.getInt(getActivity()
-        //      .getContentResolver(), Settings.System.STATUSBAR_HIDE_SIGNAL_BARS, 0) != 0);
+        mHideSignal = (CheckBoxPreference) findPreference("hide_signal");
+        mHideSignal.setChecked(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_HIDE_SIGNAL_BARS, 0) != 0);
 
         mSixbarSignal = (CheckBoxPreference) findPreference("sixbar_signal");
         mSixbarSignal.setChecked(Settings.System.getInt(getActivity()
@@ -73,12 +73,12 @@ public class StatusBarSignal extends SettingsPreferenceFragment implements
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
             Preference preference) {
-        // if (preference == mHideSignal) {
-        //     Settings.System.putInt(getActivity().getContentResolver(),
-        //             Settings.System.STATUSBAR_HIDE_SIGNAL_BARS,
-        //             ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
-        //     return true;
-        // }
+        if (preference == mHideSignal) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_HIDE_SIGNAL_BARS,
+                    ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
+            return true;
+        }
         if (preference == mSixbarSignal) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_SIXBAR_SIGNAL,

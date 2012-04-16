@@ -399,7 +399,20 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_FONT_SIZE, val);
             Helpers.restartSystemUI();
-        }
+        
+        }  else if (preference == mNotificationColor) {
+            String hexColor = ColorPickerPreference.convertToARGB(Integer.valueOf(String
+                    .valueOf(newValue)));
+            preference.setSummary(hexColor);
+            int color = ColorPickerPreference.convertToColorInt(hexColor);
+            Settings.System.putInt(getContentResolver(),
+                    Settings.System.STATUSBAR_NOTIFICATION_COLOR, color);
+        } else if (preference == mNotificationAlpha) {
+            float val = Float.parseFloat((String) newValue);
+            Settings.System.putFloat(getActivity().getContentResolver(),
+                    Settings.System.STATUSBAR_NOTIFICATION_ALPHA,
+                    val / 100);
+            return true;
 
         updateSettings();
         return success;

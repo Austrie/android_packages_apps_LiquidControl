@@ -292,4 +292,8 @@ public class Helpers {
         }
         return onOff;
     }
+
+    public static void restartSystemUI() {
+        new CMDProcessor().su.run("pkill -TERM -f com.android.systemui");
+    }
 }

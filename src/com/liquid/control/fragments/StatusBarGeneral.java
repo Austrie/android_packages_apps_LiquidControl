@@ -44,10 +44,10 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Toast;
 
 import com.liquid.control.R;
+import com.liquid.control.util.Helpers;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.widgets.SeekBarPreference;
 
-import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -359,6 +359,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             int val = Integer.parseInt((String) newValue);
             success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUS_BAR_LAYOUT, val);
+            Helpers.restartSystemUI();
         } else if (pref == mWindowshadeHandle) {
             int val = Integer.parseInt((String) newValue);
             success = Settings.System.putInt(getActivity().getContentResolver(),

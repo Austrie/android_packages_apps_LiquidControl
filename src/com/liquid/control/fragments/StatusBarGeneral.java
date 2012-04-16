@@ -375,9 +375,9 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             if (DEBUG) Log.d(TAG, "value:" + handleValue / 100 + "    raw:" + handleValue);
             success = Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_HANDLE_ALPHA, handleValue / 100);
-        } else if (preference == mFontsize) {
+        } else if (pref == mFontsize) {
             int val = Integer.parseInt((String) newValue);
-            result = Settings.System.putInt(getActivity().getContentResolver(),
+            success = Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_FONT_SIZE, val);
             Helpers.restartSystemUI();
         }

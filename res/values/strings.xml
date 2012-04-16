@@ -53,6 +53,8 @@
     <string name="summary_pref_menu_display">Position of menu button</string>
     <string name="navigation_bar">Navigation</string>
     <string name="navigation_bar_tint_title">Navbar Color</string>
+    <string name="navigation_bar_glow_tint_title">Navbar Glow Color</string>
+    <string name="navigation_bar_glow_tint_summary">Custom button press glow color</string>
     <string name="nav_button_background_color_title">Navbar Background Color</string>
     <string name="title_pref_navigation_menu_display">Menu Visibility</string>
     <string name="summary_pref_navigation_menu_display">Appearance of the menus</string>

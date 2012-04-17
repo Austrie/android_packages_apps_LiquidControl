@@ -1,4 +1,3 @@
-
 package com.liquid.control.fragments;
 
 import android.content.Intent;
@@ -36,7 +35,7 @@ public class About extends SettingsPreferenceFragment {
         } else if (preference == mSourceUrl) {
             launchUrl("http://github.com/LiquidSmoothROMs");
         } else if (preference == mIrcUrl) {
-            launchUrl("http://webchat.freenode.net/?channels=liquid-toro");
+            launchUrl("http://webchat.freenode.net/?channels=liquids");
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }

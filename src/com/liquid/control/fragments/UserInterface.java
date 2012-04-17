@@ -254,6 +254,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.SCREENSHOT_CAMERA_SOUND, checked ? 1 : 0);
+            return true;
         }
         /* DISABLED TILL WE SUPPORT WITH FRAMEWORKS
         }  else if (preference == mLongPressAppTasker) {

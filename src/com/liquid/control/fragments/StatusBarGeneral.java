@@ -1,4 +1,4 @@
-402/*
+222402/*
  * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -221,9 +221,9 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, STATUSBAR_EXPANDED_COLOR_DEFAULT);
                 Settings.System.putFloat(getActivity().getContentResolver(),
-                        Settings.System.STATUSBAR_NOTIFICATION_COLOR, STATUSBAR_NOTIFICATION_COLOR_DEFAULT);
+                        Settings.System.NOTIFICATION_ALPHA, NOTIFICATION_ALPHA_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
-                        Settings.System.NOTIFICATION_COLOR, NOTIFICATION_COLOR_DEFAULT);
+                        Settings.System.NOTIFICATION_COLOR, STATUSBAR_NOTIFICATION_COLOR_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE, 0);
                 Settings.System.putFloat(getActivity().getContentResolver(),
@@ -399,11 +399,11 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             pref.setSummary(hexColor);
             int color = ColorPickerPreference.convertToColorInt(hexColor);
             Settings.System.putInt(getContentResolver(),
-                    Settings.System.STATUSBAR_NOTIFICATION_COLOR, color);
+                    Settings.System.NOTIFICATION_COLOR, color);
         } else if (pref == mNotificationAlpha) {
             float val = Float.parseFloat((String) newValue);
             Settings.System.putFloat(getActivity().getContentResolver(),
-                    Settings.System.STATUSBAR_NOTIFICATION_ALPHA, val / 100);
+                    Settings.System.NOTIFICATION_ALPHA, val / 100);
             return true;
         }
 

@@ -203,6 +203,7 @@
     <string name="statusbar_alpha_title">Transparency</string>
     <string name="statusbar_unexpanded_alpha_title">Notification icon alpha</string>
     <string name="statusbar_unexpanded_color_title">Statusbar Color</string>
+    <string name="notification_alpha_title">Notification Transparency</string>
     <string name="notification_color_title">Notification Color</string>	
     <string name="statusbar_layout">Drawer Layout</string>
     <string name="statusbar_layout_summary">Change notification drawer layout</string>
@@ -356,6 +357,8 @@
     <string name="ps_set_cpu_activity">Set frequencies and current governor</string>
     <string name="ps_free_memory">Amount of ram taskkiller keeps | Current: %s</string>
     <string name="ps_free_memory_boot">Apply amount above at startup</string>
+	<string name="pt_disable_logcat">Disable logcat</string>
+	<string name="ps_disable_logcat">Disable logcat to possibly save some resources and get a little performance boost</string>
 
     <!-- Voltage -->
     <string name="freq">Frequency</string>
@@ -505,7 +508,7 @@
     <string name="liquid_source_title">LiquidSmoothROMs Github</string>
     <string name="liquid_source_summary">View our code!</string>
     <string name="liquid_irc_title">LiquidSmoothROMs IRC</string>
-    <string name="liquid_irc_summary">Visit freenode #liquid-toro</string>
+    <string name="liquid_irc_summary">Visit freenode #liquids</string>
     <string name="devs">Meet the developers</string>
     <string name="dev_liquid_title">Liquid</string>
     <string name="dev_liquid_twitter">liquid0624</string>
@@ -523,5 +526,6 @@
     <string name="dev_liquidzgrl_donate">http://bit.ly/I9wHBA</string>
     <string name="dev_amplified_title">amplified</string>
     <string name="dev_amplified_twitter">JacobVanCleve</string>
+    <string name="dev_amplified_donate">http://bit.ly/H0ZFRV</string>
 
 </resources>

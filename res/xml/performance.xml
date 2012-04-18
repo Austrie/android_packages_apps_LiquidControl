@@ -85,6 +85,7 @@
             android:summary="@string/pref_scrollingcache_summary"
             android:entries="@array/entries_scrollingcache"
             android:entryValues="@array/values_scrollingcache" />
+			
 	</PreferenceCategory>
 
     <PreferenceCategory

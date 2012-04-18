@@ -29,6 +29,7 @@ public class BootService extends Service {
     private static final String KEY_FASTCHARGE = "fast_charge_boot";
     private static final String FAST_CHARGE_DIR = "/sys/kernel/fast_charge";
 	private static final String FAST_CHARGE_FILE = "force_fast_charge";
+	private static final String LOGCAT = "/dev/log/main";
     private final BootService service = this;
     public static SharedPreferences preferences;
     private Thread bootThread;
@@ -80,6 +81,12 @@ public class BootService extends Service {
                         cmd.su.runWaitFor("busybox echo " + values
                                 + " > /sys/module/lowmemorykiller/parameters/minfree");
                     }
+                }
+				if (preferences.getBoolean("logcat", false) == true) {
+                    File f = new File(LOGCAT);
+					if (f.exists()) {
+						f.delete();
+					}
                 }
                 if (preferences.getBoolean(VoltageControl.KEY_APPLY_BOOT, false)) {
                     final List<Voltage> volts = VoltageControl.getVolts(preferences);

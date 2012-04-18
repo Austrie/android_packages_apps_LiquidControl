@@ -52,7 +52,9 @@
 
         <com.liquid.control.widgets.DeveloperPreference
             android:title="@string/dev_amplified_title"
-            liquid:twitterHandle="@string/dev_amplified_twitter" />
+            liquid:twitterHandle="@string/dev_amplified_twitter"
+            liquid:donateLink="@string/dev_amplified_donate"
+            liquid:avatar="@drawable/avatar_amplified" />
 
         <com.liquid.control.widgets.DeveloperPreference
             android:title="@string/dev_liquidzgrl_title"

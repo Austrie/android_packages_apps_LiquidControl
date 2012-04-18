@@ -55,6 +55,7 @@ public class Performance extends SettingsPreferenceFragment implements
     private static final String SCROLLINGCACHE_PREF = "pref_scrollingcache";
     private static final String SCROLLINGCACHE_PERSIST_PROP = "persist.sys.scrollingcache";
     private static final String SCROLLINGCACHE_DEFAULT = "0";
+	private static final String LOGCAT = "/dev/log/main";
 
     private String[] ALL_GOV;
     private int[] SPEED_STEPS;
@@ -167,7 +168,6 @@ public class Performance extends SettingsPreferenceFragment implements
                 mFreeMem.setSummary(getString(R.string.ps_free_memory, getMinFreeValue() + "mb"));
             }
         }
-
     }
 
     String[] getMHz(int freqs[]) {
@@ -271,10 +271,6 @@ public class Performance extends SettingsPreferenceFragment implements
 
         if (isOk) {
             cmd.su.runWaitFor("busybox echo " + value + " > " + fname);
-            if (new File("/sys/devices/system/cpu/cpu1").isDirectory()) {
-                String cpu1 = fname.replace("cpu0", "cpu1");
-                cmd.su.runWaitFor("busybox echo " + value + " > " + cpu1);
-            }
         } else {
             final SharedPreferences.Editor editor = preferences.edit();
             editor.putString(key, goodCpu);

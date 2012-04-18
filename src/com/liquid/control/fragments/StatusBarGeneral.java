@@ -298,9 +298,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         mNotificationAlpha.setInitValue((int) (defaultAlpha * 100));                 
         mNotificationAlpha.setOnPreferenceChangeListener(this);
         }
-
-
-
+        
         try {
             int expandedColor = Settings.System.getInt(getActivity().getContentResolver(),
                     Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR);

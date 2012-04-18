@@ -271,10 +271,6 @@ public class Performance extends SettingsPreferenceFragment implements
 
         if (isOk) {
             cmd.su.runWaitFor("busybox echo " + value + " > " + fname);
-            if (new File("/sys/devices/system/cpu/cpu1").isDirectory()) {
-                String cpu1 = fname.replace("cpu0", "cpu1");
-                cmd.su.runWaitFor("busybox echo " + value + " > " + cpu1);
-            }
         } else {
             final SharedPreferences.Editor editor = preferences.edit();
             editor.putString(key, goodCpu);

@@ -811,7 +811,7 @@ public class Navbar extends SettingsPreferenceFragment implements
         String uri = Settings.System.getString(getActivity().getContentResolver(),
                 Settings.System.NAVIGATION_CUSTOM_ACTIVITIES[index]);
         if (uri == null)
-            return getResources().getDrawable(R.drawable.avatar_jbirdvegas); // TODO WE NEED NEW IMAGES!!!
+            return getResources().getDrawable(R.drawable.ic_sysbar_null);
         if (uri.startsWith("**")) {
             if (uri.equals("**home**")) {
                 return getResources().getDrawable(R.drawable.ic_sysbar_home);
@@ -837,9 +837,9 @@ public class Navbar extends SettingsPreferenceFragment implements
                 e.printStackTrace();
             }
         }
-        //TODO UPDATE IMAGES!!!
+
         //return getResources().getDrawable(R.drawable.ic_sysbar_null);
-        return getResources().getDrawable(R.drawable.avatar_jbirdvegas);
+        return getResources().getDrawable(R.drawable.ic_sysbar_null);
     }
 
     private String getProperSummary(int i, boolean longpress) {

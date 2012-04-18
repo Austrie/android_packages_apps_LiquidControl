@@ -34,6 +34,12 @@
             liquid:avatar="@drawable/avatar_liquid" />
 
         <com.liquid.control.widgets.DeveloperPreference
+            android:title="@string/dev_liquidzgrl_title"
+            liquid:twitterHandle="@string/dev_liquidzgrl_twitter"
+            liquid:donateLink="@string/dev_liquidzgrl_donate"
+            liquid:avatar="@drawable/avatar_liquidzgrl" />
+
+        <com.liquid.control.widgets.DeveloperPreference
             android:title="@string/dev_jbird_title"
             liquid:twitterHandle="@string/dev_jbird_twitter"
             liquid:donateLink="@string/dev_jbird_donate"
@@ -57,10 +63,6 @@
             liquid:donateLink="@string/dev_amplified_donate"
             liquid:avatar="@drawable/avatar_amplified" />
 
-        <com.liquid.control.widgets.DeveloperPreference
-            android:title="@string/dev_liquidzgrl_title"
-            liquid:twitterHandle="@string/dev_liquidzgrl_twitter"
-            liquid:donateLink="@string/dev_liquidzgrl_donate"
-            liquid:avatar="@drawable/avatar_liquidzgrl" />
     </PreferenceCategory>
+
 </PreferenceScreen>

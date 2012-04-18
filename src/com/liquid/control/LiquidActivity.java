@@ -84,11 +84,13 @@ public class LiquidActivity extends PreferenceActivity implements ButtonBarHandl
 
         if (getIntent().getAction().equals("com.lsr.control.START_NEW_FRAGMENT")) {
             String className = getIntent().getStringExtra("lsr_fragment_name").toString();
-            Bundle b = new Bundle();
-            b.putBoolean("started_from_shortcut", true);
-            isShortcut = true;
-            startWithFragment(className, null, null, 0);
-            finish();
+            if (!className.equals("com.lsr.control.LiquidActivity")) {
+                Bundle b = new Bundle();
+                b.putBoolean("started_from_shortcut", true);
+                isShortcut = true;
+                startWithFragment(className, null, null, 0);
+                finish(); // close current activity
+            }
         }
     }
 

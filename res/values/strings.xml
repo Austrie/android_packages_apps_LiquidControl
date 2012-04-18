@@ -42,8 +42,8 @@
     <string name="misc_short">Misc</string>
     <string name="system">System</string>
     <string name="drawables_main_screen_title">Images</string>
-    <string name="meet_the_team">Meet the team</string>
-    <string name="about_title">About the team</string>
+    <string name="meet_the_team">Meet TeamLiquid</string>
+    <string name="about_title">About TeamLiquid</string>
 
     <!-- Navigation -->
     <string name="enable_navbar_title">Enable Navbar</string>

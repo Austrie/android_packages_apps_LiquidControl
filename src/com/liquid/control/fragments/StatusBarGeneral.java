@@ -1,4 +1,4 @@
-/*
+402/*
  * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -399,11 +399,11 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             pref.setSummary(hexColor);
             int color = ColorPickerPreference.convertToColorInt(hexColor);
             Settings.System.putInt(getContentResolver(),
-                    Settings.System.STATUSBAR_UNEXPANDED_COLOR, color);
+                    Settings.System.STATUSBAR_NOTIFICATION_COLOR, color);
         } else if (pref == mNotificationAlpha) {
             float val = Float.parseFloat((String) newValue);
             Settings.System.putFloat(getActivity().getContentResolver(),
-                    Settings.System.STATUSBAR_UNEXPANDED_ALPHA, val / 100);
+                    Settings.System.STATUSBAR_NOTIFICATION_ALPHA, val / 100);
             return true;
         }
 

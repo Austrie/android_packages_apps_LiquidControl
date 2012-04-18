@@ -70,8 +70,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_ADB_ICON = "adb_icon";
     private static final String PREF_WINDOWSHADE_COLOR = "statusbar_windowshade_background_color";
     private static final String PREF_STATUSBAR_ALPHA = "statusbar_alpha";
-    private static final String NOTIFICATION_COLOR = "notification_color";
-    private static final String NOTIFICATION_ALPHA = "notification_alpha";
+    private static final String NOTIFICATION_COLOR_TITLE = "Notification Transparency";
+    private static final String NOTIFICATION_ALPHA_TITLE = "Notification Color";
     private static final String PREF_STATUSBAR_UNEXPANDED_ALPHA = "statusbar_unexpanded_alpha";
     private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
     private static final String PREF_TEST_NOTICE = "test_notice";
@@ -221,9 +221,9 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, STATUSBAR_EXPANDED_COLOR_DEFAULT);
                 Settings.System.putFloat(getActivity().getContentResolver(),
-                        Settings.System.STATUSBAR_UNEXPANDED_ALPHA, STATUSBAR_UNEXPANDED_ALPHA_DEFAULT);
+                        Settings.System.STATUSBAR_NOTIFICATION_COLOR, STATUSBAR_NOTIFICATION_COLOR_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
-                        Settings.System.STATUSBAR_UNEXPANDED_COLOR, STATUSBAR_UNEXPANDED_COLOR_DEFAULT);
+                        Settings.System.NOTIFICATION_COLOR, NOTIFICATION_COLOR_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE, 0);
                 Settings.System.putFloat(getActivity().getContentResolver(),

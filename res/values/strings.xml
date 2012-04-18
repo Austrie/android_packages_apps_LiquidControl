@@ -203,6 +203,7 @@
     <string name="statusbar_alpha_title">Transparency</string>
     <string name="statusbar_unexpanded_alpha_title">Notification icon alpha</string>
     <string name="statusbar_unexpanded_color_title">Statusbar Color</string>
+    <string name="notification_alpha_title">Notification Transparency</string>
     <string name="notification_color_title">Notification Color</string>	
     <string name="statusbar_layout">Drawer Layout</string>
     <string name="statusbar_layout_summary">Change notification drawer layout</string>

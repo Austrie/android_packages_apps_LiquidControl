@@ -47,6 +47,7 @@
 
         <com.liquid.control.widgets.DeveloperPreference
             android:title="@string/dev_exiled_themer_title"
+            liquid:twitterHandle="@string/dev_exiled_themer_twitter"
             liquid:donateLink="@string/dev_exiled_themer_donate"
             liquid:avatar="@drawable/avatar_exiled_themer" />
 

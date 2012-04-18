@@ -70,8 +70,8 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
     private static final String PREF_ADB_ICON = "adb_icon";
     private static final String PREF_WINDOWSHADE_COLOR = "statusbar_windowshade_background_color";
     private static final String PREF_STATUSBAR_ALPHA = "statusbar_alpha";
-    private static final String NOTIFICATION_COLOR_TITLE = "Notification Transparency";
-    private static final String NOTIFICATION_ALPHA_TITLE = "Notification Color";
+    private static final String NOTIFICATION_COLOR_TITLE = "notification_color";
+    private static final String NOTIFICATION_ALPHA_TITLE = "notification_alpha";
     private static final String PREF_STATUSBAR_UNEXPANDED_ALPHA = "statusbar_unexpanded_alpha";
     private static final String PREF_STATUSBAR_UNEXPANDED_COLOR = "statusbar_unexpanded_color";
     private static final String PREF_TEST_NOTICE = "test_notice";

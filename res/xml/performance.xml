@@ -85,6 +85,13 @@
             android:summary="@string/pref_scrollingcache_summary"
             android:entries="@array/entries_scrollingcache"
             android:entryValues="@array/values_scrollingcache" />
+
+		<CheckBoxPreference
+			android:key"logcat"
+			android:defaultValue="false"
+			android:title="@string/pt_disble_logcat"
+			android:summary="@string/ps_disable_logcat" />
+			
 	</PreferenceCategory>
 
     <PreferenceCategory

@@ -356,6 +356,8 @@
     <string name="ps_set_cpu_activity">Set frequencies and current governor</string>
     <string name="ps_free_memory">Amount of ram taskkiller keeps | Current: %s</string>
     <string name="ps_free_memory_boot">Apply amount above at startup</string>
+	<string name="pt_disable_logcat">Disable logcat</string>
+	<string name="ps_disable_logcat">Disable logcat to possibly save some resources and get a little performance boost</string>
 
     <!-- Voltage -->
     <string name="freq">Frequency</string>

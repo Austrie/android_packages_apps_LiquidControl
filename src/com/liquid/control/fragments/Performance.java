@@ -45,6 +45,7 @@ public class Performance extends SettingsPreferenceFragment implements
     public static final String KEY_GOV = "gov";
     public static final String KEY_CPU_BOOT = "cpu_boot";
     public static final String KEY_MINFREE = "free_memory";
+	public static final String KEY_LOGCAT = "logcat";
 
     private static final String STEPS = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies";
     private static final String MAX_FREQ = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq";
@@ -55,6 +56,7 @@ public class Performance extends SettingsPreferenceFragment implements
     private static final String SCROLLINGCACHE_PREF = "pref_scrollingcache";
     private static final String SCROLLINGCACHE_PERSIST_PROP = "persist.sys.scrollingcache";
     private static final String SCROLLINGCACHE_DEFAULT = "0";
+	private static final String LOGCAT = "/dev/log/main";
 
     private String[] ALL_GOV;
     private int[] SPEED_STEPS;
@@ -165,7 +167,15 @@ public class Performance extends SettingsPreferenceFragment implements
                     new CMDProcessor().su
                             .runWaitFor("busybox echo " + values + " > " + MINFREE);
                 mFreeMem.setSummary(getString(R.string.ps_free_memory, getMinFreeValue() + "mb"));
-            }
+            } else if (key.equals(KEY_LOGCAT)) {
+				final String value = preferences.getBoolean(key, null);
+				if (value) {
+					File f = new File(LOGCAT);
+					if (f.exists()) {
+						f.delete();
+					}
+				}
+			}
         }
 
     }

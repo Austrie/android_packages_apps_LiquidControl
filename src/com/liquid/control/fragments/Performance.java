@@ -45,7 +45,6 @@ public class Performance extends SettingsPreferenceFragment implements
     public static final String KEY_GOV = "gov";
     public static final String KEY_CPU_BOOT = "cpu_boot";
     public static final String KEY_MINFREE = "free_memory";
-	public static final String KEY_LOGCAT = "logcat";
 
     private static final String STEPS = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies";
     private static final String MAX_FREQ = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq";
@@ -167,17 +166,8 @@ public class Performance extends SettingsPreferenceFragment implements
                     new CMDProcessor().su
                             .runWaitFor("busybox echo " + values + " > " + MINFREE);
                 mFreeMem.setSummary(getString(R.string.ps_free_memory, getMinFreeValue() + "mb"));
-            } else if (key.equals(KEY_LOGCAT)) {
-				final String value = preferences.getBoolean(key, null);
-				if (value) {
-					File f = new File(LOGCAT);
-					if (f.exists()) {
-						f.delete();
-					}
-				}
-			}
+            }
         }
-
     }
 
     String[] getMHz(int freqs[]) {

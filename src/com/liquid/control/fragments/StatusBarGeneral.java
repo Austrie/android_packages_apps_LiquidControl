@@ -410,7 +410,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
         } else if (pref == mNotificationAlpha) {
             float val = Float.parseFloat((String) newValue);
             Settings.System.putFloat(getActivity().getContentResolver(),
-                    Settings.System.NOTIFICATION_ALPHA, val / 100);
+                    Settings.System.STATUSBAR_NOTIFICATION_ALPHA, val / 100);
             return true;
         }
 

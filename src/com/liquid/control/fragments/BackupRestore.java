@@ -880,7 +880,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         settingsArray.add(Settings.System.STATUSBAR_REMOVE_LIQUIDCONTROL_LINK);
         settingsArray.add(Settings.Secure.ADB_ICON);
         settingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_USER_BACKGROUND);
-        settingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_COLOR);
+        settingsArray.add(Settings.System.STATUSBAR_NOTIFICATION_COLOR);
         settingsArray.add(Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR);
         settingsArray.add(Settings.System.STATUS_BAR_LAYOUT);
         settingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE);
@@ -917,7 +917,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         settingsArray.add(Settings.System.NAVIGATION_BAR_BUTTON_ALPHA);
         // StatusBarGeneral
         settingsArray.add(Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA);
-        settingsArray.add(Settings.System.STATUSBAR_UNEXPANDED_ALPHA);
+        settingsArray.add(Settings.System.STATUSBAR_NOTIFICATION_ALPHA);
         settingsArray.add(Settings.System.STATUSBAR_HANDLE_ALPHA);
 
         // randomize arrays so we don't overly annoy any one area

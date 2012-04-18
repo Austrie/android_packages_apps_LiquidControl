@@ -221,9 +221,9 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR, STATUSBAR_EXPANDED_COLOR_DEFAULT);
                 Settings.System.putFloat(getActivity().getContentResolver(),
-                        Settings.System.NOTIFICATION_ALPHA, NOTIFICATION_ALPHA_DEFAULT);
+                        Settings.System.STATUSBAR_NOTIFICATION_ALPHA, STATUSBAR_NOTIFICATION_ALPHA_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
-                        Settings.System.NOTIFICATION_COLOR, STATUSBAR_NOTIFICATION_COLOR_DEFAULT);
+                        Settings.System.STATUSBAR_NOTIFICATION_COLOR, STATUSBAR_NOTIFICATION_COLOR_DEFAULT);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE, 0);
                 Settings.System.putFloat(getActivity().getContentResolver(),
@@ -291,6 +291,15 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
                 .getContentResolver(), Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA, 1f);
         mStatusbarAlpha.setInitValue((int) (expandedAlpha * 100));
         mStatusbarAlpha.setSummary(String.format("%f", expandedAlpha * 100));
+
+        float defaultAlpha = Settings.System.getFloat(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_NOTIFICATION_ALPHA, 0.55f);
+        mNotificationAlpha = (SeekBarPreference) findPreference(NOTIFICATION_ALPHA);
+        mNotificationAlpha.setInitValue((int) (defaultAlpha * 100));                 
+        mNotificationAlpha.setOnPreferenceChangeListener(this);
+        }
+
+
 
         try {
             int expandedColor = Settings.System.getInt(getActivity().getContentResolver(),
@@ -399,7 +408,7 @@ public class StatusBarGeneral extends SettingsPreferenceFragment implements
             pref.setSummary(hexColor);
             int color = ColorPickerPreference.convertToColorInt(hexColor);
             Settings.System.putInt(getContentResolver(),
-                    Settings.System.NOTIFICATION_COLOR, color);
+                    Settings.System.STATUSBAR_NOTIFICATION_COLOR, color);
         } else if (pref == mNotificationAlpha) {
             float val = Float.parseFloat((String) newValue);
             Settings.System.putFloat(getActivity().getContentResolver(),

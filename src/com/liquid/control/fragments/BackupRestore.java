@@ -82,6 +82,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static final String MESSAAGE_TO_HEAD_FILE = "~XXX~ BE CAREFUL EDITING BY HAND ~XXX~ you have been warned!";
     private static String makeThemFeelAtHome = null;
     private static int DEFAULT_FLING_SPEED = 65;
+    private static final String DELIMITER = "+";
+    private static final String SPILT_DELIMITER = "\\+";
     private static String RETURN = "\n";
     private static String LINE_SPACE = "\n\n";
     private static String TWO_LINE_SPACE = "\n\n\n";
@@ -89,6 +91,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
     // to hold our lists
     String[] array;
     ArrayList<String> settingsArray = new ArrayList<String>();
+    ArrayList<String[]> arrayOfStrings = new ArrayList<String[]>();
 
     PreferenceScreen prefs;
     PreferenceScreen mBackup;
@@ -318,7 +321,41 @@ public class BackupRestore extends SettingsPreferenceFragment {
             mShowInfo.setText(info.toString());
         }
 
-        // handle floats first and remove the handled values from stringArray
+        // handle String[]'s first because they are on a seperate array
+        for (final String[] stringsInArray : arrayOfStrings) {
+            int length = stringsInArray.length;
+            // build our string[] as a string with delimiter
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; length > i; i++) {
+                if (i != 0) sb.append(DELIMITER);
+                String value = Settings.System.getString(getActivity().getContentResolver(), stringsInArray[i]);
+                sb.append(Settings.System.getString(getActivity().getContentResolver(), stringsInArray[i]));
+            }
+            if (sb.toString() != null) {
+                mProperties.setProperty(Arrays.toString(stringsInArray), sb.toString());
+                info.append("String[] " + Arrays.toString(stringsInArray) + " has been properly handled");
+                handledSettingsArray.add(Arrays.toString(stringsInArray));
+                handledValuesArray.add(sb.toString());
+                mShowInfo.setText(info.toString());
+            }
+            if (DEBUG) Log.d(TAG, "StringArray " + Arrays.toString(stringsInArray)
+                    + "\n has associated StringBuilder with value of " + sb.toString());
+        }
+
+        for (String[] stringsInArray : arrayOfStrings) {
+            int length = stringsInArray.length;
+            for (int i = 0; length > i; i++) {
+                String propValue = Settings.System.getString(getActivity().getContentResolver(), stringsInArray[i]);
+                mProperties.setProperty(stringsInArray[i], propValue);
+                handledSettingsArray.add(stringsInArray[i]);
+                handledValuesArray.add(propValue);
+                if (DEBUG) Log.d(TAG, "arrays: {" + stringsInArray[i] + "} returned value {" + propValue + "}");
+                info.append(String.format(formater, stringsInArray[i], propValue) + RETURN);
+                mShowInfo.setText(info.toString());
+            }
+        }
+
+        // handle floats second and remove the handled values other arrays
         for (final String liquid_float_setting : floatArray) {
             // only alpha is kept as a float so don't bother with the rest
             if (liquid_float_setting.contains("alpha")) {
@@ -448,7 +485,9 @@ public class BackupRestore extends SettingsPreferenceFragment {
                     bkname), Toast.LENGTH_SHORT).show();
             info.append(LINE_SPACE);
             info.append(String.format("Settings saved!	%s", bkname) + RETURN);
+            info.append(RETURN);
             mShowInfo.setText(info.toString());
+            //handleStringArrays();
         } else {
             // TODO this provides no info to help debug THIS IS IMPORTANT it's all the users see ...maybe we give them counts of vars handled also?
             Toast.makeText(mContext, "We encountered a problem, restore not created",
@@ -636,11 +675,18 @@ public class BackupRestore extends SettingsPreferenceFragment {
                 ArrayList<String> array_strings = new ArrayList<String>(settingsArray);
                 ArrayList<String> array_ints = new ArrayList<String>(settingsArray);
                 ArrayList<String> array_floats = new ArrayList<String>(settingsArray);
+                ArrayList<String[]> array_string_array = new ArrayList<String[]>(arrayOfStrings);
                 ArrayList<String> arrays_handled = new ArrayList<String>();
 
                 int stringsHandled = 0;
                 int intsHandled = 0;
                 int floatsHandled = 0;
+
+                for (String[] sarray : array_string_array) {
+                    for (int saint = 0; sarray.length > saint; saint++) {
+                        Settings.System.putString(mContext.getContentResolver(), sarray[saint], ((String) mProperties.get(sarray[saint])));
+                    }
+                }
 
                 for (String intPropCheck : array_ints) {
                     // don't handle floats here
@@ -810,8 +856,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
         settingsArray.add(Settings.System.STATUSBAR_TOGGLES);
         // Misc
         settingsArray.add(Settings.System.WIDGET_BUTTONS);
-        //settingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS); // TODO String[] can't be handled yet
-        //settingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES); // TODO String[] can't be handled yet
 
         // ints next
         // UserInterface
@@ -829,10 +873,11 @@ public class BackupRestore extends SettingsPreferenceFragment {
         settingsArray.add(Settings.System.NAVIGATION_BAR_TINT);
         settingsArray.add(Settings.System.NAVIGATION_BAR_BACKGROUND_COLOR);
         settingsArray.add(Settings.System.NAVIGATION_BAR_HOME_LONGPRESS);
-        //settingsArray.add(Settings.System.NAVIGATION_BAR_GLOW_DURATION); // TODO String[] can't be handled yet
         settingsArray.add(Settings.System.NAVIGATION_BAR_WIDTH);
         settingsArray.add(Settings.System.NAVIGATION_BAR_HEIGHT);
-        //settingsArray.add(Settings.System.NAVIGATION_BAR_HOME_LONGPRESS_CUSTOMAPP); // TODO update R.
+        settingsArray.add(Settings.System.NAVIGATION_BAR_BUTTONS_SHOW);
+        settingsArray.add(Settings.System.NAVIGATION_BAR_BUTTONS_QTY);
+        settingsArray.add(Settings.System.NAVIGATION_BAR_GLOW_TINT);
         // Lockscreen
         settingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_TEXT_COLOR);
         settingsArray.add(Settings.System.LOCKSCREEN_LAYOUT);
@@ -846,6 +891,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         settingsArray.add(Settings.System.LOCKSCREEN_LANDSCAPE);
         settingsArray.add(Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL);
         settingsArray.add(Settings.System.ENABLE_FAST_TORCH);
+        settingsArray.add(Settings.System.LOCKSCREEN_4TAB);
         //settingsArray.add(Settings.System.LOCKSCREEN_LOW_BATTERY);
         // Powermenu
         settingsArray.add(Settings.System.POWER_DIALOG_SHOW_AIRPLANE);
@@ -884,6 +930,15 @@ public class BackupRestore extends SettingsPreferenceFragment {
         settingsArray.add(Settings.System.STATUSBAR_EXPANDED_BACKGROUND_COLOR);
         settingsArray.add(Settings.System.STATUS_BAR_LAYOUT);
         settingsArray.add(Settings.System.STATUSBAR_WINDOWSHADE_HANDLE_IMAGE);
+        settingsArray.add(Settings.System.STATUSBAR_FONT_SIZE);
+        settingsArray.add(Settings.System.EXPANDED_HIDE_SCROLLBAR);
+        settingsArray.add(Settings.System.EXPANDED_HIDE_ONCHANGE);
+        settingsArray.add(Settings.System.EXPANDED_HIDE_INDICATOR);
+        settingsArray.add(Settings.System.EXPANDED_HAPTIC_FEEDBACK);
+        settingsArray.add(Settings.System.EXPANDED_VIEW_WIDGET_COLOR);
+        settingsArray.add(Settings.System.EXPANDED_BRIGHTNESS_MODE);
+        settingsArray.add(Settings.System.EXPANDED_SCREENTIMEOUT_MODE);
+
         // StatusBarToggles
         settingsArray.add(Settings.System.STATUSBAR_TOGGLES_USE_BUTTONS);
         settingsArray.add(Settings.System.STATUSBAR_TOGGLES_BRIGHTNESS_LOC);
@@ -911,6 +966,12 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // Misc
         settingsArray.add(Settings.System.EXPANDED_VIEW_WIDGET);
         settingsArray.add(Settings.System.IS_TABLET);
+        settingsArray.add(Settings.System.MODE_VOLUME_OVERLAY);
+        settingsArray.add(Settings.System.NOTIFICATION_LIGHT_PULSE_DEFAULT_COLOR);
+        settingsArray.add(Settings.System.NOTIFICATION_LIGHT_PULSE_DEFAULT_LED_ON);
+        settingsArray.add(Settings.System.NOTIFICATION_LIGHT_PULSE_DEFAULT_LED_OFF);
+        settingsArray.add(Settings.System.NOTIFICATION_LIGHT_PULSE_CUSTOM_ENABLE);
+        settingsArray.add(Settings.System.NOTIFICATION_LIGHT_PULSE_CUSTOM_VALUES);
 
         // floats next
         // Navbar
@@ -919,6 +980,17 @@ public class BackupRestore extends SettingsPreferenceFragment {
         settingsArray.add(Settings.System.STATUSBAR_EXPANDED_BOTTOM_ALPHA);
         settingsArray.add(Settings.System.STATUSBAR_NOTIFICATION_ALPHA);
         settingsArray.add(Settings.System.STATUSBAR_HANDLE_ALPHA);
+
+        // easy stuff 0.o I wish i knew this was here a LONG TIME AGO!!!
+        int mProperBackupLength = Settings.System.SETTINGS_TO_BACKUP.length;
+        for (int i = 0; i < mProperBackupLength; i++) {
+            settingsArray.add(Settings.System.SETTINGS_TO_BACKUP[i]);
+        }
+
+        // add String[] to ArrayList<String[]>
+        arrayOfStrings.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS);
+        arrayOfStrings.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES);
+        arrayOfStrings.add(Settings.System.NAVIGATION_BAR_GLOW_DURATION);
 
         // randomize arrays so we don't overly annoy any one area
         Collections.shuffle(settingsArray);

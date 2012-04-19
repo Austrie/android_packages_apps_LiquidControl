@@ -33,7 +33,7 @@ public class SeekBarPreference extends Preference
         implements OnSeekBarChangeListener {
 
     public static int maximum = 100;
-    public static int interval = 5;
+    public static int interval = 1;
 
     private TextView monitorBox;
     private SeekBar bar;

@@ -33,6 +33,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -231,7 +232,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             intent.putExtra("scale", true);
             intent.putExtra("spotlightX", spotlightX);
             intent.putExtra("spotlightY", spotlightY);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, getTempFileUri());
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempFile()));
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
             startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
             return true;
@@ -266,17 +267,13 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         }
     }
 
-    private Uri getLockscreenExternalUri() {
-        File dir = mContext.getFilesDir();
-        File wallpaper = new File(dir, WALLPAPER_NAME);
-        Log.i(TAG, "wallpaper location: " + wallpaper.getAbsolutePath());
-        return Uri.fromFile(wallpaper);
+    private File getTempFile() {
+        return new File(Environment.getExternalStorageDirectory(), WALLPAPER_NAME);
     }
 
     private Uri getTempFileUri() {
-        File dir = mContext.getFilesDir();
-        File wallpaper = new File(dir, "temp");
-        return Uri.fromFile(wallpaper);
+        return Uri.fromFile(new File(Environment.getExternalStorageDirectory(),
+                "tmp_icon_" + currentIconIndex + ".png"));
     }
 
     private Uri getExternalIconUri() {
@@ -344,9 +341,9 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                     intent.putExtra("outputY", height);
                     intent.putExtra("scale", true);
                     // intent.putExtra("return-data", false);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, getExternalIconUri());
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempFile()));
                     intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
-                    Log.i(TAG, "started for result, should output to: " + getExternalIconUri());
+                    Log.i(TAG, "started for result, should output to: " + getTempFile());
                     startActivityForResult(intent, REQUEST_PICK_CUSTOM_ICON);
                 }
             });
@@ -530,9 +527,9 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 }
 
                 // should use intent.getData() here but it keeps returning null
-                Uri selectedImageUri = getTempFileUri();
-                Log.e(TAG, "Selected image path: " + selectedImageUri.getPath());
-                Bitmap bitmap = BitmapFactory.decodeFile(selectedImageUri.getPath());
+                File selectedImageUri = getTempFile();
+                Log.e(TAG, "Selected image path: " + selectedImageUri.getAbsolutePath());
+                Bitmap bitmap = BitmapFactory.decodeFile(selectedImageUri.getAbsolutePath());
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, wallpaperStream);
             } else if (requestCode == ShortcutPickerHelper.REQUEST_PICK_SHORTCUT
                     || requestCode == ShortcutPickerHelper.REQUEST_PICK_APPLICATION
@@ -558,7 +555,8 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                         getExternalIconUri().toString());
                 Toast.makeText(getActivity(), currentIconIndex + "'s icon set successfully!",
                         Toast.LENGTH_LONG).show();
-                refreshSettings();            }
+                refreshSettings();
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

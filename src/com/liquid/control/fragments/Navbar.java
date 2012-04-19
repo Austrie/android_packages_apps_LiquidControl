@@ -87,6 +87,7 @@ public class Navbar extends SettingsPreferenceFragment implements
     private static final String PREF_NAV_BACKGROUND_COLOR = "nav_button_background_color";
     private static final String PREF_LONGPRESS_TO_KILL = "longpress_to_kill";
     private static final String PREF_NAVBAR_QTY = "navbar_qty";
+    private static final String PREF_NAVIGATION_BAR_BUTTON_ALPHA = "button_transparency";
 
     public static final int REQUEST_PICK_CUSTOM_ICON = 200;
     public static final int REQUEST_PICK_LANDSCAPE_ICON = 201;
@@ -160,11 +161,7 @@ public class Navbar extends SettingsPreferenceFragment implements
         // .getContentResolver(), Settings.System.NAVIGATION_BAR_HOME_LONGPRESS,
         // 0) + "");
 
-        float defaultAlpha = Settings.System.getFloat(getActivity()
-                .getContentResolver(), Settings.System.NAVIGATION_BAR_BUTTON_ALPHA,
-                0.6f);
-        mButtonAlpha = (SeekBarPreference) findPreference("button_transparency");
-        mButtonAlpha.setInitValue((int) (defaultAlpha * 100));
+        mButtonAlpha = (SeekBarPreference) findPreference(PREF_NAVIGATION_BAR_BUTTON_ALPHA);
         mButtonAlpha.setOnPreferenceChangeListener(this);
 
         boolean hasNavBarByDefault = mContext.getResources().getBoolean(
@@ -218,7 +215,6 @@ public class Navbar extends SettingsPreferenceFragment implements
                                 com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.NAVIGATION_BAR_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
-                mButtonAlpha.setValue(60);
                 Settings.System.putInt(getActivity().getContentResolver(),
                         Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 3);
 
@@ -355,7 +351,6 @@ public class Navbar extends SettingsPreferenceFragment implements
             return true;
         } else if (preference == mButtonAlpha) {
             float val = Float.parseFloat((String) newValue);
-            Log.e("R", "value: " + val / 100);
             Settings.System.putFloat(getActivity().getContentResolver(),
                     Settings.System.NAVIGATION_BAR_BUTTON_ALPHA,
                     val / 100);
@@ -703,6 +698,11 @@ public class Navbar extends SettingsPreferenceFragment implements
     }
 
     public void refreshSettings() {
+        float f_ = Settings.System.getFloat(getActivity()
+                .getContentResolver(), Settings.System.NAVIGATION_BAR_BUTTON_ALPHA,
+                0.6f);
+        mButtonAlpha.setInitValue((int) (f_ * 100));
+        Log.e(TAG, "mButtonAlpha value: " + val / 100);
 
         int navbarQuantity = Settings.System.getInt(getContentResolver(),
                 Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 3);

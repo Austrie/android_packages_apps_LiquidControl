@@ -436,8 +436,10 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
         ArrayList<String> arrayUnhandled = new ArrayList<String>(settingsArray);
         // include String[] in output
-        ArrayList<String[]> unhandledArrays = new ArrayList<String[]>(arrayOfStrings)
-        for (int ai = 0; ai < unhandledArrays.size(); ai++) arrayUnhandled.add(unhandledArrays[ai]);
+        ArrayList<String[]> unhandledArrays = new ArrayList<String[]>(arrayOfStrings);
+        for (String[] string_ary : unhandledArrays) {
+            for (int ai = 0; ai < string_ary.length; ai++) arrayUnhandled.add(string_ary[ai]);
+        }
 
         info.append(LINE_SPACE);
         info.append("Properties we didn't find values for:" + RETURN);

@@ -321,38 +321,21 @@ public class BackupRestore extends SettingsPreferenceFragment {
             mShowInfo.setText(info.toString());
         }
 
-        // handle String[]'s first because they are on a seperate array
-        for (final String[] stringsInArray : arrayOfStrings) {
-            int length = stringsInArray.length;
-            // build our string[] as a string with delimiter
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; length > i; i++) {
-                if (i != 0) sb.append(DELIMITER);
-                String value = Settings.System.getString(getActivity().getContentResolver(), stringsInArray[i]);
-                sb.append(Settings.System.getString(getActivity().getContentResolver(), stringsInArray[i]));
+        try {
+            // handle String[]'s first because they are on a seperate array
+            for (final String[] stringsInArray : arrayOfStrings) {
+                int length = stringsInArray.length;
+                if (DEBUG) Log.d(TAG, "stringsInArray length=" + length);
+                // build our string[] as a string with delimiter
+                for (int i = 0; length > i; i++) {
+                    String propValue = Settings.System.getString(getActivity().getContentResolver(), stringsInArray[i]);
+                    info.append("arrays: {" + stringsInArray[i] + "} returned value {" + propValue + "}");
+                    if (propValue != null) mProperties.setProperty(stringsInArray[i], propValue);
+                    mShowInfo.setText(info.toString());
+                }
             }
-            if (sb.toString() != null) {
-                mProperties.setProperty(Arrays.toString(stringsInArray), sb.toString());
-                info.append("String[] " + Arrays.toString(stringsInArray) + " has been properly handled");
-                handledSettingsArray.add(Arrays.toString(stringsInArray));
-                handledValuesArray.add(sb.toString());
-                mShowInfo.setText(info.toString());
-            }
-            if (DEBUG) Log.d(TAG, "StringArray " + Arrays.toString(stringsInArray)
-                    + "\n has associated StringBuilder with value of " + sb.toString());
-        }
-
-        for (String[] stringsInArray : arrayOfStrings) {
-            int length = stringsInArray.length;
-            for (int i = 0; length > i; i++) {
-                String propValue = Settings.System.getString(getActivity().getContentResolver(), stringsInArray[i]);
-                mProperties.setProperty(stringsInArray[i], propValue);
-                handledSettingsArray.add(stringsInArray[i]);
-                handledValuesArray.add(propValue);
-                if (DEBUG) Log.d(TAG, "arrays: {" + stringsInArray[i] + "} returned value {" + propValue + "}");
-                info.append(String.format(formater, stringsInArray[i], propValue) + RETURN);
-                mShowInfo.setText(info.toString());
-            }
+        } catch (Exception e) {
+            if (DEBUG) e.printStackTrace();
         }
 
         // handle floats second and remove the handled values other arrays

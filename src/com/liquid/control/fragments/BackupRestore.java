@@ -326,12 +326,19 @@ public class BackupRestore extends SettingsPreferenceFragment {
             for (final String[] stringsInArray : arrayOfStrings) {
                 int length = stringsInArray.length;
                 if (DEBUG) Log.d(TAG, "stringsInArray length=" + length);
-                // build our string[] as a string with delimiter
                 for (int i = 0; length > i; i++) {
                     String propValue = Settings.System.getString(getActivity().getContentResolver(), stringsInArray[i]);
-                    info.append("arrays: {" + stringsInArray[i] + "} returned value {" + propValue + "}");
-                    if (propValue != null) mProperties.setProperty(stringsInArray[i], propValue);
-                    mShowInfo.setText(info.toString());
+                    if (propValue != null) {
+                        info.append(String.format(formater, stringsInArray[i],  propValue) + RETURN);
+                        mProperties.setProperty(stringsInArray[i], propValue);
+                        mShowInfo.setText(info.toString());
+
+                        // tracking
+                        handledSettingsArray.add(stringsInArray[i]);
+                        handledValuesArray.add(propValue);
+                    } else {
+                        unhandledSettingsArray.add(stringsInArray[i]);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -415,8 +422,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
             }
         }
 
-        // TODO do we need to do this or just show as part of user dialog?
-        // Unstead of if (DEBUG) lets just inform the user with a toast
         if (DEBUG) {
             Log.d(TAG, "How many properties were found and handled? Strings: " + foundStrings
                     + "	Ints: " + foundInts + "	Floats: " + foundFloats);
@@ -429,8 +434,11 @@ public class BackupRestore extends SettingsPreferenceFragment {
                 handledSettingsArray.size(), unhandledSettingsArray.size()) + RETURN);
         mShowInfo.setText(info.toString());
 
-        // TODO use this to replace unhandledSettingsArray
         ArrayList<String> arrayUnhandled = new ArrayList<String>(settingsArray);
+        // include String[] in output
+        ArrayList<String[]> unhandledArrays = new ArrayList<String[]>(arrayOfStrings)
+        for (int ai = 0; ai < unhandledArrays.size(); ai++) arrayUnhandled.add(unhandledArrays[ai]);
+
         info.append(LINE_SPACE);
         info.append("Properties we didn't find values for:" + RETURN);
         // remove what we handled from array and display rest

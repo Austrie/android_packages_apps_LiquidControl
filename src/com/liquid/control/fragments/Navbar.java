@@ -701,8 +701,8 @@ public class Navbar extends SettingsPreferenceFragment implements
         float f_ = Settings.System.getFloat(getActivity()
                 .getContentResolver(), Settings.System.NAVIGATION_BAR_BUTTON_ALPHA,
                 0.6f);
-        mButtonAlpha.setInitValue((int) (f_ * 100));
-        Log.e(TAG, "mButtonAlpha value: " + val / 100);
+        mButtonAlpha.setValue((int) (f_ * 100));
+        Log.e(TAG, "mButtonAlpha value: " + (f_ * 100));
 
         int navbarQuantity = Settings.System.getInt(getContentResolver(),
                 Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 3);

@@ -984,6 +984,9 @@ public class BackupRestore extends SettingsPreferenceFragment {
         arrayOfStrings.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS);
         arrayOfStrings.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES);
         arrayOfStrings.add(Settings.System.NAVIGATION_BAR_GLOW_DURATION);
+        arrayOfStrings.add(Settings.System.NAVIGATION_CUSTOM_APP_ICONS);
+        arrayOfStrings.add(Settings.System.NAVIGATION_CUSTOM_ACTIVITIES);
+        arrayOfStrings.add(Settings.System.NAVIGATION_LONGPRESS_ACTIVITIES);
 
         // randomize arrays so we don't overly annoy any one area
         Collections.shuffle(settingsArray);

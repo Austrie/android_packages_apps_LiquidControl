@@ -62,7 +62,6 @@ public class VoltageControl extends Activity {
     private static final String TAG = "VoltageControlActivity";
     public static final String KEY_APPLY_BOOT = "apply_voltages_at_boot";
     public static final String MV_TABLE0 = "/sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table";
-    public static final String MV_TABLE1 = "/sys/devices/system/cpu/cpu1/cpufreq/UV_mV_table";
     private static final int DIALOG_EDIT_VOLT = 0;
     private List<Voltage> mVoltages;
     private ListAdapter mAdapter;
@@ -110,10 +109,7 @@ public class VoltageControl extends Activity {
                         }
                         new CMDProcessor().su.runWaitFor("busybox echo " + sb.toString() + " > "
                                 + MV_TABLE0);
-                        if (new File(MV_TABLE1).exists()) {
-                            new CMDProcessor().su.runWaitFor("busybox echo " + sb.toString()
-                                    + " > " + MV_TABLE1);
-                        }
+
                         final List<Voltage> volts = getVolts(preferences);
                         mVoltages.clear();
                         mVoltages.addAll(volts);

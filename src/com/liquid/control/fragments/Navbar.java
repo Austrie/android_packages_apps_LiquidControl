@@ -161,7 +161,22 @@ public class Navbar extends SettingsPreferenceFragment implements
         // .getContentResolver(), Settings.System.NAVIGATION_BAR_HOME_LONGPRESS,
         // 0) + "");
 
+        float f_ = Settings.System.getFloat(getActivity()
+                 .getContentResolver(), Settings.System.NAVIGATION_BAR_BUTTON_ALPHA,
+                 0.6f);
         mButtonAlpha = (SeekBarPreference) findPreference(PREF_NAVIGATION_BAR_BUTTON_ALPHA);
+        if (f_ >=0 && f_ <= 100) {
+            mButtonAlpha.setInitValue((int) f_);
+        } else if (f_ < 0) {
+            mButtonAlpha.setInitValue((int) f_ * 100);
+        } else if (f_ > 100) {
+            mButtonAlpha.setInitValue((int) f_ / 100);
+        } else {
+            mButtonAlpha.setInitValue(60);
+        }
+        Log.d(TAG, "mButtonAlpha: " + f_ + " returned default value: " + mButtonAlpha.getDefaultValue());
+
+
         mButtonAlpha.setOnPreferenceChangeListener(this);
 
         boolean hasNavBarByDefault = mContext.getResources().getBoolean(
@@ -698,13 +713,6 @@ public class Navbar extends SettingsPreferenceFragment implements
     }
 
     public void refreshSettings() {
-        float f_ = Settings.System.getFloat(getActivity()
-                .getContentResolver(), Settings.System.NAVIGATION_BAR_BUTTON_ALPHA,
-                0.6f);
-
-        mButtonAlpha.setValue((int) (f_ * 100));
-        Log.i(TAG, "mButtonAlpha value: " + (f_ * 100));
-
         int navbarQuantity = Settings.System.getInt(getContentResolver(),
                 Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 3);
 

@@ -99,10 +99,6 @@ public class BootService extends Service {
                     Log.i(TAG, logInfo);
                     new CMDProcessor().su.runWaitFor("busybox echo " + sb.toString() + " > "
                             + VoltageControl.MV_TABLE0);
-                    if (new File(VoltageControl.MV_TABLE1).exists()) {
-                        new CMDProcessor().su.runWaitFor("busybox echo " + sb.toString() + " > "
-                                + VoltageControl.MV_TABLE1);
-                    }
                 }
             }
         };

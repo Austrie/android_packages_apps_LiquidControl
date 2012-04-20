@@ -58,6 +58,10 @@ public class SeekBarPreference extends Preference
 
         return layout;
     }
+
+    public int getDefaultValue() {
+        return defaultValue;
+    }
     
     public void setInitValue(int progress) {
         defaultValue = progress;

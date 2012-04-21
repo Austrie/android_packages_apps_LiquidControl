@@ -83,7 +83,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
 
         mShowImeSwitcher = (CheckBoxPreference) findPreference(PREF_IME_SWITCHER);
         mShowImeSwitcher.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
-                Settings.System.SHOW_STATUSBAR_IME_SWITCHER, 1) == 1);
+                Settings.System.SHOW_STATUSBAR_IME_SWITCHER, 0) == 1);
 
         mEnableVolumeOptions = (CheckBoxPreference) findPreference(PREF_ENABLE_VOLUME_OPTIONS);
         mEnableVolumeOptions.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
@@ -95,9 +95,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
         mAnimationRotationDelay = (ListPreference) findPreference(PREF_ROTATION_ANIMATION);
         mAnimationRotationDelay.setOnPreferenceChangeListener(this);
         mAnimationRotationDelay.setValue(Settings.System.getInt(getActivity()
-                .getContentResolver(), Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME,
-                200) + "");
-        ((PreferenceGroup) findPreference("misc")).removePreference(mAnimationRotationDelay);
+                .getContentResolver(), Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME, 200) + "");
 
         mAllow180Rotation = (CheckBoxPreference) findPreference(PREF_180);
         mAllow180Rotation.setChecked(Settings.System.getInt(getActivity().getContentResolver(),

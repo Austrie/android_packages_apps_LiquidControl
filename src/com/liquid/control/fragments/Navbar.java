@@ -76,6 +76,7 @@ public class Navbar extends SettingsPreferenceFragment implements
         ShortcutPickerHelper.OnPickListener, OnPreferenceChangeListener {
 
     private static final String TAG = "Navbar";
+    private static final boolean DEBUG = true;
 
     // move these later
     private static final String PREF_EANBLED_BUTTONS = "enabled_buttons";
@@ -161,22 +162,26 @@ public class Navbar extends SettingsPreferenceFragment implements
         // .getContentResolver(), Settings.System.NAVIGATION_BAR_HOME_LONGPRESS,
         // 0) + "");
 
+        mButtonAlpha = (SeekBarPreference) findPreference(PREF_NAVIGATION_BAR_BUTTON_ALPHA);
         float f_ = Settings.System.getFloat(getActivity()
                  .getContentResolver(), Settings.System.NAVIGATION_BAR_BUTTON_ALPHA,
                  0.6f);
-        mButtonAlpha = (SeekBarPreference) findPreference(PREF_NAVIGATION_BAR_BUTTON_ALPHA);
-        if (f_ >=0 && f_ <= 100) {
-            mButtonAlpha.setInitValue((int) f_);
-        } else if (f_ < 0) {
-            mButtonAlpha.setInitValue((int) f_ * 100);
-        } else if (f_ > 100) {
-            mButtonAlpha.setInitValue((int) f_ / 100);
-        } else {
-            mButtonAlpha.setInitValue(60);
+
+        int i_ = 60;
+        try {
+            i_ = Integer.parseInt(String.format("%f",  f_ * 100));
+        } catch (NumberFormatException ne) {
+            if (f_ * 100 < 0) {
+                if (DEBUG) Log.d(TAG, "our value was uselessly low; setting init value to 1 	value was:" + i_);
+                i_ = 1;
+            } else if (f_ * 100 > 100) {
+                if (DEBUG) Log.d(TAG, "our value was uselessly high; setting init value to 99 	value was:" + i_);
+                i_ = 99;
+            }
+            if (DEBUG) ne.printStackTrace();
         }
-        Log.d(TAG, "mButtonAlpha: " + f_ + " returned default value: " + mButtonAlpha.getDefaultValue());
-
-
+        mButtonAlpha.setInitValue(i_); // no formating just a real fucking value
+        Log.d(TAG, "mButtonAlpha: (float) value=" + f_ + " returned default value: " + mButtonAlpha.getDefaultValue());
         mButtonAlpha.setOnPreferenceChangeListener(this);
 
         boolean hasNavBarByDefault = mContext.getResources().getBoolean(

@@ -276,11 +276,8 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 "tmp_icon_" + currentIconIndex + ".png"));
     }
 
-    private Uri getExternalIconUri() {
-        File dir = mContext.getFilesDir();
-        File icon = new File(dir, "icon_" + currentIconIndex + ".png");
-
-        return Uri.fromFile(icon);
+    private String getIconFileName(int index) {
+        return "lockscreen_icon_" + index + ".png";
     }
 
     public void refreshSettings() {
@@ -449,16 +446,33 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     }
 
     @Override
-    public void shortcutPicked(String uri, String friendlyName, boolean isApplication) {
+    public void shortcutPicked(String uri, String friendlyName, Bitmap bmp, boolean isApplication) {
         if (Settings.System.putString(getActivity().getContentResolver(),
                 mCurrentCustomActivityString, uri)) {
 
             String i = mCurrentCustomActivityString.substring(mCurrentCustomActivityString
                     .lastIndexOf("_") + 1);
+            int index = Integer.parseInt(i);
             Log.i(TAG, "shortcut picked, index: " + i);
-            Settings.System.putString(getContentResolver(),
-                    Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[Integer.parseInt(i)], "");
+            if (bmp == null) {
+                Settings.System.putString(getContentResolver(),
+                    Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[index], "");
+            } else {
+                String iconName = getIconFileName(index);
+                FileOutputStream iconStream = null;
+                try {
+                    iconStream = mContext.openFileOutput(iconName, Context.MODE_WORLD_READABLE);
+                } catch (FileNotFoundException e) {
+                    return; // NOOOOO
+                }
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, iconStream);
+                Settings.System.putString(
+                        getContentResolver(),
+                        Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[index],
+                        Uri.fromFile(mContext.getFileStreamPath(iconName)).toString());
+            }
             mCurrentCustomActivityPreference.setSummary(friendlyName);
+            refreshSettings();
         }
     }
 
@@ -518,44 +532,70 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_PICK_WALLPAPER) {
+
+                File galleryImage = getTempFile();
+                String message = "";
                 FileOutputStream wallpaperStream = null;
                 try {
                     wallpaperStream = mContext.openFileOutput(WALLPAPER_NAME,
-                            Context.MODE_WORLD_WRITEABLE);
+                            Context.MODE_WORLD_READABLE);
                 } catch (FileNotFoundException e) {
                     return; // NOOOOO
                 }
 
-                // should use intent.getData() here but it keeps returning null
-                File selectedImageUri = getTempFile();
-                Log.e(TAG, "Selected image path: " + selectedImageUri.getAbsolutePath());
-                Bitmap bitmap = BitmapFactory.decodeFile(selectedImageUri.getAbsolutePath());
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, wallpaperStream);
+                Bitmap bitmap = BitmapFactory.decodeFile(galleryImage.getAbsolutePath());
+
+                if (bitmap == null) {
+                    message = "Wallpaper did not set (is your SD mounted?)";
+                } else if (bitmap != null
+                        && bitmap.compress(Bitmap.CompressFormat.JPEG, 100, wallpaperStream)) {
+                    message = "Wallpaper set successfully";
+                } else {
+                    // shouldn't get here, but let's leave it just in case
+                    message = "Wallpaepr did not set (!!!)";
+                }
+                Toast.makeText(getActivity(), message,
+                        Toast.LENGTH_SHORT).show();
+
+                // go ahead and clean up if it was successful or not
+                if (galleryImage.exists())
+                    galleryImage.delete();
+
             } else if (requestCode == ShortcutPickerHelper.REQUEST_PICK_SHORTCUT
                     || requestCode == ShortcutPickerHelper.REQUEST_PICK_APPLICATION
                     || requestCode == ShortcutPickerHelper.REQUEST_CREATE_SHORTCUT) {
                 mPicker.onActivityResult(requestCode, resultCode, data);
 
             } else if (requestCode == REQUEST_PICK_CUSTOM_ICON) {
+
+                File galleryImage = getTempFile();
+                String iconName = getIconFileName(currentIconIndex);
                 FileOutputStream iconStream = null;
                 try {
-                    iconStream = mContext.openFileOutput("icon_" + currentIconIndex + ".png",
-                            Context.MODE_WORLD_WRITEABLE);
+                    iconStream = mContext.openFileOutput(iconName, Context.MODE_WORLD_READABLE);
                 } catch (FileNotFoundException e) {
                     return; // NOOOOO
                 }
 
-                Uri selectedImageUri = getTempFileUri();
-                Log.e(TAG, "Selected image path: " + selectedImageUri.getPath());
-                Bitmap bitmap = BitmapFactory.decodeFile(selectedImageUri.getPath());
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, iconStream);
+                Bitmap bitmap = BitmapFactory.decodeFile(galleryImage.getAbsolutePath());
+                if (bitmap != null && bitmap.compress(Bitmap.CompressFormat.PNG, 100, iconStream)) {
 
-                Settings.System.putString(getContentResolver(),
-                        Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[currentIconIndex],
-                        getExternalIconUri().toString());
-                Toast.makeText(getActivity(), currentIconIndex + "'s icon set successfully!",
-                        Toast.LENGTH_LONG).show();
-                refreshSettings();
+                    Settings.System.putString(getContentResolver(),
+                            Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[currentIconIndex],
+                            Uri.fromFile(
+                                    new File(mContext.getFilesDir(), iconName)).toString());
+
+                    if (galleryImage.exists())
+                        galleryImage.delete();
+
+                    Toast.makeText(getActivity(), currentIconIndex + "'s icon set successfully!",
+                            Toast.LENGTH_SHORT).show();
+                    refreshSettings();
+                } else {
+                    Toast.makeText(getActivity(), "Setting icon failed! Is your SD mounted?",
+                            Toast.LENGTH_SHORT).show();
+                }
+
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -564,6 +604,8 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     public void copy(File src, File dst) throws IOException {
         InputStream in = new FileInputStream(src);
         FileOutputStream out = new FileOutputStream(dst);
+
+        // Transfer bytes from in to out
         byte[] buf = new byte[1024];
         int len;
         while ((len = in.read(buf)) > 0) {
@@ -573,3 +615,4 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         out.close();
     }
 }
+

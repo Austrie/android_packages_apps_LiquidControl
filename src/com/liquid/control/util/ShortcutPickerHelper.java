@@ -25,7 +25,11 @@ import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.liquid.control.R;
@@ -34,13 +38,13 @@ public class ShortcutPickerHelper {
 
     private Fragment mParent;
     private OnPickListener mListener;
+
     public static final int REQUEST_PICK_SHORTCUT = 100;
     public static final int REQUEST_PICK_APPLICATION = 101;
     public static final int REQUEST_CREATE_SHORTCUT = 102;
-    private static final String TAG = "Liquid :ShortcutPickerHelper";
 
     public interface OnPickListener {
-        void shortcutPicked(String uri, String friendlyName, boolean isApplication);
+        void shortcutPicked(String uri, String friendlyName, Bitmap icon, boolean isApplication);
     }
 
     public ShortcutPickerHelper(Fragment parent, OnPickListener listener) {
@@ -101,7 +105,7 @@ public class ShortcutPickerHelper {
     }
 
     private void completeSetCustomApp(Intent data) {
-        mListener.shortcutPicked(data.toUri(0), getFriendlyActivityName(data, false), true);
+        mListener.shortcutPicked(data.toUri(0), getFriendlyActivityName(data, false), null, true);
     }
 
     private void completeSetCustomShortcut(Intent data) {
@@ -111,7 +115,26 @@ public class ShortcutPickerHelper {
         String appUri = intent.toUri(0);
         appUri = appUri.replaceAll("com.android.contacts.action.QUICK_CONTACT",
                 "android.intent.action.VIEW");
-        mListener.shortcutPicked(appUri, getFriendlyShortcutName(intent), false);
+        /* Try to get the icon (if any) */
+        Bitmap bmp = null;
+        Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
+        if (extra != null && extra instanceof Bitmap)
+            bmp = (Bitmap) extra;
+        if (bmp == null) {
+            extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
+            if (extra != null && extra instanceof Intent.ShortcutIconResource) {
+                try {
+                    Intent.ShortcutIconResource iconResource = (ShortcutIconResource) extra;
+                    final PackageManager packageManager = mParent.getActivity().getPackageManager();
+                    Resources resources = packageManager.getResourcesForApplication(iconResource.packageName);
+                    final int id = resources.getIdentifier(iconResource.resourceName, null, null);
+                    bmp = BitmapFactory.decodeResource(resources, id);
+                } catch (Exception e) {
+                    Log.w("LiquidControl.ShortcutPicker", "Could not load shortcut icon: " + extra);
+                }
+            }
+        }
+        mListener.shortcutPicked(appUri, getFriendlyShortcutName(intent), bmp, false);
     }
 
     private String getFriendlyActivityName(Intent intent, boolean labelOnly) {
@@ -125,7 +148,6 @@ public class ShortcutPickerHelper {
                 friendlyName = ai.name;
             }
         }
-
         return friendlyName != null || labelOnly ? friendlyName : intent.toUri(0);
     }
 
@@ -152,7 +174,6 @@ public class ShortcutPickerHelper {
             return getFriendlyShortcutName(intent);
         } catch (URISyntaxException e) {
         }
-
         return uri;
     }
 }

@@ -73,7 +73,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class Navbar extends SettingsPreferenceFragment implements
-            OnPickListener, OnPreferenceChangeListener {
+            OnPreferenceChangeListener, ShortcutPickerHelper.OnPickListener {
 
     private static final String TAG = "Navbar";
     private static final boolean DEBUG = false;
@@ -147,6 +147,8 @@ public class Navbar extends SettingsPreferenceFragment implements
         mNavBarButtonQty.setOnPreferenceChangeListener(this);
         mNavBarButtonQty.setValue(Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.NAVIGATION_BAR_BUTTONS_QTY, 3) + "");
+
+        mPicker = new ShortcutPickerHelper(this, this);
 
         mNavigationBarColor = (ColorPickerPreference) findPreference(PREF_NAV_COLOR);
         mNavigationBarColor.setOnPreferenceChangeListener(this);

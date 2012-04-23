@@ -111,7 +111,7 @@
         <net.margaritov.preference.colorpicker.ColorPickerPreference
             android:key="statusbar_unexpanded_color"
             android:title="@string/statusbar_unexpanded_color_title"
-            android:defaultValue="#FF111111" />
+            android:defaultValue="#ff000000" />
 
         <com.liquid.control.widgets.SeekBarPreference
             android:key="statusbar_handle_alpha"
@@ -131,7 +131,7 @@
         <net.margaritov.preference.colorpicker.ColorPickerPreference
             android:key="notification_color" 
             android:title="@string/notification_color_title"
-            android:defaultValue="#FFFFFFFF" />
+            android:defaultValue="#ff33b5e5" />
 
     </PreferenceCategory>
 

@@ -57,6 +57,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.ClassCastException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
@@ -805,7 +806,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
         View customLayout = inflater.inflate(R.layout.save_theme_dialog, null);
 
         // TODO add filename and text watcher for valid filename
-        final EditText themeFilename = (EditText) customLayout.findViewById(R.id.filename_input_edittext);
         final EditText titleText = (EditText) customLayout.findViewById(R.id.title_input_edittext);
         final EditText summaryText = (EditText) customLayout.findViewById(R.id.summary_input_edittext);
 
@@ -817,15 +817,23 @@ public class BackupRestore extends SettingsPreferenceFragment {
         getInfo.setTitle(getString(R.string.name_theme_title));
         getInfo.setView(customLayout);
 
+        String delimiter = "_";
+        Calendar mTimeStamp = Calendar.getInstance();
+        final String timeBasedThemeName = Calendar.MONTH + delimiter
+                + Calendar.DAY_OF_MONTH + delimiter
+                + Calendar.YEAR + delimiter
+                + Calendar.HOUR_OF_DAY + delimiter
+                + Calendar.MINUTE + delimiter
+                + Calendar.SECOND;
+
         getInfo.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // get supplied info
                 String value_title = ((Spannable) titleText.getText()).toString();
                 String value_summary = ((Spannable) summaryText.getText()).toString();
-                String value_filename = ((Spannable) themeFilename.getText()).toString();
                 if (DEBUG) Log.d(TAG, String.format("found title: %s 	found summary: %s", value_title, value_summary));
                 String formatThemePath = String.format("%s/LiquidControl/themes/%s",
-                        Environment.getExternalStorageDirectory(), value_filename);
+                        Environment.getExternalStorageDirectory(), timeBasedThemeName);
                 runBackup(formatThemePath, value_title, value_summary);
             }
         });
@@ -839,28 +847,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
         ad_info.show();
         final Button makeThemeButton = (Button) ad_info.getButton(AlertDialog.BUTTON_POSITIVE);
         makeThemeButton.setEnabled(false);
-        themeFilename.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable e) {
-            }
-            public void beforeTextChanged(CharSequence cs, int start, int count, int after) {
-            }
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String text = themeFilename.getText().toString();
-                int textLength = themeFilename.getText().length();
-                if (textLength > 0) {
-                    if (!text.contains(" ")) {
-                        makeThemeButton.setEnabled(true);
-                        makeThemeButton.setText(getText(R.string.positive_button));
-                    } else {
-                        makeThemeButton.setEnabled(false);
-                        makeThemeButton.setText(TEXT_CONTAINS_SPACE);
-                    }
-                } else {
-                    makeThemeButton.setEnabled(false);
-                    makeThemeButton.setText(TEXT_IS_EMPTY);
-                }
-            }
-        });
     }
 
     private void setupArrays() {

@@ -34,14 +34,6 @@
             android:text="@string/theme_file_prompt"
             android:padding="10dip" />
 
-        <EditText android:id="@+id/filename_input_edittext"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginRight="10dip"
-            android:scrollHorizontally="true"
-            android:autoText="true"
-            android:gravity="fill_horizontal"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
     <!-- title info layout -->

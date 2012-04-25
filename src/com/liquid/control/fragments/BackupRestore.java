@@ -92,6 +92,10 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static String LINE_SPACE = "\n\n";
     private static String TWO_LINE_SPACE = "\n\n\n";
 
+    // Dialogs
+    private static final int THEME_INFO_DIALOG = 100;
+    private static final int SAVE_CONFIG_DIALOG = 101;
+
     // to hold our lists
     String[] array;
     ArrayList<String> settingsArray = new ArrayList<String>();
@@ -511,7 +515,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
             Preference pref) {
         if (pref == mBackup) {
             if (DEBUG) Log.d(TAG, "calling backup method");
-            saveConfig();
+            showDialog(SAVE_CONFIG_DIALOG);
             return true;
         } else if (pref == mRestore) {
             if (DEBUG) Log.d(TAG, "calling restore method");
@@ -559,32 +563,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
     }
 
     private void saveConfig() {
-        // ask if user wants to make a theme
-        AlertDialog.Builder askTheme = new AlertDialog.Builder(getActivity());
-        askTheme.setTitle(getString(R.string.want_to_make_theme_title));
-        askTheme.setMessage(getString(R.string.want_to_make_theme_message));
-        askTheme.setPositiveButton(getString(R.string.positive_theme_button), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // launch theme maker
-                getUserSuppliedThemeInfo();
-            }
-        });
-        askTheme.setNegativeButton(getString(R.string.negative_theme_button), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // just run a normal backup
-                Intent save_file = new Intent(mContext, com.liquid.control.tools.FilePicker.class);
-                save_file.putExtra(SAVE_FILENAME, BLANK);
-                // true because we are saving
-                save_file.putExtra("action", true);
-                // provide a path to start the user off on
-                save_file.putExtra("path", PATH_TO_CONFIGS);
-                // let users go where ever they want
-                save_file.putExtra("lock_dir", false);
-                // result code can be whatever but must match requestCode in onActivityResult
-                startActivityForResult(save_file, 2);
-            }
-        });
-        askTheme.show();
+
     }
 
     private void runRestore() {
@@ -800,55 +779,6 @@ public class BackupRestore extends SettingsPreferenceFragment {
         return true;
     }
 
-    private void getUserSuppliedThemeInfo() {
-        // get a view to work with
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View customLayout = inflater.inflate(R.layout.save_theme_dialog, null);
-
-        // TODO add filename and text watcher for valid filename
-        final EditText titleText = (EditText) customLayout.findViewById(R.id.title_input_edittext);
-        final EditText summaryText = (EditText) customLayout.findViewById(R.id.summary_input_edittext);
-
-        // for that personal touch //TODO make setText not hint
-        if (makeThemFeelAtHome != null) titleText.setHint(makeThemFeelAtHome);
-        // TODO add generic hint bs
-
-        AlertDialog.Builder getInfo = new AlertDialog.Builder(getActivity());
-        getInfo.setTitle(getString(R.string.name_theme_title));
-        getInfo.setView(customLayout);
-
-        String delimiter = "_";
-        Calendar mTimeStamp = Calendar.getInstance();
-        final String timeBasedThemeName = Calendar.MONTH + delimiter
-                + Calendar.DAY_OF_MONTH + delimiter
-                + Calendar.YEAR + delimiter
-                + Calendar.HOUR_OF_DAY + delimiter
-                + Calendar.MINUTE + delimiter
-                + Calendar.SECOND;
-
-        getInfo.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // get supplied info
-                String value_title = ((Spannable) titleText.getText()).toString();
-                String value_summary = ((Spannable) summaryText.getText()).toString();
-                if (DEBUG) Log.d(TAG, String.format("found title: %s 	found summary: %s", value_title, value_summary));
-                String formatThemePath = String.format("%s/LiquidControl/themes/%s",
-                        Environment.getExternalStorageDirectory(), timeBasedThemeName);
-                runBackup(formatThemePath, value_title, value_summary);
-            }
-        });
-        getInfo.setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // just run a normal backup in the theme dir
-                runRestore();
-            }
-        });
-        AlertDialog ad_info = getInfo.create();
-        ad_info.show();
-        final Button makeThemeButton = (Button) ad_info.getButton(AlertDialog.BUTTON_POSITIVE);
-        makeThemeButton.setEnabled(false);
-    }
-
     private void setupArrays() {
         // be sure we start fresh each time we load
         settingsArray.clear();
@@ -1002,5 +932,87 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
         // randomize arrays so we don't overly annoy any one area
         Collections.shuffle(settingsArray);
+    }
+
+    public Dialog onCreateDialog(final int id) {
+        switch (id) {
+            case THEME_INFO_DIALOG:
+                // get a view to work with
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View customLayout = inflater.inflate(R.layout.save_theme_dialog, null);
+
+                // TODO add filename and text watcher for valid filename
+                final EditText titleText = (EditText) customLayout.findViewById(R.id.title_input_edittext);
+                final EditText summaryText = (EditText) customLayout.findViewById(R.id.summary_input_edittext);
+
+                // for that personal touch //TODO make setText not hint
+                if (makeThemFeelAtHome != null) titleText.setHint(makeThemFeelAtHome);
+                // TODO add generic hint bs
+
+                AlertDialog.Builder getInfo = new AlertDialog.Builder(getActivity());
+                getInfo.setTitle(getString(R.string.name_theme_title));
+                getInfo.setView(customLayout);
+
+                String delimiter = "_";
+                Calendar mTimeStamp = Calendar.getInstance();
+                final String timeBasedThemeName = Calendar.MONTH + delimiter
+                        + Calendar.DAY_OF_MONTH + delimiter
+                        + Calendar.YEAR + delimiter
+                        + Calendar.HOUR_OF_DAY + delimiter
+                        + Calendar.MINUTE + delimiter
+                        + Calendar.SECOND;
+
+                getInfo.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // get supplied info
+                        String value_title = ((Spannable) titleText.getText()).toString();
+                        String value_summary = ((Spannable) summaryText.getText()).toString();
+                        if (DEBUG) Log.d(TAG, String.format("found title: %s 	found summary: %s", value_title, value_summary));
+                        String formatThemePath = String.format("%s/LiquidControl/themes/%s",
+                                Environment.getExternalStorageDirectory(), timeBasedThemeName);
+                        runBackup(formatThemePath, value_title, value_summary);
+                    }
+                });
+                getInfo.setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // just run a normal backup in the theme dir
+                        runRestore();
+                    }
+                });
+                AlertDialog ad_info = getInfo.create();
+                ad_info.show();
+                return ad_info;
+            case SAVE_CONFIG_DIALOG:
+                // ask if user wants to make a theme
+                AlertDialog.Builder askTheme = new AlertDialog.Builder(getActivity());
+                askTheme.setTitle(getString(R.string.want_to_make_theme_title));
+                askTheme.setMessage(getString(R.string.want_to_make_theme_message));
+                askTheme.setPositiveButton(getString(R.string.positive_theme_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // launch theme maker
+                        showDialog(THEME_INFO_DIALOG);
+                    }
+                });
+                askTheme.setNegativeButton(getString(R.string.negative_theme_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // just run a normal backup
+                        Intent save_file = new Intent(mContext, com.liquid.control.tools.FilePicker.class);
+                        save_file.putExtra(SAVE_FILENAME, BLANK);
+                        // true because we are saving
+                        save_file.putExtra("action", true);
+                        // provide a path to start the user off on
+                        save_file.putExtra("path", PATH_TO_CONFIGS);
+                        // let users go where ever they want
+                        save_file.putExtra("lock_dir", false);
+                        // result code can be whatever but must match requestCode in onActivityResult
+                        startActivityForResult(save_file, 2);
+                    }
+                });
+                AlertDialog ad_theme = askTheme.create();
+                ad_theme.show();
+                return ad_theme;
+            default:
+                return null;
+        }
     }
 }

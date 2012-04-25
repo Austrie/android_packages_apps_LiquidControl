@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,10 +73,27 @@ public class FilePicker extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.file_picker);
 
+        saveButton = (Button)findViewById(R.id.save_button);
         mEmptyDirMessage = (TextView) findViewById(R.id.empty);
         myPath = (TextView)findViewById(R.id.path);
         saveFilename = (EditText)findViewById(R.id.save_filename);
 
+        // set a watcher
+        saveFilename.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable e) {
+            }
+            public void beforeTextChanged(CharSequence cs, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String text = saveFilename.getText().toString();
+                File textFile = new File(text);
+                if (textFile.isDirectory() || textFile.exists()) {
+                    saveButton.setEnabled(false);
+                } else {
+                    saveButton.setEnabled(true);
+                }
+            }
+        });
         // decide if we want to save or just open file
         boolean areWeSaving = DEFAULT;
         try {
@@ -102,7 +121,6 @@ public class FilePicker extends ListActivity {
         }
         setStrings();
 
-        saveButton = (Button)findViewById(R.id.save_button);
         saveButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -32,7 +32,9 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
+import android.text.Editable;
 import android.text.Spannable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,12 +76,13 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static String CONFIG_FILENAME = null;
     private static String CONFIG_CHECK_PASS = "/sdcard/LiquidControl/%s has been created";
     private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl";
-    private static final String PATH_TO_VALUES = "/sdcard/LiquidControl/backup";
     private static final String PATH_TO_THEMES = "/sdcard/LiquidControl/themes";
     private static boolean success = false;
     private final String OPEN_FILENAME = "open_filepath";
     private final String SAVE_FILENAME = "save_filepath";
     private static final String MESSAAGE_TO_HEAD_FILE = "~XXX~ BE CAREFUL EDITING BY HAND ~XXX~ you have been warned!";
+    private static final String TEXT_IS_EMPTY = "Filename Required";
+    private static final String TEXT_CONTAINS_SPACE = "No spaces";
     private static String makeThemFeelAtHome = null;
     private static int DEFAULT_FLING_SPEED = 65;
     private static final String DELIMITER = "+";
@@ -116,7 +119,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // TODO add themes dir to mkdirs
         // make required dirs and disable themes if unavailable
         // be sure we have the directories we need or everything fails
-        File makeDirs = new File(PATH_TO_VALUES);
+        File makeDirs = new File(PATH_TO_CONFIGS);
         File themersDirs = new File(PATH_TO_THEMES);
 
         if (!makeDirs.exists()) {
@@ -606,11 +609,9 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
             // determine the name to be used for opening saved config files
             File nameSpaceFile = new File(open_data_string);
-            File testDirectories = new File(PATH_TO_VALUES);
             final String userSuppliedFilename = nameSpaceFile.getName();
             if (DEBUG) {
                 Log.d(TAG, String.format("userSuppliedFilename=%s for nameSpaceFile=%s", userSuppliedFilename, nameSpaceFile));
-                Log.d(TAG, "Do our directories exist? " + testDirectories.isDirectory());
             }
 
             // theme path is final but let user restores can come from anywhere
@@ -834,7 +835,32 @@ public class BackupRestore extends SettingsPreferenceFragment {
                 runRestore();
             }
         });
-        getInfo.show();
+        AlertDialog ad_info = getInfo.create();
+        ad_info.show();
+        final Button makeThemeButton = (Button) ad_info.getButton(AlertDialog.BUTTON_POSITIVE);
+        makeThemeButton.setEnabled(false);
+        themeFilename.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable e) {
+            }
+            public void beforeTextChanged(CharSequence cs, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String text = themeFilename.getText().toString();
+                int textLength = themeFilename.getText().length();
+                if (textLength > 0) {
+                    if (!text.contains(" ")) {
+                        makeThemeButton.setEnabled(true);
+                        makeThemeButton.setText(getText(R.string.positive_button));
+                    } else {
+                        makeThemeButton.setEnabled(false);
+                        makeThemeButton.setText(TEXT_CONTAINS_SPACE);
+                    }
+                } else {
+                    makeThemeButton.setEnabled(false);
+                    makeThemeButton.setText(TEXT_IS_EMPTY);
+                }
+            }
+        });
     }
 
     private void setupArrays() {

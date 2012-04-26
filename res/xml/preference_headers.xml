@@ -57,7 +57,7 @@
             android:id="@+id/led"
             android:title="@string/led_options"
             android:icon="@drawable/ic_led"
-            android:fragment="com.liquid.control.fragments.Led" />
+            android:fragment="com.liquid.control.led.NotificationLightSettings" />
 
     <header
         android:title="@string/statusbar" />

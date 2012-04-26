@@ -31,4 +31,8 @@
     <dimen name="navigation_bar_30">30.0dip</dimen>
     <dimen name="navigation_bar_24">24.0dip</dimen>
 
+    <dimen name="dialog_light_settings_width">400dip</dimen>
+    <dimen name="device_memory_usage_button_width">16dip</dimen>
+    <dimen name="device_memory_usage_button_height">32dip</dimen>
+
 </resources>

@@ -84,7 +84,7 @@
                 <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.Led"
+        <activity android:name=".led.NotificationLightSettings"
             android:label="Led Options" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />

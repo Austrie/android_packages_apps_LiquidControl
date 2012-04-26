@@ -83,8 +83,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private final String OPEN_FILENAME = "open_filepath";
     private final String SAVE_FILENAME = "save_filepath";
     private static final String MESSAAGE_TO_HEAD_FILE = "~XXX~ BE CAREFUL EDITING BY HAND ~XXX~ you have been warned!";
-    private static final String TEXT_IS_EMPTY = "Filename Required";
-    private static final String TEXT_CONTAINS_SPACE = "No spaces";
+    private static final String TEXT_IS_EMPTY = "Theme Name Required";
     private static String makeThemFeelAtHome = null;
     private static int DEFAULT_FLING_SPEED = 65;
     private static final String DELIMITER = "+";
@@ -963,6 +962,13 @@ public class BackupRestore extends SettingsPreferenceFragment {
                 final String timeBasedThemeName = Calendar.MONTH + Calendar.DAY_OF_MONTH + Calendar.YEAR + delimiter
                         + Calendar.HOUR_OF_DAY + Calendar.MINUTE + Calendar.SECOND;
 
+                getInfo.setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // just run a normal backup in the theme dir
+                        runRestore();
+                    }
+                });
+
                 getInfo.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         // get supplied info
@@ -974,14 +980,31 @@ public class BackupRestore extends SettingsPreferenceFragment {
                         runBackup(formatThemePath, value_title, value_summary);
                     }
                 });
-                getInfo.setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // just run a normal backup in the theme dir
-                        runRestore();
-                    }
-                });
+
                 AlertDialog ad_info = getInfo.create();
                 ad_info.show();
+
+                final Button makeThemeButton = (Button) ad_info.getButton(AlertDialog.BUTTON_POSITIVE);
+                makeThemeButton.setEnabled(false);
+                makeThemeButton.setText(TEXT_IS_EMPTY);
+                titleText.addTextChangedListener(new TextWatcher() {
+                    public void afterTextChanged(Editable e) {
+                    }
+                    public void beforeTextChanged(CharSequence cs, int start, int count, int after) {
+                    }
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        String text = titleText.getText().toString();
+                        int textLength = titleText.getText().length();
+                        if (textLength > 0) {
+                            makeThemeButton.setEnabled(true);
+                            makeThemeButton.setText(getText(R.string.positive_button));
+                        } else {
+                            makeThemeButton.setEnabled(false);
+                            makeThemeButton.setText(TEXT_IS_EMPTY);
+                        }
+                    }
+                });
+
                 return ad_info;
             case SAVE_CONFIG_DIALOG:
                 // ask if user wants to make a theme

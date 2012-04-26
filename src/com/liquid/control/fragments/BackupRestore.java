@@ -960,12 +960,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
 
                 String delimiter = "_";
                 Calendar mTimeStamp = Calendar.getInstance();
-                final String timeBasedThemeName = Calendar.MONTH + delimiter
-                        + Calendar.DAY_OF_MONTH + delimiter
-                        + Calendar.YEAR + delimiter
-                        + Calendar.HOUR_OF_DAY + delimiter
-                        + Calendar.MINUTE + delimiter
-                        + Calendar.SECOND;
+                final String timeBasedThemeName = Calendar.MONTH + Calendar.DAY_OF_MONTH + Calendar.YEAR + delimiter
+                        + Calendar.HOUR_OF_DAY + Calendar.MINUTE + Calendar.SECOND;
 
                 getInfo.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {

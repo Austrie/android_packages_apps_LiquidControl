@@ -488,7 +488,6 @@
     <string name="negative_theme_button">Backup</string>
     <string name="delete_button">Delete Theme (final)</string>
     <string name="apply_button">Apply Theme</string>
-    <string name="theme_file_prompt">Filename: </string>
     <string name="title_prompt">Title: </string>
     <string name="summary_prompt">Summary: </string>
     <string name="want_to_make_theme_message">Theme or backup</string>

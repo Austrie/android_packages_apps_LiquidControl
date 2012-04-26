@@ -20,22 +20,6 @@
     android:orientation="vertical"
     android:id="@+id/custom_save_theme_dialog" >
 
-    <!-- filename info layout -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/file_textview_id"
-            android:layout_gravity="left"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/theme_file_prompt"
-            android:padding="10dip" />
-
-    </LinearLayout>
-
     <!-- title info layout -->
     <LinearLayout
         android:layout_width="wrap_content"

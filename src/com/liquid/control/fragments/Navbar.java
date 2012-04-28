@@ -402,6 +402,10 @@ public class Navbar extends SettingsPreferenceFragment implements
 
     public int mapChosenDpToPixels(int dp) {
         switch (dp) {
+            case 52:
+                return getResources().getDimensionPixelSize(R.dimen.navigation_bar_52);
+            case 50:
+                return getResources().getDimensionPixelSize(R.dimen.navigation_bar_50);
             case 48:
                 return getResources().getDimensionPixelSize(R.dimen.navigation_bar_48);
             case 46:

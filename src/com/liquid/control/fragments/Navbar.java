@@ -119,7 +119,6 @@ public class Navbar extends SettingsPreferenceFragment implements
         Preference preference;
         int iconIndex = -1;
     }
->>>>>>> 64c71fe... Fix bug resetting custom icon on long-press change:src/com/aokp/romcontrol/fragments/Navbar.java
 
     private int mPendingIconIndex = -1;
     private NavBarCustomAction mPendingNavBarCustomAction = null;

@@ -347,11 +347,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
 
             String customIconUri = Settings.System.getString(getContentResolver(),
                     Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[i]);
-            if (customIconUri != null && customIconUri.length() > 0) {
-                File f = new File(Uri.parse(customIconUri).getPath());
-                if (f.exists())
-                    p.setIcon(new BitmapDrawable(res, f.getAbsolutePath()));
-            }
+            Log.i(TAG, "customIconUri: " + customIconUri);
 
             if (customIconUri != null && !customIconUri.equals("")
                     && customIconUri.startsWith("file")) {
@@ -379,11 +375,12 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     private Drawable resize(Drawable image) {
         int size = 50;
         int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
+
         Bitmap d = ((BitmapDrawable) image).getBitmap();
         Bitmap bitmapOrig = Bitmap.createScaledBitmap(d, px, px, false);
         return new BitmapDrawable(mContext.getResources(), bitmapOrig);
     }
-
+    
     private Drawable getLockscreenIconImage(int index) {
         String uri = Settings.System.getString(getActivity().getContentResolver(),
                 Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index]);

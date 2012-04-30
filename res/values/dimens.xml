@@ -21,8 +21,8 @@
     <!-- height of an expanded list item in edit playlist mode -->
     <dimen name="expanded_height">128dip</dimen>
 
-    <dimen name="navigation_bar_48">52.0dip</dimen>
-    <dimen name="navigation_bar_48">50.0dip</dimen>
+    <dimen name="navigation_bar_52">52.0dip</dimen>
+    <dimen name="navigation_bar_50">50.0dip</dimen>
     <dimen name="navigation_bar_48">48.0dip</dimen>
     <dimen name="navigation_bar_46">46.0dip</dimen>
     <dimen name="navigation_bar_44">44.0dip</dimen>

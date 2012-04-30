@@ -120,15 +120,6 @@ public class Navbar extends SettingsPreferenceFragment implements
         int iconIndex = -1;
     }
 
-    private int mPendingIconIndex = -1;
-    private NavBarCustomAction mPendingNavBarCustomAction = null;
-
-    private static class NavBarCustomAction {
-        String activitySettingName;
-        Preference preference;
-        int iconIndex = -1;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -379,17 +370,12 @@ public class Navbar extends SettingsPreferenceFragment implements
                 mPicker.pickShortcut();
             } else {
                 if (longpress) {
-                    Settings.System.putString(getContentResolver(),
-                        Settings.System.NAVIGATION_LONGPRESS_ACTIVITIES[index],
-                        (String) newValue);
-                } else {
-                    Settings.System.putString(getContentResolver(),
-                        Settings.System.NAVIGATION_CUSTOM_ACTIVITIES[index],
+                    Settings.System.putString(getContentResolver(), Settings.System.NAVIGATION_LONGPRESS_ACTIVITIES[index],
                             (String) newValue);
-                        Settings.System.NAVIGATION_CUSTOM_ACTIVITIES[index],
-                        (String) newValue);
-                    Settings.System.putString(getContentResolver(),
-                        Settings.System.NAVIGATION_CUSTOM_APP_ICONS[index], "");
+                } else {
+                    Settings.System.putString(getContentResolver(), Settings.System.NAVIGATION_CUSTOM_ACTIVITIES[index],
+                            (String) newValue);
+                    Settings.System.putString(getContentResolver(), Settings.System.NAVIGATION_CUSTOM_APP_ICONS[index], "");
                 }
             }
             refreshSettings();
@@ -664,11 +650,9 @@ public class Navbar extends SettingsPreferenceFragment implements
                 mPendingNavBarCustomAction.activitySettingName, uri)) {
             if (mPendingNavBarCustomAction.iconIndex != -1) {
                 if (bmp == null) {
-                    Settings.System
-                            .putString(
-                                    getContentResolver(),
-                                    Settings.System.NAVIGATION_CUSTOM_APP_ICONS[mPendingNavBarCustomAction.iconIndex],
-                                    "");
+                    Settings.System.putString(getContentResolver(),
+                            Settings.System.NAVIGATION_CUSTOM_APP_ICONS[mPendingNavBarCustomAction.iconIndex],
+                            "");
                 } else {
                     String iconName = getIconFileName(mPendingNavBarCustomAction.iconIndex);
                     FileOutputStream iconStream = null;
@@ -678,18 +662,14 @@ public class Navbar extends SettingsPreferenceFragment implements
                         return; // NOOOOO
                     }
                     bmp.compress(Bitmap.CompressFormat.PNG, 100, iconStream);
-                    Settings.System
-                            .putString(
-                                    getContentResolver(),
-                                    Settings.System.NAVIGATION_CUSTOM_APP_ICONS[mPendingNavBarCustomAction.iconIndex],
-                                    Uri.fromFile(mContext.getFileStreamPath(iconName)).toString());
+                    Settings.System.putString(getContentResolver(),
+                            Settings.System.NAVIGATION_CUSTOM_APP_ICONS[mPendingNavBarCustomAction.iconIndex],
+                            Uri.fromFile(mContext.getFileStreamPath(iconName)).toString());
                 }
             }
-        		mPendingNavBarCustomAction.activitySettingName, uri)) {
-                
             if (mPendingNavBarCustomAction.iconIndex != -1)
             	Settings.System.putString(getContentResolver(),
-Settings.System.NAVIGATION_CUSTOM_APP_ICONS[mPendingNavBarCustomAction.iconIndex], "");
+                        Settings.System.NAVIGATION_CUSTOM_APP_ICONS[mPendingNavBarCustomAction.iconIndex], "");
 
             mPendingNavBarCustomAction.preference.setSummary(friendlyName);
         }

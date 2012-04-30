@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.Preference;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
@@ -31,6 +32,8 @@ import com.liquid.control.R;
 
 public class SeekBarPreference extends Preference
         implements OnSeekBarChangeListener {
+
+    private static final String TAG = "SeekBarPreference";
 
     public int minimum;
     public int maximum;
@@ -75,10 +78,25 @@ public class SeekBarPreference extends Preference
     public void setInitValue(int progress) {
         defaultValue = progress - minimum;
     }
+
+    public void setInitValue(String string_progress) {
+        try {
+            defaultValue = Integer.parseInt(string_progress) - minimum;
+        } catch (NumberFormatException npe) {
+            Log.d(TAG, "failed to parse setInitValue(String) from: " + string_progress);
+        }
+    }
     
     public void setValue(int value) {
-        if(bar != null)
-            bar.setProgress(value - minimum);
+        if (bar != null) bar.setProgress(value - minimum);
+    }
+
+    public void setValue(String string_value) {
+        try {
+            if (bar != null) bar.setProgress(Integer.parseInt(string_value) - minimum);
+        } catch (NumberFormatException npe) {
+            Log.d(TAG, "failed to parse setValue(String) from: " + string_value);
+        }
     }
 
     public void setMinimum(int min_value) {

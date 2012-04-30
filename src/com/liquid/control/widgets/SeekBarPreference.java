@@ -32,18 +32,25 @@ import com.liquid.control.R;
 public class SeekBarPreference extends Preference
         implements OnSeekBarChangeListener {
 
-    public static int maximum = 100;
-    public static int interval = 1;
+    public int minimum;
+    public int maximum;
+    public int interval;
+    public int defaultValue;
 
     private TextView monitorBox;
     private SeekBar bar;
-    
-    int defaultValue = 60;
 
     private OnPreferenceChangeListener changer;
 
     public SeekBarPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
+        maximum = a.getInt(R.styleable.SeekBarPreference_seekbar_max, 100);
+        minimum = a.getInt(R.styleable.SeekBarPreference_seekbar_min, 0);
+        interval = a.getInt(R.styleable.SeekBarPreference_seekbar_interval, 1);
+        // since we can no longer guarantee 60 is a valid default we do a little math to find a valid value 
+        defaultValue = a.getInt(R.styleable.SeekBarPreference_seekbar_default_value, (int) (((maximum - minimum) / 4) * 3));
     }
 
     @Override
@@ -54,7 +61,9 @@ public class SeekBarPreference extends Preference
         monitorBox = (TextView) layout.findViewById(R.id.monitor_box);
         bar = (SeekBar) layout.findViewById(R.id.seek_bar);
         bar.setOnSeekBarChangeListener(this);
-        bar.setProgress(defaultValue);
+        bar.setProgress(defaultValue - minimum);
+        if (minimum == 0 && maximum == 100) monitorBox.setText(defaultValue + "%");
+        else monitorBox.setText(defaultValue + "");
 
         return layout;
     }
@@ -64,12 +73,32 @@ public class SeekBarPreference extends Preference
     }
     
     public void setInitValue(int progress) {
-        defaultValue = progress;
+        defaultValue = progress - minimum;
     }
     
     public void setValue(int value) {
         if(bar != null)
-            bar.setProgress(value);
+            bar.setProgress(value - minimum);
+    }
+
+    public void setMinimum(int min_value) {
+        minimum = min_value;
+    }
+
+    public void setMaximum(int max_value) {
+        maximum = max_value;
+    }
+
+    public int getMinimum() {
+        return minimum;
+    }
+
+    public int getMaximum() {
+        return maximum;
+    }
+
+    public void setInterval(int interval_value) {
+        interval = interval_value;
     }
 
     @Override
@@ -85,22 +114,24 @@ public class SeekBarPreference extends Preference
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
         progress = Math.round(((float) progress) / interval) * interval;
-        seekBar.setProgress(progress);
 
-        monitorBox.setText(progress + "%");
-        changer.onPreferenceChange(this, Integer.toString(progress));
+        // because you never know
+        if (progress > maximum) progress = maximum;
+        if (progress < minimum) progress = minimum;
+
+        seekBar.setProgress(progress - minimum);
+        if (minimum == 0 && maximum == 100) monitorBox.setText(progress - minimum + "%");
+        else monitorBox.setText(progress - minimum + "");
+        changer.onPreferenceChange(this, Integer.toString(progress - minimum));
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
     }
 }
 

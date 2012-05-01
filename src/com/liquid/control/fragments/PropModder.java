@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemProperties;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -156,6 +157,7 @@ public class PropModder extends PreferenceFragment implements
     private static final String VVMAIL_PROP_0 = "HorizontalVVM";
     private static final String VVMAIL_PROP_1 = "HorizontalBUA";
     private boolean NEEDS_SETUP = false;
+    private boolean success = false;
 
     private String placeholder;
     private String tcpstack0;
@@ -269,25 +271,31 @@ public class PropModder extends PreferenceFragment implements
 
         updateScreen();
 
-        //Mounting takes the most time so lets avoid doing it if possible
-        if (!tmpDir.isDirectory() || !init_d.isDirectory()) NEEDS_SETUP = true;
+        Handler mHandlerOnCreate = new Handler();
+        final Runnable mCheckForDirectories = new Runnable() {
+            public void run() {
+                //Mounting takes the most time so lets avoid doing it if possible
+                if (!tmpDir.isDirectory() || !init_d.isDirectory()) NEEDS_SETUP = true;
 
-        if (NEEDS_SETUP) {
-            try {
-                if (!mount("rw")) throw new RuntimeException("Could not remount /system rw");
-                if (!tmpDir.isDirectory()) {
-                     Log.d(TAG, "We need to make /system/tmp dir");
-                    cmd.su.runWaitFor("mkdir /system/tmp");
+                if (NEEDS_SETUP) {
+                    try {
+                        if (!mount("rw")) throw new RuntimeException("Could not remount /system rw");
+                        if (!tmpDir.isDirectory()) {
+                            Log.d(TAG, "We need to make /system/tmp dir");
+                            cmd.su.runWaitFor("mkdir /system/tmp");
+                        }
+                        if (!init_d.isDirectory()) {
+                            Log.d(TAG, "We need to make /system/etc/init.d/ dir");
+                            enableInit();
+                        }
+                    } finally {
+                        mount("ro");
+                        NEEDS_SETUP = false;
+                    }
                 }
-                if (!init_d.isDirectory()) {
-                    Log.d(TAG, "We need to make /system/etc/init.d/ dir");
-                    enableInit();
-                }
-            } finally {
-                mount("ro");
-                NEEDS_SETUP = false;
             }
-        }
+        };
+        mHandlerOnCreate.post(mCheckForDirectories);
     }
 
     @Override
@@ -414,42 +422,45 @@ public class PropModder extends PreferenceFragment implements
     }
 
     /* method to handle mods */
-    private boolean doMod(String persist, String key, String value) {
-
-        if (persist != null) {
-            SystemProperties.set(persist, value);
-        }
-        Log.d(TAG, String.format("Calling script with args '%s' and '%s'", key, value));
-        backupBuildProp();
-        if (!mount("rw")) {
-            throw new RuntimeException("Could not remount /system rw");
-        }
-        boolean success = false;
-        try {
-            if (!propExists(key) && value.equals(DISABLE)) {
-                Log.d(TAG, String.format("We want {%s} DISABLED however it doesn't exist so we do nothing and move on", key));
-            } else if (propExists(key)) {
-                if (value.equals(DISABLE)) {
-                    Log.d(TAG, String.format("value == %s", DISABLE));
-                    success = cmd.su.runWaitFor(String.format(KILL_PROP_CMD, key)).success();
-                } else {
-                    Log.d(TAG, String.format("value != %s", DISABLE));
-                    success = cmd.su.runWaitFor(String.format(REPLACE_CMD, key, value)).success();
+    private boolean doMod(final String persist, final String key, final String value) {
+        Handler mModHandler = new Handler();
+        Runnable mMakeChanges = new Runnable() {
+            public void run() {
+                success = false;
+                if (persist != null) SystemProperties.set(persist, value);
+                Log.d(TAG, String.format("Calling script with args '%s' and '%s'", key, value));
+                backupBuildProp();
+                if (!mount("rw")) {
+                    throw new RuntimeException("Could not remount /system rw");
                 }
-            } else {
-                Log.d(TAG, "append command starting");
-                success = cmd.su.runWaitFor(String.format(APPEND_CMD, key, value)).success();
-            }
-            if (!success) {
-                restoreBuildProp();
-            } else {
-                updateScreen();
-            }
-        } finally {
-            mount("ro");
-        }
+                try {
+                    if (!propExists(key) && value.equals(DISABLE)) {
+                        Log.d(TAG, String.format("We want {%s} DISABLED however it doesn't exist so we do nothing and move on", key));
+                    } else if (propExists(key)) {
+                        if (value.equals(DISABLE)) {
+                            Log.d(TAG, String.format("value == %s", DISABLE));
+                            success = cmd.su.runWaitFor(String.format(KILL_PROP_CMD, key)).success();
+                        } else {
+                            Log.d(TAG, String.format("value != %s", DISABLE));
+                            success = cmd.su.runWaitFor(String.format(REPLACE_CMD, key, value)).success();
+                        }
+                    } else {
+                        Log.d(TAG, "append command starting");
+                        success = cmd.su.runWaitFor(String.format(APPEND_CMD, key, value)).success();
+                    }
+                    if (!success) {
+                        restoreBuildProp();
+                    } else {
+                        updateScreen();
+                    }
+                } finally {
+                    mount("ro");
+                }
 
-        rebootRequired();
+                rebootRequired();
+            }
+        };
+        mModHandler.post(mMakeChanges);
         return success;
     }
 
@@ -498,23 +509,28 @@ public class PropModder extends PreferenceFragment implements
         }
     }
 
-    public boolean enableInit() {
-        FileWriter wAlive;
-        try {
-            wAlive = new FileWriter("/system/tmp/initscript");
-            //forgive me but without all the \n's the script is one line long O:-)
-            wAlive.write("#\n#enable init.d script by PropModder\n#\n\n");
-            wAlive.write("log -p I -t boot \"Starting init.d ...\"\n");
-            wAlive.write("busybox run-parts /system/etc/init.d");
-            wAlive.flush();
-            wAlive.close();
-            cmd.su.runWaitFor("cp -f /system/tmp/initscript /system/usr/bin/init.sh");
-            return cmd.su.runWaitFor("chmod 755 /system/usr/bin/pm_init.sh").success();
-        } catch(Exception e) {
-            Log.e(TAG, "enableInit install failed: " + e);
-            e.printStackTrace();
-        }
-        return false;
+    public void enableInit() {
+        Handler mEnableInit = new Handler();
+        Runnable mWriteInitFiles = new Runnable() {
+            public void run() {
+                FileWriter wAlive;
+                try {
+                    wAlive = new FileWriter("/system/tmp/initscript");
+                    //forgive me but without all the \n's the script is one line long O:-)
+                    wAlive.write("#\n#enable init.d script by PropModder\n#\n\n");
+                    wAlive.write("log -p I -t boot \"Starting init.d ...\"\n");
+                    wAlive.write("busybox run-parts /system/etc/init.d");
+                    wAlive.flush();
+                    wAlive.close();
+                    cmd.su.runWaitFor("cp -f /system/tmp/initscript /system/usr/bin/init.sh");
+                    cmd.su.runWaitFor("chmod 755 /system/usr/bin/pm_init.sh").success();
+                } catch(Exception e) {
+                    Log.e(TAG, "enableInit install failed: " + e);
+                    e.printStackTrace();
+                }
+            }
+        };
+        mEnableInit.post(mWriteInitFiles);
     }
 
     public boolean backupBuildProp() {
@@ -528,108 +544,115 @@ public class PropModder extends PreferenceFragment implements
     }
 
     public void updateScreen() {
-        //update all the summaries
-        String wifi = Helpers.findBuildPropValueOf(WIFI_SCAN_PROP);
-        if (!wifi.equals(DISABLE)) {
-            mWifiScanPref.setValue(wifi);
-            mWifiScanPref.setSummary(String.format(getString(R.string.pref_wifi_scan_alt_summary), wifi));
-        } else {
-            mWifiScanPref.setValue(WIFI_SCAN_DEFAULT);
-        }
-        String lcd = Helpers.findBuildPropValueOf(LCD_DENSITY_PROP);
-        if (!lcd.equals(DISABLE)) {
-            mLcdDensityPref.setValue(lcd);
-            mLcdDensityPref.setSummary(String.format(getString(R.string.pref_lcd_density_alt_summary), lcd));
-        } else {
-            mLcdDensityPref.setValue(LCD_DENSITY_DEFAULT);
-        }
-        String maxE = Helpers.findBuildPropValueOf(MAX_EVENTS_PROP);
-        if (!maxE.equals(DISABLE)) {
-            mMaxEventsPref.setValue(maxE);
-            mMaxEventsPref.setSummary(String.format(getString(R.string.pref_max_events_alt_summary), maxE));
-        } else {
-            mMaxEventsPref.setValue(MAX_EVENTS_DEFAULT);
-        }
-        String ring = Helpers.findBuildPropValueOf(RING_DELAY_PROP);
-        if (!ring.equals(DISABLE)) {
-            mRingDelayPref.setValue(ring);
-            mRingDelayPref.setSummary(String.format(getString(R.string.pref_ring_delay_alt_summary), ring));
-        } else {
-            mRingDelayPref.setValue(RING_DELAY_DEFAULT);
-        }
-        String vm = Helpers.findBuildPropValueOf(VM_HEAPSIZE_PROP);
-        if (!vm.equals(DISABLE)) {
-            mVmHeapsizePref.setValue(vm);
-            mVmHeapsizePref.setSummary(String.format(getString(R.string.pref_vm_heapsize_alt_summary), vm));
-        } else {
-            mVmHeapsizePref.setValue(VM_HEAPSIZE_DEFAULT);
-        }
-        String fast = Helpers.findBuildPropValueOf(FAST_UP_PROP);
-        if (!fast.equals(DISABLE)) {
-            mFastUpPref.setValue(fast);
-            mFastUpPref.setSummary(String.format(getString(R.string.pref_fast_up_alt_summary), fast));
-        } else {
-            mFastUpPref.setValue(FAST_UP_DEFAULT);
-        }
-        String prox = Helpers.findBuildPropValueOf(PROX_DELAY_PROP);
-        if (!prox.equals(DISABLE)) {
-            mProxDelayPref.setValue(prox);
-            mProxDelayPref.setSummary(String.format(getString(R.string.pref_prox_delay_alt_summary), prox));
-        } else {
-            mProxDelayPref.setValue(PROX_DELAY_DEFAULT);
-        }
-        String sleep = Helpers.findBuildPropValueOf(SLEEP_PROP);
-        if (!sleep.equals(DISABLE)) {
-            mSleepPref.setValue(sleep);
-            mSleepPref.setSummary(String.format(getString(R.string.pref_sleep_alt_summary), sleep));
-        } else {
-            mSleepPref.setValue(SLEEP_DEFAULT);
-        }
-        String tcp = Helpers.findBuildPropValueOf(TCP_STACK_PROP_0);
-        if (tcp.equals(TCP_STACK_BUFFER)) {
-            mTcpStackPref.setChecked(true);
-        } else {
-            mTcpStackPref.setChecked(false);
-        }
-        String jit = Helpers.findBuildPropValueOf(JIT_PROP);
-        if (jit.equals("int:jit")) {
-            mJitPref.setChecked(true);
-        } else {
-            mJitPref.setChecked(false);
-        }
-        String mod = Helpers.findBuildPropValueOf(MOD_VERSION_PROP);
-        mModVersionPref.setSummary(String.format(getString(R.string.pref_mod_version_alt_summary), mod));
-        String chk = Helpers.findBuildPropValueOf(CHECK_IN_PROP);
-        if (!chk.equals(DISABLE)) {
-            mCheckInPref.setChecked(true);
-        } else {
-            mCheckInPref.setChecked(false);
-        }
-        String g0 = Helpers.findBuildPropValueOf(THREE_G_PROP_0);
-        String g3 = Helpers.findBuildPropValueOf(THREE_G_PROP_3);
-        String g6 = Helpers.findBuildPropValueOf(THREE_G_PROP_6);
-        if (g0.equals("1") && g3.equals("1") && g6.equals("1")) {
-            m3gSpeedPref.setChecked(true);
-        } else {
-            m3gSpeedPref.setChecked(false);
-        }
-        String gpu = Helpers.findBuildPropValueOf(GPU_PROP);
-        if (!gpu.equals(DISABLE)) {
-            mGpuPref.setChecked(true);
-        } else {
-            mGpuPref.setChecked(false);
-        }
-        String vvmail0 = Helpers.findBuildPropValueOf(VVMAIL_PROP_0);
-        String vvmail1 = Helpers.findBuildPropValueOf(VVMAIL_PROP_1);
-        if (!vvmail0.equals(DISABLE) && !vvmail1.equals(DISABLE)) {
-            mVvmailPref.setChecked(true);
-        } else {
-            mVvmailPref.setChecked(false);
-        }
-        if (initScriptLogcat.isFile()) {
-            mLogcatPref.setChecked(true);
-        } else {
-            mLogcatPref.setChecked(false);
-        }
+        Handler mUpdateScreen = new Handler();
+        Runnable mFindValues = new Runnable() {
+            public void run() {
+
+                //update all the summaries
+                String wifi = Helpers.findBuildPropValueOf(WIFI_SCAN_PROP);
+                if (!wifi.equals(DISABLE)) {
+                    mWifiScanPref.setValue(wifi);
+                    mWifiScanPref.setSummary(String.format(getString(R.string.pref_wifi_scan_alt_summary), wifi));
+                } else {
+                    mWifiScanPref.setValue(WIFI_SCAN_DEFAULT);
+                }
+                String lcd = Helpers.findBuildPropValueOf(LCD_DENSITY_PROP);
+                if (!lcd.equals(DISABLE)) {
+                    mLcdDensityPref.setValue(lcd);
+                    mLcdDensityPref.setSummary(String.format(getString(R.string.pref_lcd_density_alt_summary), lcd));
+                } else {
+                    mLcdDensityPref.setValue(LCD_DENSITY_DEFAULT);
+                }
+                String maxE = Helpers.findBuildPropValueOf(MAX_EVENTS_PROP);
+                if (!maxE.equals(DISABLE)) {
+                    mMaxEventsPref.setValue(maxE);
+                    mMaxEventsPref.setSummary(String.format(getString(R.string.pref_max_events_alt_summary), maxE));
+                } else {
+                    mMaxEventsPref.setValue(MAX_EVENTS_DEFAULT);
+                }
+                String ring = Helpers.findBuildPropValueOf(RING_DELAY_PROP);
+                if (!ring.equals(DISABLE)) {
+                    mRingDelayPref.setValue(ring);
+                    mRingDelayPref.setSummary(String.format(getString(R.string.pref_ring_delay_alt_summary), ring));
+                } else {
+                    mRingDelayPref.setValue(RING_DELAY_DEFAULT);
+                }
+                String vm = Helpers.findBuildPropValueOf(VM_HEAPSIZE_PROP);
+                if (!vm.equals(DISABLE)) {
+                    mVmHeapsizePref.setValue(vm);
+                    mVmHeapsizePref.setSummary(String.format(getString(R.string.pref_vm_heapsize_alt_summary), vm));
+                } else {
+                    mVmHeapsizePref.setValue(VM_HEAPSIZE_DEFAULT);
+                }
+                String fast = Helpers.findBuildPropValueOf(FAST_UP_PROP);
+                if (!fast.equals(DISABLE)) {
+                    mFastUpPref.setValue(fast);
+                    mFastUpPref.setSummary(String.format(getString(R.string.pref_fast_up_alt_summary), fast));
+                } else {
+                    mFastUpPref.setValue(FAST_UP_DEFAULT);
+                }
+                String prox = Helpers.findBuildPropValueOf(PROX_DELAY_PROP);
+                if (!prox.equals(DISABLE)) {
+                    mProxDelayPref.setValue(prox);
+                    mProxDelayPref.setSummary(String.format(getString(R.string.pref_prox_delay_alt_summary), prox));
+                } else {
+                    mProxDelayPref.setValue(PROX_DELAY_DEFAULT);
+                }
+                String sleep = Helpers.findBuildPropValueOf(SLEEP_PROP);
+                if (!sleep.equals(DISABLE)) {
+                    mSleepPref.setValue(sleep);
+                    mSleepPref.setSummary(String.format(getString(R.string.pref_sleep_alt_summary), sleep));
+                } else {
+                    mSleepPref.setValue(SLEEP_DEFAULT);
+                }
+                String tcp = Helpers.findBuildPropValueOf(TCP_STACK_PROP_0);
+                if (tcp.equals(TCP_STACK_BUFFER)) {
+                    mTcpStackPref.setChecked(true);
+                } else {
+                    mTcpStackPref.setChecked(false);
+                }
+                String jit = Helpers.findBuildPropValueOf(JIT_PROP);
+                if (jit.equals("int:jit")) {
+                    mJitPref.setChecked(true);
+                } else {
+                    mJitPref.setChecked(false);
+                }
+                String mod = Helpers.findBuildPropValueOf(MOD_VERSION_PROP);
+                mModVersionPref.setSummary(String.format(getString(R.string.pref_mod_version_alt_summary), mod));
+                String chk = Helpers.findBuildPropValueOf(CHECK_IN_PROP);
+                if (!chk.equals(DISABLE)) {
+                    mCheckInPref.setChecked(true);
+                } else {
+                    mCheckInPref.setChecked(false);
+                }
+                String g0 = Helpers.findBuildPropValueOf(THREE_G_PROP_0);
+                String g3 = Helpers.findBuildPropValueOf(THREE_G_PROP_3);
+                String g6 = Helpers.findBuildPropValueOf(THREE_G_PROP_6);
+                if (g0.equals("1") && g3.equals("1") && g6.equals("1")) {
+                    m3gSpeedPref.setChecked(true);
+                } else {
+                    m3gSpeedPref.setChecked(false);
+                }
+                String gpu = Helpers.findBuildPropValueOf(GPU_PROP);
+                if (!gpu.equals(DISABLE)) {
+                    mGpuPref.setChecked(true);
+                } else {
+                    mGpuPref.setChecked(false);
+                }
+                String vvmail0 = Helpers.findBuildPropValueOf(VVMAIL_PROP_0);
+                String vvmail1 = Helpers.findBuildPropValueOf(VVMAIL_PROP_1);
+                if (!vvmail0.equals(DISABLE) && !vvmail1.equals(DISABLE)) {
+                    mVvmailPref.setChecked(true);
+                } else {
+                    mVvmailPref.setChecked(false);
+                }
+                if (initScriptLogcat.isFile()) {
+                    mLogcatPref.setChecked(true);
+                } else {
+                    mLogcatPref.setChecked(false);
+                }
+            }
+        };
+        mUpdateScreen.post(mFindValues);
     }
 }

@@ -1016,15 +1016,15 @@
 
 	<string-array name="navigation_bar_height">
 		<item>52</item>
-        <item>50</item>
-        <item>48</item>
+                <item>50</item>
+                <item>48</item>
 		<item>46</item>
 		<item>44</item>
 		<item>42</item>
 		<item>40</item>
 		<item>38</item>
 		<item>36</item>
-        <item>30</item>
+                <item>30</item>
 		<item>24</item>
 	</string-array>
 

@@ -1015,7 +1015,9 @@
 	</string-array>
 
 	<string-array name="navigation_bar_height">
-		<item>48</item>
+		<item>52</item>
+        <item>50</item>
+        <item>48</item>
 		<item>46</item>
 		<item>44</item>
 		<item>42</item>

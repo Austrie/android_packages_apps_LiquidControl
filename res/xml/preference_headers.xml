@@ -112,6 +112,12 @@
             android:title="@string/propmodder_title"
             android:icon="@drawable/ic_propmodder"
             android:fragment="com.liquid.control.fragments.PropModder" />
+
+        <header
+            android:id="@+id/open_recovery"
+            android:title="@string/open_recovery_title"
+            android:icon="@drawable/ic_backup"
+            android:fragment="com.liquid.control.fragments.OpenRecoveryScriptSupport" />
     <header
         android:title="@string/meet_the_team" />
 

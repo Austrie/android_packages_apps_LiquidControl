@@ -38,6 +38,7 @@
     <string name="tools">Goodies</string>
     <string name="pt_performance">Performance</string>
     <string name="propmodder_title">Propmodder</string>
+    <string name="open_recovery_title">Open Recovery Support</string>
     <string name="advanced_settings">Advanced</string>
     <string name="misc_short">Misc</string>
     <string name="system">System</string>
@@ -556,4 +557,6 @@
     <string name="dev_amplified_twitter">JacobVanCleve</string>
     <string name="dev_amplified_donate">http://bit.ly/H0ZFRV</string>
 
+    <!-- OpenRecoveryScript support -->
+    <string name="open_recovery_cat_title">Versions found</string>
 </resources>

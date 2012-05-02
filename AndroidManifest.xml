@@ -166,6 +166,13 @@
                 <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
+        <activity android:name=".fragments.OpenRecoveryScriptSupport"
+            android:label="OpenRecoveryScript Support" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".tools.FilePicker">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

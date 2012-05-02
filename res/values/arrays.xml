@@ -1011,7 +1011,7 @@
 	        <item>38 dp</item>
 	        <item>36 dp</item>
                 <item>30 dp</item>
-		<item>24 dp</item>
+	        <item>24 dp</item>
 	</string-array>
 
 	<string-array name="navigation_bar_height">
@@ -1025,7 +1025,7 @@
 	        <item>38</item>
 	        <item>36</item>
                 <item>30</item>
-		<item>24</item>
+	        <item>24</item>
 	</string-array>
 
     <string-array name="entries_brightness_widget" formatted="false" translatable="false">

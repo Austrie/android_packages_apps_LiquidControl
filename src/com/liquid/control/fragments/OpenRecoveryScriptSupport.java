@@ -17,17 +17,28 @@
 
 package com.liquid.control.fragments;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.webkit.WebView;
 
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.R;
@@ -59,8 +70,11 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
     private static final String BOARD_NAME = android.os.Build.BOARD;
 
     // TEST WEBSITE TILL OUR BUILDS ARE AVAILABLE
-    private static final String WEBSITE = "http://goo.im/json2/&path=/devs/teameos/roms/nightlies/toro&ro_board=toro";
+    private static final String GOO_IM = "http://goo.im/devs/aokp/toro/";
+    private static final String JSON_PARSER = "http://goo.im/json2&path=/devs/aokp/toro";
     private static final String PREF_VERSIONS = "version_preference_screens";
+
+    private static String PARSED_WEBSITE;
     Context mContext;
     PreferenceCategory mVersionViews;
     Handler mHandler;
@@ -92,6 +106,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
 
         // called when we create the AsyncTask object
         public GetAvailableVersions() {
+            if (DEBUG) Log.d(TAG, "AsyncTask GetAvailableVersions Object created");
         }
 
         // can use UI thread here
@@ -106,7 +121,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
 
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpGet request = new HttpGet(WEBSITE);
+                HttpGet request = new HttpGet(JSON_PARSER);
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 JSONObject jsObject = new JSONObject(httpClient.execute(request, responseHandler));
                 JSONArray jsArray = new JSONArray(jsObject.getString("list"));
@@ -120,10 +135,11 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                     final String JSONpath = JSONObject.getString("path");
                     final String JSONmd5 = JSONObject.getString("md5");
                     final String JSONtype = JSONObject.getString("type");
+                    final String JSONshort_url = JSONObject.getString("short_url");
 
                     // debug
-                    String log_formatter = "filename:{%s}	id:{%s}	path:{%s}	md5:{%s}	type:{%s}";
-                    if (DEBUG) Log.d(TAG, String.format(log_formatter, JSONfilename, JSONid, JSONpath, JSONmd5, JSONtype));
+                    String log_formatter = "filename:{%s}	id:{%s}	path:{%s}	md5:{%s}	type:{%s}	short_url:{%s}";
+                    if (DEBUG) Log.d(TAG, String.format(log_formatter, JSONfilename, JSONid, JSONpath, JSONmd5, JSONtype, JSONshort_url));
 
                     mVersionPresent.setKey(JSONid);
                     // TODO we should prob pull a version from this for the title
@@ -132,7 +148,9 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                     mVersionPresent.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference p) {
-                            downloadNewVersion(JSONpath);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            PARSED_WEBSITE = JSONshort_url;
+                            showDialog(101);
                             return true;
                         }
                     });
@@ -172,5 +190,29 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             }
         }
             return sb.toString();
+    }
+
+    public Dialog onCreateDialog(final int id) {
+        switch (id) {
+            default:
+                String mAddress = PARSED_WEBSITE;
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View customLayout = inflater.inflate(R.layout.webview_dialog, null);
+                AlertDialog.Builder mDownloadFile = new AlertDialog.Builder(getActivity());
+                mDownloadFile.setTitle(getString(R.string.download_title));
+                mDownloadFile.setView(customLayout);
+                final WebView mWebView = (WebView) customLayout.findViewById(R.id.webview1);
+                mWebView.getSettings().setJavaScriptEnabled(true);
+                if (mAddress != null) mWebView.loadUrl(mAddress);
+                PARSED_WEBSITE = null;
+                mDownloadFile.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // do nothing
+                    }
+                });
+                AlertDialog ad_0 = mDownloadFile.create();
+                ad_0.show();
+                return ad_0;
+        }
     }
 }

@@ -559,4 +559,7 @@
 
     <!-- OpenRecoveryScript support -->
     <string name="open_recovery_cat_title">Versions found</string>
+    <string name="request_download_description">Downloading: </string>
+    <string name="request_download_title">Just relax and let it happen</string>
+    <string name="download_title">Download file</string>
 </resources>

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.liquid.control.fragments;
+package com.liquid.control.installer;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -63,10 +63,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
+public class GooImSupport extends SettingsPreferenceFragment {
 
     private static final boolean DEBUG = true;
-    private static final String TAG = "LC : OpenRecoverySupport";
+    private static final String TAG = "LC : GooImSupport";
     private static final String BOARD_NAME = android.os.Build.BOARD;
 
     // TEST WEBSITE TILL OUR BUILDS ARE AVAILABLE
@@ -148,7 +148,6 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                     mVersionPresent.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference p) {
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
                             PARSED_WEBSITE = JSONshort_url;
                             showDialog(101);
                             return true;
@@ -196,10 +195,11 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         switch (id) {
             default:
                 String mAddress = PARSED_WEBSITE;
+
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View customLayout = inflater.inflate(R.layout.webview_dialog, null);
+
                 AlertDialog.Builder mDownloadFile = new AlertDialog.Builder(getActivity());
-                mDownloadFile.setTitle(getString(R.string.download_title));
                 mDownloadFile.setView(customLayout);
                 final WebView mWebView = (WebView) customLayout.findViewById(R.id.webview1);
                 mWebView.getSettings().setJavaScriptEnabled(true);
@@ -210,8 +210,18 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                         // do nothing
                     }
                 });
-                AlertDialog ad_0 = mDownloadFile.create();
+                final AlertDialog ad_0 = mDownloadFile.create();
                 ad_0.show();
+                // we remove the dialog that called the webview
+                // there is no public method to kill webviews
+                // so user must be exit on their own
+                Handler mKillDialog = new Handler();
+                Runnable mReleaseDialog = new Runnable() {
+                    public void run() {
+                        ad_0.dismiss();
+                    }
+                };
+                mKillDialog.postDelayed(mReleaseDialog, 13 * 1000);
                 return ad_0;
         }
     }

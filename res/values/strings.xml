@@ -558,8 +558,23 @@
     <string name="dev_amplified_donate">http://bit.ly/H0ZFRV</string>
 
     <!-- OpenRecoveryScript support -->
+    <string name="goo_im_title">Download ROMs</string>
     <string name="open_recovery_cat_title">Versions found</string>
     <string name="request_download_description">Downloading: </string>
     <string name="request_download_title">Just relax and let it happen</string>
     <string name="download_title">Download file</string>
+    <string name="wipe_cache_checkbox_title">Wipe Cache</string>
+    <string name="wipe_data_checkbox_title">Wipe Data</string>
+    <string name="wipe_dalvik_checkbox_title">Wipe Dalvik Cache</string>
+    <string name="backup_checkbox_title">Perform Backup</string>
+    <string name="backup_compression_checkbox_title">Use Backup Compression</string>
+    <string name="installation_button_title">Install new LiquidSmoothROM</string>
+    <string name="warn_about_dirty_flash">If you don\'t perform a clean install we don\'t want your bug reports... FYI</string>
+    <string name="warn_about_no_backup">Really??? One should always keep a backup</string>
+    <string name="filewrite_success">Writing recovery script: success</string>
+    <string name="filewrite_fail">Writing recovery script: fail</string>
+    <string name="file_path_title">FilePath</string>
+    <string name="file_size_title">FileSize</string>
+    <string name="md5_title">MD5 Checksum</string>
+    <string name="execute_title">Execute Install</string>
 </resources>

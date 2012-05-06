@@ -950,7 +950,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
                 final EditText summaryText = (EditText) customLayout.findViewById(R.id.summary_input_edittext);
 
                 // for that personal touch //TODO make setText not hint
-                if (makeThemFeelAtHome != null) titleText.setHint(makeThemFeelAtHome);
+                if (makeThemFeelAtHome != null) titleText.setText(makeThemFeelAtHome);
                 // TODO add generic hint bs
 
                 AlertDialog.Builder getInfo = new AlertDialog.Builder(getActivity());

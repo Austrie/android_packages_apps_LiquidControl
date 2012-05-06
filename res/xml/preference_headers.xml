@@ -114,10 +114,17 @@
             android:fragment="com.liquid.control.fragments.PropModder" />
 
         <header
+            android:id="@+id/goo_im"
+            android:title="@string/goo_im_title"
+            android:icon="@drawable/ic_backup"
+            android:fragment="com.liquid.control.installer.GooImSupport" />
+
+        <header
             android:id="@+id/open_recovery"
             android:title="@string/open_recovery_title"
             android:icon="@drawable/ic_backup"
-            android:fragment="com.liquid.control.fragments.OpenRecoveryScriptSupport" />
+            android:fragment="com.liquid.control.installer.OpenRecoveryScriptSupport" />
+
     <header
         android:title="@string/meet_the_team" />
 

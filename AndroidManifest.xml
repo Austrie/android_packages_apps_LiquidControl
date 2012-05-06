@@ -166,11 +166,27 @@
                 <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.OpenRecoveryScriptSupport"
-            android:label="OpenRecoveryScript Support" >
+        <activity android:name=".installer.GooImSupport"
+            android:label="goo.im Suppport" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".installer.OpenRecoveryScriptSupport"
+            android:label="OpenRecoveryScript Support" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="*"
+                    android:pathPattern=".*\\.zip" />
+                <data android:scheme="https" android:host="*"
+                    android:pathPattern=".*\\.zip" />
+                <data android:scheme="content" android:host="*"
+                    android:pathPattern=".*\\.zip" />
+                <data android:scheme="file" android:host="*"
+                    android:pathPattern=".*\\.zip" />
             </intent-filter>
         </activity>
         <activity android:name=".tools.FilePicker">

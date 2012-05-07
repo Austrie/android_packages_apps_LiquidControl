@@ -38,11 +38,15 @@ import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.CMDProcessor;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.IOException;
 import java.lang.StringBuilder;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
 
@@ -177,46 +181,9 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
     }
 
     public void updateMD5() {
-        Runnable calculateMD5 = new Runnable() {
-            public void run() {
-                try {
-                    File calcMD5 = new File(ZIP_PATH);
-                    mMd5.setSummary(getMD5Checksum(calcMD5.getAbsolutePath()));
-                } catch (Exception e) {
-                    if (DEBUG) e.printStackTrace();
-                }
-            }
-        };
-        mHandler.post(calculateMD5);
-    }
-
-    public static byte[] createChecksum(String file_name) throws Exception {
-        InputStream fis =  new FileInputStream(file_name);
-
-        byte[] buffer = new byte[1024];
-        MessageDigest complete = MessageDigest.getInstance("MD5");
-        int numRead;
-
-        do {
-            numRead = fis.read(buffer);
-            if (numRead > 0) {
-                complete.update(buffer, 0, numRead);
-            }
-        } while (numRead != -1);
-
-        fis.close();
-        return complete.digest();
-    }
-
-    // make md5 via byte array to a HEX string
-    public static String getMD5Checksum(String fn_) throws Exception {
-        byte[] b = createChecksum(fn_);
-        String result = "";
-
-        for (int i=0; i < b.length; i++) {
-            result += Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
-        }
-        return result;
+        CalculateMd5 md5_ = new CalculateMd5();
+        md5_.fPath = ZIP_PATH;
+        md5_.execute();
     }
 
     private class WriteScript extends AsyncTask<Void, Void, Void> {
@@ -256,8 +223,29 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             // all we need to do is write the file
             // but not on the UI thread
             String format_output = "echo %s > " + SCRIPT_PATH;
-            success_ = cmd.su.runWaitFor(String.format(format_output,
-                    script_to_be_written_)).success();
+            File orss_ = new File(SCRIPT_PATH);
+            File parent_orss_ = new File(orss_.getParent());
+            FileWriter out = null;
+            BufferedWriter bw = null;
+            try {
+                if (!orss_.exists()) orss_.createNewFile();
+                out = new FileWriter(SCRIPT_PATH);
+                bw = new BufferedWriter(out);
+                try {
+                    bw.append(script_to_be_written_);
+                    success_ = true;
+                } finally {
+                    if (bw != null) bw.close();
+                }
+            } catch (IOException ioe) {
+                success_ = false;
+            }
+            if (DEBUG) {
+                Log.d(TAG, "Script info: path {" + SCRIPT_PATH + "}");
+                Log.d(TAG, "	isFile:" + orss_.isFile());
+                Log.d(TAG, "	canWrite:" + orss_.canWrite());
+                Log.d(TAG, "parentDir {" + parent_orss_.getAbsolutePath() + "}	canWrite:" + parent_orss_.canWrite());
+            }
             return null;
         }
 
@@ -271,6 +259,52 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                 Toast.makeText(mContext, getString(R.string.filewrite_fail),
                         Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    private class CalculateMd5 extends AsyncTask<Void, Void, Void> {
+        String fPath = null;
+        String newMd5 = null;
+
+        protected void onPreExecute() {
+            mMd5.setSummary(getString(R.string.generating_md5));
+        }
+
+        protected Void doInBackground(Void... urls) {
+            if (fPath == null) return null;
+            MessageDigest complete;
+            try {
+                complete = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException noDice) {
+                return null;
+            }
+            try {
+                InputStream fis =  new FileInputStream(fPath);
+                byte[] buffer = new byte[1024];
+                int numRead;
+                do {
+                    numRead = fis.read(buffer);
+                    if (numRead > 0) {
+                        complete.update(buffer, 0, numRead);
+                    }
+                } while (numRead != -1);
+                fis.close();
+            } catch (IOException ioe) {
+                // FileInputStream failed to close properly
+            }
+
+            byte[] b = complete.digest();
+            String result = "";
+
+            for (int i=0; i < b.length; i++) {
+                result += Integer.toString((b[i] & 0xff ) + 0x100, 16).substring(1);
+            }
+            newMd5 = result;
+            return null;
+        }
+
+        protected void onPostExecute(Void yourMom) {
+            mMd5.setSummary("md5: " + newMd5);
         }
     }
 }

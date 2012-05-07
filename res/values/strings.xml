@@ -577,5 +577,5 @@
     <string name="file_size_title">FileSize</string>
     <string name="md5_title">MD5 Checksum</string>
     <string name="execute_title">Execute Install</string>
-    <string name="generating_md5">Recalculating md5 checksum...</string>
+    <string name="generating_md5">Calculating md5 checksum...</string>
 </resources>

@@ -65,6 +65,7 @@ public class FilePicker extends ListActivity {
 
     /* are we locking the user in supplied directory */
     public static boolean LOCKED_IN_DIR = false;
+    public static boolean FIND_ZIP = false;
 
     TextView mEmptyDirMessage;
 
@@ -111,6 +112,12 @@ public class FilePicker extends ListActivity {
 
         try {
             LOCKED_IN_DIR = getIntent().getBooleanExtra("lock_dir", DEFAULT);
+        } catch (NullPointerException npe) {
+            if (DEBUG) npe.printStackTrace();
+        }
+
+        try {
+            FIND_ZIP = getIntent().getBooleanExtra("zip", DEFAULT);
         } catch (NullPointerException npe) {
             if (DEBUG) npe.printStackTrace();
         }
@@ -165,21 +172,26 @@ public class FilePicker extends ListActivity {
         try {
             for (int i=0; i < files.length; i++) {
                 File file = files[i];
-                path.add(file.getPath());
                 mEmptyDirMessage.setVisibility(View.GONE);
 
-                /* for some reason this seems to sort the list incorrectly
-                 * placing either the item or path asynchronous by one list item
-                 *
-                 * //put list in alphabetic order
-                 * Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
-                 * Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
-                 */
+                //put list in alphabetic order
+                Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
+                Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
 
                 if (file.isDirectory()) {
+                    path.add(file.getPath());
                     item.add(file.getName() + DIR_MARKER);
                 } else {
-                    item.add(file.getName());
+                    if (FIND_ZIP) {
+                        String s_ = file.getName();
+                        if (s_.endsWith(".zip")) {
+                            path.add(file.getPath());
+                            item.add(file.getName());
+                        }
+                    } else {
+                        path.add(file.getPath());
+                        item.add(file.getName());
+                    }
                 }
             }
 

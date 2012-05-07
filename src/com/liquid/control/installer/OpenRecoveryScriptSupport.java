@@ -34,6 +34,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.android.internal.app.ShutdownThread;
+
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.CMDProcessor;
@@ -65,7 +67,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
     private static final String MOUNT_SYSTEM = "mount system";
     private static final String UNMOUNT_SYSTEM = "unmount system";
     private final CMDProcessor cmd = new CMDProcessor();
-    private static String ZIP_PATH;
+    private static String ZIP_PATH = null;
 
     Context mContext;
     Handler mHandler;
@@ -101,26 +103,12 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             if (mUri != null) {
                 ZIP_PATH = mUri.getEncodedPath();
                 if (DEBUG) Log.d(TAG, "Intent data found: " + mUri + "	Path encoded: " + ZIP_PATH);
-            } else {
-                ZIP_PATH = "/sdcard/liquid/orss.zip"; //for testing only
             }
         }
 
         addPreferencesFromResource(R.xml.open_recovery_script_support);
         findPrefs();
 
-        Runnable getFileInfo = new Runnable() {
-            public void run() {
-                try {
-                    File mZip = new File(ZIP_PATH);
-                    mFileSize.setSummary(Long.toString(mZip.length()));
-                    mFilePath.setSummary(mZip.getAbsolutePath());
-                    updateMD5();
-                } catch (NullPointerException npe) {
-                    if (DEBUG) npe.printStackTrace();
-                }
-            }
-        };
         Runnable getSharedPreferences = new Runnable() {
             public void run() {
                 mSP = mContext.getSharedPreferences("previous_install_config", Context.MODE_PRIVATE);
@@ -133,11 +121,11 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         };
 
         // make the worker thread get us some info
-        mHandler.post(getFileInfo);
+        loadFileInfo();
         mHandler.post(getSharedPreferences);
     }
 
-    public void findPrefs() {
+    private void findPrefs() {
         // get views
         mWipeCache = (CheckBoxPreference) findPreference("wipe_cache_checkbox");
         mWipeData = (CheckBoxPreference) findPreference("wipe_data_checkbox");
@@ -150,23 +138,54 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         mExecute = (Preference) findPreference("execute");
     }
 
+    private void loadFileInfo() {
+        Runnable getFileInfo = new Runnable() {
+            public void run() {
+                try {
+                    File mZip = new File(ZIP_PATH);
+                    mFileSize.setSummary(Long.toString(mZip.length()));
+                    mFilePath.setSummary(mZip.getAbsolutePath());
+                    mMd5.setEnabled(true);
+                    updateMD5();
+                    mFileSize.setEnabled(true);
+                    mExecute.setEnabled(true);
+                } catch (NullPointerException npe) {
+                    mFileSize.setEnabled(false);
+                    mMd5.setEnabled(false);
+                    mExecute.setEnabled(false);
+                    if (DEBUG) npe.printStackTrace();
+                }
+            }
+        };
+        mHandler.post(getFileInfo);
+    }
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if (preference == mWipeCache) {
             if (mWipeCache.isChecked())
                     Toast.makeText(mContext, getString(R.string.warn_about_dirty_flash), Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (preference == mFilePath) {
+            Intent pickZIP = new Intent(mContext, com.liquid.control.tools.FilePicker.class);
+            pickZIP.putExtra("zip", true);
+            startActivityForResult(pickZIP, 1);
+            return true;
         } else if (preference == mWipeData) {
             if (!mWipeData.isChecked())
                     Toast.makeText(mContext, getString(R.string.warn_about_dirty_flash), Toast.LENGTH_SHORT).show();
+            return true;
         } else if (preference == mWipeDalvik) {
             if (!mWipeDalvik.isChecked())
                     Toast.makeText(mContext, getString(R.string.warn_about_dirty_flash), Toast.LENGTH_SHORT).show();
+            return true;
         } else if (preference == mBackup) {
             if (!mBackup.isChecked())
                     Toast.makeText(mContext, getString(R.string.warn_about_no_backup), Toast.LENGTH_SHORT).show();
+            return true;
         } else if (preference == mMd5) {
             updateMD5();
+            return true;
         } else if (preference == mExecute) {
             WriteScript task = new WriteScript();
             task.filePath_ = ZIP_PATH;
@@ -176,11 +195,23 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             task.backup_ = mBackup.isChecked();
             task.backupCompression_ = mBackupCompression.isChecked();
             task.execute();
+            return true;
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
-    public void updateMD5() {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // we don't need to worry about what the requestCode was because we only have one intent
+        try {
+            ZIP_PATH = data.getStringExtra("open_filepath");
+            updateMD5();
+            loadFileInfo();
+        } catch (NullPointerException ne) {
+            // user backed out of file picker
+        }
+    }
+    private void updateMD5() {
         CalculateMd5 md5_ = new CalculateMd5();
         md5_.fPath = ZIP_PATH;
         md5_.execute();
@@ -255,6 +286,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             if (success_) {
                 Toast.makeText(mContext, getString(R.string.filewrite_success),
                         Toast.LENGTH_SHORT).show();
+                ShutdownThread.reboot(mContext, "recovery", false);
             } else {
                 Toast.makeText(mContext, getString(R.string.filewrite_fail),
                         Toast.LENGTH_LONG).show();

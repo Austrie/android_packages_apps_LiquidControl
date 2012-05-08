@@ -578,4 +578,5 @@
     <string name="md5_title">MD5 Checksum</string>
     <string name="execute_title">Execute Install</string>
     <string name="generating_md5">Calculating md5 checksum...</string>
+    <string name="click_here_to_find_zips">No file detected click here to find .zip files</string>
 </resources>

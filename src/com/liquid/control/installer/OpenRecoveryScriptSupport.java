@@ -120,6 +120,9 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                 mWipeDalvik.setChecked(mSP.getBoolean(SHARED_WIPEDALVIK, true));
                 mBackup.setChecked(mSP.getBoolean(SHARED_BACKUP, true));
                 mBackupCompression.setChecked(mSP.getBoolean(SHARED_BACKUP_COMPRESSION, true));
+
+                if (mBackup.isChecked()) mBackupCompression.setEnabled(false);
+                else mBackupCompression.setEnabled(true);
             }
         };
 
@@ -153,6 +156,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                     mFileSize.setEnabled(true);
                     mExecute.setEnabled(true);
                 } catch (NullPointerException npe) {
+                    mFilePath.setSummary(getString(R.string.click_here_to_find_zips));
                     mFileSize.setEnabled(false);
                     mMd5.setEnabled(false);
                     mExecute.setEnabled(false);
@@ -166,7 +170,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if (preference == mWipeCache) {
-            if (mWipeCache.isChecked())
+            if (!mWipeCache.isChecked())
                     Toast.makeText(mContext, getString(R.string.warn_about_dirty_flash), Toast.LENGTH_SHORT).show();
             return true;
         } else if (preference == mFilePath) {
@@ -183,8 +187,12 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                     Toast.makeText(mContext, getString(R.string.warn_about_dirty_flash), Toast.LENGTH_SHORT).show();
             return true;
         } else if (preference == mBackup) {
-            if (!mBackup.isChecked())
-                    Toast.makeText(mContext, getString(R.string.warn_about_no_backup), Toast.LENGTH_SHORT).show();
+            if (!mBackup.isChecked()) {
+                Toast.makeText(mContext, getString(R.string.warn_about_no_backup), Toast.LENGTH_SHORT).show();
+                mBackupCompression.setEnabled(false);
+            } else {
+                mBackupCompression.setEnabled(true);
+            }
             return true;
         } else if (preference == mMd5) {
             updateMD5();
@@ -197,6 +205,15 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             task.wipeDalvik_ = mWipeDalvik.isChecked();
             task.backup_ = mBackup.isChecked();
             task.backupCompression_ = mBackupCompression.isChecked();
+
+            SharedPreferences.Editor prefs = mSP.edit();
+            prefs.putBoolean(SHARED_WIPEDATA, mWipeData.isChecked());
+            prefs.putBoolean(SHARED_WIPECACHE, mWipeCache.isChecked());
+            prefs.putBoolean(SHARED_WIPEDALVIK, mWipeDalvik.isChecked());
+            prefs.putBoolean(SHARED_BACKUP, mBackup.isChecked());
+            prefs.putBoolean(SHARED_BACKUP_COMPRESSION, mBackupCompression.isChecked());
+
+
             task.execute();
             return true;
         }

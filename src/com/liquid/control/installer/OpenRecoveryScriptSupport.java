@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -33,8 +34,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
-
-import com.android.internal.app.ShutdownThread;
 
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
@@ -72,7 +71,8 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
     Context mContext;
     Handler mHandler;
     Intent mIntent;
-    SharedPreferences mSP; 
+    PowerManager mPowerManager;
+    SharedPreferences mSP;
 
     // file info
     Preference mFilePath;
@@ -94,6 +94,9 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
 
         // initialize the worker thread handler
         mHandler = new Handler();
+
+        // initialize the PowerManager
+        mPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
 
         // capture absolute file path
         mIntent = getActivity().getIntent();
@@ -286,7 +289,8 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             if (success_) {
                 Toast.makeText(mContext, getString(R.string.filewrite_success),
                         Toast.LENGTH_SHORT).show();
-                ShutdownThread.reboot(mContext, "recovery", false);
+                // reboot with the intent of going into recovery
+                mPowerManager.reboot("recovery");
             } else {
                 Toast.makeText(mContext, getString(R.string.filewrite_fail),
                         Toast.LENGTH_LONG).show();

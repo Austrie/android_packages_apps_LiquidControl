@@ -38,6 +38,8 @@ import android.widget.Toast;
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.CMDProcessor;
+import com.liquid.control.widgets.FileInfoPreference;
+import com.liquid.control.widgets.Md5Preference;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -48,6 +50,18 @@ import java.io.IOException;
 import java.lang.StringBuilder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
 
@@ -67,6 +81,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
     private static final String UNMOUNT_SYSTEM = "unmount system";
     private final CMDProcessor cmd = new CMDProcessor();
     private static String ZIP_PATH = null;
+    private static final String JSON_PARSER = com.liquid.control.installer.GooImSupport.JSON_PARSER;
 
     Context mContext;
     Handler mHandler;
@@ -75,9 +90,8 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
     SharedPreferences mSP;
 
     // file info
-    Preference mFilePath;
-    Preference mFileSize;
-    Preference mMd5;
+    FileInfoPreference mFileInfo;
+    Md5Preference mMd5;
     Preference mExecute;
 
     // install options
@@ -138,10 +152,10 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         mWipeDalvik = (CheckBoxPreference) findPreference("wipe_dalvik_checkbox");
         mBackup = (CheckBoxPreference) findPreference("backup_checkbox");
         mBackupCompression = (CheckBoxPreference) findPreference("backup_compression_checkbox");
-        mMd5 = (Preference) findPreference("md5");
-        mFileSize = (Preference) findPreference("file_size");
-        mFilePath = (Preference) findPreference("file_path");
+        mFileInfo = (FileInfoPreference) findPreference("fileinfo_preference");
+        mMd5 = (Md5Preference) findPreference("md5_preference");
         mExecute = (Preference) findPreference("execute");
+        //mFileInfo.setFilesize("not a file");
     }
 
     private void loadFileInfo() {
@@ -149,15 +163,16 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             public void run() {
                 try {
                     File mZip = new File(ZIP_PATH);
-                    mFileSize.setSummary(Long.toString(mZip.length()));
-                    mFilePath.setSummary(mZip.getAbsolutePath());
+                    String mbs = Long.toString(mZip.length() /  1024) + " MB";
+                    if (DEBUG) Log.d(TAG, String.format("file: %s size: %s", mbs, mZip.getAbsolutePath()));
+                    mFileInfo.setFilesize(mbs);
+                    mFileInfo.setFilepath(mZip.getAbsolutePath());
                     mMd5.setEnabled(true);
                     updateMD5();
-                    mFileSize.setEnabled(true);
                     mExecute.setEnabled(true);
                 } catch (NullPointerException npe) {
-                    mFilePath.setSummary(getString(R.string.click_here_to_find_zips));
-                    mFileSize.setEnabled(false);
+                    String note = getString(R.string.click_here_to_find_zips);
+                    //if (note != null)  mFileInfo.setFilename(note);
                     mMd5.setEnabled(false);
                     mExecute.setEnabled(false);
                     if (DEBUG) npe.printStackTrace();
@@ -169,14 +184,14 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        if (preference == mWipeCache) {
-            if (!mWipeCache.isChecked())
-                    Toast.makeText(mContext, getString(R.string.warn_about_dirty_flash), Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (preference == mFilePath) {
+        if (preference == mFileInfo) {
             Intent pickZIP = new Intent(mContext, com.liquid.control.tools.FilePicker.class);
             pickZIP.putExtra("zip", true);
             startActivityForResult(pickZIP, 1);
+            return true;
+        } else if (preference == mWipeCache) {
+            if (!mWipeCache.isChecked())
+                    Toast.makeText(mContext, getString(R.string.warn_about_dirty_flash), Toast.LENGTH_SHORT).show();
             return true;
         } else if (preference == mWipeData) {
             if (!mWipeData.isChecked())
@@ -320,7 +335,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         String newMd5 = null;
 
         protected void onPreExecute() {
-            mMd5.setSummary(getString(R.string.generating_md5));
+            mMd5.setLocalChecksum(getString(R.string.generating_md5));
         }
 
         protected Void doInBackground(Void... urls) {
@@ -357,7 +372,77 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         }
 
         protected void onPostExecute(Void yourMom) {
-            mMd5.setSummary("md5: " + newMd5);
+            mMd5.setLocalChecksum("md5: " + newMd5);
+            new CheckMD5vsGooIm().execute();
+            mMd5.isMatch(false); //testing only
+        }
+    }
+
+    private class CheckMD5vsGooIm extends AsyncTask<Void, Void, Void> {
+        private String result;
+        private HttpResponse response;
+        private String JSONfilename;
+        private String JSONmd5;
+        private String localChecksum;
+        private String gooimChecksum;
+
+        // called when we create the AsyncTask object
+        public CheckMD5vsGooIm() {
+            if (DEBUG) Log.d(TAG, "AsyncTask CheckMD5vsGooIm Object created");
+        }
+
+        // can use UI thread here
+        protected void onPreExecute() {
+            if (DEBUG) Log.d(TAG, "onPreExecute");
+            localChecksum = mMd5.getLocalChecksum();
+        }
+
+        // automatically done on worker thread (separate from UI thread)
+        protected Void doInBackground(Void... urls) {
+            if (DEBUG) Log.d(TAG, "doInBackGround: " + urls.toString());
+            result = "";
+
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpGet request = new HttpGet(JSON_PARSER);
+                ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                JSONObject jsObject = new JSONObject(httpClient.execute(request, responseHandler));
+                JSONArray jsArray = new JSONArray(jsObject.getString("list"));
+                if (DEBUG) Log.d(TAG, "JSONArray.length() is: " + jsArray.length());
+                for (int i = 0; i < jsArray.length(); i++) {
+
+                    // parse strings from JSONObject
+                    JSONObject JSONObject = (JSONObject) jsArray.get(i);
+                    JSONfilename = JSONObject.getString("filename");
+                    JSONmd5 = JSONObject.getString("md5");
+
+                    // debug
+                    String log_formatter = "filename:{%s}	md5:{%s}";
+                    if (DEBUG) Log.d(TAG, String.format(log_formatter, JSONfilename, JSONmd5));
+                    try {
+                        if (localChecksum.equals(JSONmd5)) {
+                            gooimChecksum = JSONmd5;
+                            return null;
+                        }
+                    } catch (NullPointerException ne) {
+
+                    }
+                }
+            } catch (JSONException e) {
+                if (DEBUG) e.printStackTrace();
+            } catch (IOException ioe) {
+                if (DEBUG) ioe.printStackTrace();
+            }
+            return null;
+        }
+
+        // can use UI thread here
+        protected void onPostExecute(Void unused) {
+            if (DEBUG) Log.d(TAG, "onPostExecute is envoked");
+            if (localChecksum.equals(gooimChecksum))
+                mMd5.isMatch(true);
+            else
+                mMd5.isMatch(false);
         }
     }
 }

@@ -579,4 +579,8 @@
     <string name="execute_title">Execute Install</string>
     <string name="generating_md5">Calculating md5 checksum...</string>
     <string name="click_here_to_find_zips">No file detected click here to find .zip files</string>
+    <string name="ors_local_md5_text">Local MD5: </string>
+    <string name="ors_gooim_md5_text">Goo.im MD5: </string>
+    <string name="ors_file_path_text">Filepath: </string>
+    <string name="ors_file_size_text">File size: </string>
 </resources>

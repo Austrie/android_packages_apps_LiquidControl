@@ -16,17 +16,11 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        android:key="file_path"
-        android:title="@string/file_path_title" />
+    <com.liquid.control.widgets.FileInfoPreference 
+        android:key="fileinfo_preference" />
 
-    <Preference
-        android:key="file_size"
-        android:title="@string/file_size_title" />
-
-    <Preference
-        android:key="md5"
-        android:title="@string/md5_title" />
+    <com.liquid.control.widgets.Md5Preference
+        android:key="md5_preference" />
 
     <CheckBoxPreference
         android:key="wipe_cache_checkbox"

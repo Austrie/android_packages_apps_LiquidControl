@@ -41,6 +41,7 @@ import com.liquid.control.util.CMDProcessor;
 import com.liquid.control.widgets.FileInfoPreference;
 import com.liquid.control.widgets.Md5Preference;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -90,8 +91,8 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
     SharedPreferences mSP;
 
     // file info
-    FileInfoPreference mFileInfo;
     Md5Preference mMd5;
+    Preference mFileInfo;
     Preference mExecute;
 
     // install options
@@ -152,10 +153,9 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         mWipeDalvik = (CheckBoxPreference) findPreference("wipe_dalvik_checkbox");
         mBackup = (CheckBoxPreference) findPreference("backup_checkbox");
         mBackupCompression = (CheckBoxPreference) findPreference("backup_compression_checkbox");
-        mFileInfo = (FileInfoPreference) findPreference("fileinfo_preference");
+        mFileInfo = (Preference) findPreference("fileinfo");
         mMd5 = (Md5Preference) findPreference("md5_preference");
         mExecute = (Preference) findPreference("execute");
-        //mFileInfo.setFilesize("not a file");
     }
 
     private void loadFileInfo() {
@@ -165,14 +165,15 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                     File mZip = new File(ZIP_PATH);
                     String mbs = Long.toString(mZip.length() /  1024) + " MB";
                     if (DEBUG) Log.d(TAG, String.format("file: %s size: %s", mbs, mZip.getAbsolutePath()));
-                    mFileInfo.setFilesize(mbs);
-                    mFileInfo.setFilepath(mZip.getAbsolutePath());
+                    mFileInfo.setTitle("File: " + mZip.getName());
+                    mFileInfo.setSummary("Path: " + mZip.getAbsolutePath());
                     mMd5.setEnabled(true);
                     updateMD5();
                     mExecute.setEnabled(true);
                 } catch (NullPointerException npe) {
                     String note = getString(R.string.click_here_to_find_zips);
-                    //if (note != null)  mFileInfo.setFilename(note);
+                    mFileInfo.setTitle(note);
+                    mFileInfo.setSummary("");
                     mMd5.setEnabled(false);
                     mExecute.setEnabled(false);
                     if (DEBUG) npe.printStackTrace();
@@ -240,16 +241,17 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         // we don't need to worry about what the requestCode was because we only have one intent
         try {
             ZIP_PATH = data.getStringExtra("open_filepath");
-            updateMD5();
             loadFileInfo();
         } catch (NullPointerException ne) {
             // user backed out of file picker
         }
     }
     private void updateMD5() {
-        CalculateMd5 md5_ = new CalculateMd5();
-        md5_.fPath = ZIP_PATH;
-        md5_.execute();
+        if (ZIP_PATH != null) {
+            CalculateMd5 md5_ = new CalculateMd5();
+            md5_.fPath = ZIP_PATH;
+            md5_.execute();
+        }
     }
 
     private class WriteScript extends AsyncTask<Void, Void, Void> {
@@ -336,34 +338,34 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
 
         protected void onPreExecute() {
             mMd5.setLocalChecksum(getString(R.string.generating_md5));
+            mMd5.setGooImChecksum("Checking website for md5...");
         }
 
         protected Void doInBackground(Void... urls) {
             if (fPath == null) return null;
             MessageDigest complete;
+            BufferedInputStream fis = null;
+            File file_ = new File(fPath);
             try {
                 complete = MessageDigest.getInstance("MD5");
             } catch (NoSuchAlgorithmException noDice) {
                 return null;
             }
             try {
-                InputStream fis =  new FileInputStream(fPath);
-                byte[] buffer = new byte[1024];
+                fis =  new BufferedInputStream(new FileInputStream(file_));
+                byte[] buffer = new byte[8192];
                 int numRead;
-                do {
-                    numRead = fis.read(buffer);
-                    if (numRead > 0) {
-                        complete.update(buffer, 0, numRead);
-                    }
-                } while (numRead != -1);
+                while ((numRead = fis.read(buffer)) > 0) {
+                    complete.update(buffer, 0, numRead);
+                }
+
                 fis.close();
             } catch (IOException ioe) {
                 // FileInputStream failed to close properly
             }
 
-            byte[] b = complete.digest();
             String result = "";
-
+            byte[] b = complete.digest();
             for (int i=0; i < b.length; i++) {
                 result += Integer.toString((b[i] & 0xff ) + 0x100, 16).substring(1);
             }
@@ -374,7 +376,6 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         protected void onPostExecute(Void yourMom) {
             mMd5.setLocalChecksum("md5: " + newMd5);
             new CheckMD5vsGooIm().execute();
-            mMd5.isMatch(false); //testing only
         }
     }
 
@@ -385,7 +386,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         private String JSONmd5;
         private String localChecksum;
         private String gooimChecksum;
-
+        boolean foundit = false;
         // called when we create the AsyncTask object
         public CheckMD5vsGooIm() {
             if (DEBUG) Log.d(TAG, "AsyncTask CheckMD5vsGooIm Object created");
@@ -401,7 +402,6 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         protected Void doInBackground(Void... urls) {
             if (DEBUG) Log.d(TAG, "doInBackGround: " + urls.toString());
             result = "";
-
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpGet request = new HttpGet(JSON_PARSER);
@@ -417,16 +417,16 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                     JSONmd5 = JSONObject.getString("md5");
 
                     // debug
-                    String log_formatter = "filename:{%s}	md5:{%s}";
-                    if (DEBUG) Log.d(TAG, String.format(log_formatter, JSONfilename, JSONmd5));
-                    try {
-                        if (localChecksum.equals(JSONmd5)) {
-                            gooimChecksum = JSONmd5;
-                            return null;
-                        }
-                    } catch (NullPointerException ne) {
-
-                    }
+                    String log_formatter = "filename:{%s}	local_md5:{%s}	vs	goo.im_md5:{%s}";
+                    if (DEBUG) Log.d(TAG, String.format(log_formatter, JSONfilename, localChecksum, JSONmd5));
+                    String l = new String(localChecksum);
+                    String g = new String(JSONmd5);
+                    if (l.contains(g)) {
+                        Log.d(TAG, "We have a winner MD5 Checksum matches! Verified: " + JSONfilename);
+                        foundit = true;
+                        gooimChecksum = JSONmd5;
+                        return null;
+                    }                    
                 }
             } catch (JSONException e) {
                 if (DEBUG) e.printStackTrace();
@@ -439,10 +439,8 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
         // can use UI thread here
         protected void onPostExecute(Void unused) {
             if (DEBUG) Log.d(TAG, "onPostExecute is envoked");
-            if (localChecksum.equals(gooimChecksum))
-                mMd5.isMatch(true);
-            else
-                mMd5.isMatch(false);
+            mMd5.isMatch(foundit);
+            mMd5.setGooImChecksum(foundit ? gooimChecksum : "Couldn't verify md5 checksum");
         }
     }
 }

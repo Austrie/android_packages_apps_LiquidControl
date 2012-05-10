@@ -14,43 +14,17 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/zip_filepath"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:fadingEdge="horizontal" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:fadingEdge="vertical"
-            android:text="@string/ors_file_path_text" />
-
-        <TextView
-            android:id="@+id/zip_filepath"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:fadingEdge="horizontal" />
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/zip_filesize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:fadingEdge="horizontal"
-            android:text="@string/ors_file_size_text" />
-
-        <TextView
-            android:id="@+id/zip_filesize"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:fadingEdge="horizontal" />
-    </LinearLayout>
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:fadingEdge="horizontal" />
 </LinearLayout>

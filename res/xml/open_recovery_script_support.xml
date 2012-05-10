@@ -16,8 +16,8 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.liquid.control.widgets.FileInfoPreference 
-        android:key="fileinfo_preference" />
+    <Preference
+        android:key="fileinfo" />
 
     <com.liquid.control.widgets.Md5Preference
         android:key="md5_preference" />

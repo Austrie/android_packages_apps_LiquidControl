@@ -584,4 +584,6 @@
     <string name="ors_file_path_text">Filepath: </string>
     <string name="ors_file_size_text">File size: </string>
 
+    <!-- Themes settings #CM -->
+    <string name="themes_settings_title">Themes</string>
 </resources>

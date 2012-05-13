@@ -76,9 +76,11 @@ public class BackupRestore extends SettingsPreferenceFragment {
     private static final String RESTORE_PREF = "restore";
     private static final String THEME_CAT_PREF = "theme_cat";
     private static String CONFIG_FILENAME = null;
-    private static String CONFIG_CHECK_PASS = "/sdcard/LiquidControl/%s has been created";
-    private static final String PATH_TO_CONFIGS = "/sdcard/LiquidControl";
-    private static final String PATH_TO_THEMES = "/sdcard/LiquidControl/themes";
+    private static final File fSDCARD = Environment.getExternalStorageDirectory();
+    private static final String SDCARD = fSDCARD.getAbsolutePath();
+    private static String CONFIG_CHECK_PASS = SDCARD + "/LiquidControl/%s has been created";
+    private static final String PATH_TO_CONFIGS = SDCARD + "/LiquidControl";
+    private static final String PATH_TO_THEMES = SDCARD + "/LiquidControl/themes";
     private static boolean success = false;
     private final String OPEN_FILENAME = "open_filepath";
     private final String SAVE_FILENAME = "save_filepath";
@@ -165,8 +167,19 @@ public class BackupRestore extends SettingsPreferenceFragment {
         prefs.removePreference(mThemeCat);
 
         File themerDirs = new File(PATH_TO_THEMES);
+
+        // verify we have the file structure
+        if (!themerDirs.exists()) {
+            // try to make the path; if we fail drop the method instead of the app
+            if(!themerDirs.mkdirs()) return;
+        }
+
         String[] allThemesFound = themerDirs.list();
-        if (DEBUG) Log.d(TAG, themerDirs.list().toString());
+        try {
+            if (DEBUG) Log.d(TAG, themerDirs.list().toString());
+        } catch (NullPointerException npe) {
+            return;
+        }
 
         // so Themes category won't show when we don't have themes
         boolean doWeHaveThemes = false;
@@ -470,7 +483,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
                     try {
                         // TODO fix paths
                         File storeFile = new File(bkname);
-                        mProperties.store(new FileOutputStream(storeFile), MESSAAGE_TO_HEAD_FILE);
+                        mProperties.store(new FileOutputStream(storeFile.getAbsolutePath()), MESSAAGE_TO_HEAD_FILE);
                         if (DEBUG) Log.d(TAG, "Does storeFile exist? " + storeFile.exists() + "	AbsolutPath: " + storeFile.getAbsolutePath());
                         success = true;
                         info.append("Saved file: " + bkname + RETURN);

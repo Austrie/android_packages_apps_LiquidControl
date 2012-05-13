@@ -217,9 +217,9 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             if (!mBackup.isChecked()) {
                 Toast.makeText(mContext, getString(R.string.warn_about_no_backup),
                         Toast.LENGTH_SHORT).show();
-                mPreferenceScreen.addPreference(mMd5);
+                mBackupCompression.setEnabled(false);
             } else {
-                mPreferenceScreen.removePreference(mMd5);
+                mBackupCompression.setEnabled(true);
             }
             return true;
         } else if (preference == mMd5) {
@@ -240,7 +240,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             prefs.putBoolean(SHARED_WIPEDALVIK, mWipeDalvik.isChecked());
             prefs.putBoolean(SHARED_BACKUP, mBackup.isChecked());
             prefs.putBoolean(SHARED_BACKUP_COMPRESSION, mBackupCompression.isChecked());
-
+            prefs.commit();
 
             task.execute();
             return true;
@@ -480,11 +480,8 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
 
         private void trollGooIm(String devPath) {
             Log.d(TAG, "trollGooIm(" + devPath + ")");
-            String returnTroll = null;
             String folder = "";
-            String filesPresent = FAIL;
             boolean files_ = false;
-            boolean found_md5_ = false;
             String filesPresentMd5_ = null;
             String nameOfFile = null;
             String formatWebAddress = String.format("http://goo.im/json2&path=%s&ro_board=%s",

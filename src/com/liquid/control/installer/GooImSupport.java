@@ -71,7 +71,8 @@ public class GooImSupport extends SettingsPreferenceFragment {
 
     // TEST WEBSITE TILL OUR BUILDS ARE AVAILABLE
     private static final String GOO_IM = "http://goo.im/devs/aokp/toro/";
-    public static final String JSON_PARSER = "http://goo.im/json2&path=/devs/aokp/toro";
+    public static final String LIQUID_JSON_PARSER = "http://goo.im/json2&path=/devs/aokp/toro";
+    public static final String JSON_PARSER = "http://goo.im/json2&path=/devs&ro_board=toro";
     private static final String PREF_VERSIONS = "version_preference_screens";
 
     private static String PARSED_WEBSITE;

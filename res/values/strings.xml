@@ -92,8 +92,8 @@
     <string name="longpress_to_kill_summary">Holding back kills current activity</string>
     <string name="rotate_180_title">180° Rotation</string>
     <string name="rotate_180_summary">Allow your device to rotate upside down!</string>
-    <string name="horizontal_recents_task_panel_title">Horizontal Recents</string>
-    <string name="horizontal_recents_task_panel_summary">Use WebOS style task switcher</string>
+    <string name="recent_app_switcher_title">Recents window style</string>
+    <string name="recent_app_switcher_summary">Change the recents window style (requires UI restart)</string>
     <string name="disable_bootanimation_title">Boot Animation</string>
     <string name="disable_bootanimation_summary">Disable boot animation for faster boot</string>
     <string name="disable_bugmailer_title">Android Bugmailer</string>
@@ -519,8 +519,8 @@
     <string name="no_filename_save_error">No filename detected ...Please enter a filename to save</string>
     <string name="location_tracker">Location: %s</string>
 
-    <!-- Kernel Tweaks -->
-    <string name="pt_fast_charge_boot">Fastcharge</string>
+    <!--  Kernel Tweaks -->
+    <string name="pt_fast_charge_boot">Fast Charge</string>
     <string name="ps_fast_charge_boot">Enable fast charge at boot</string>
     <string name="kernel">Kernel Tweaks</string>
     <string name="color_tuning_title_head">Color Multipliers Tuning</string>
@@ -585,7 +585,4 @@
     <string name="verify_md5_with_gooim">verifying md5...</string>
     <string name="verify_md5_pass">Goo.im verified md5</string>
     <string name="verify_md5_fail">Goo.im failed to verify md5</string>
-
-    <!-- Themes settings #CM -->
-    <string name="themes_settings_title">Themes</string>
 </resources>

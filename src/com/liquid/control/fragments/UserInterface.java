@@ -299,3 +299,4 @@ return true;
                 Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME, 200);
         mAnimationRotationDelay.setSummary(String.format("Current: %s", mRotate));
     }
+}

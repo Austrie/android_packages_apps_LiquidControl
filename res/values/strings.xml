@@ -38,7 +38,8 @@
     <string name="tools">Goodies</string>
     <string name="pt_performance">Performance</string>
     <string name="propmodder_title">Propmodder</string>
-    <string name="open_recovery_title">Open Recovery Support</string>
+    <string name="goo_im_title">Download ROMs</string>
+    <string name="open_recovery_title">Open Recovery</string>
     <string name="advanced_settings">Advanced</string>
     <string name="misc_short">Misc</string>
     <string name="system">System</string>
@@ -172,46 +173,6 @@
     <string name="summary_pref_powersaving_sync_screen_off_delay">Current sync time interval</string>
     <string name="powersaver_data_cat">Data</string>
     <string name="powersaver_sync_cat">Sync</string>
-
-    <!-- Display settings screen, notification light settings -->
-    <string name="notification_pulse_title">Notification light</string>
-    <string name="notification_light_general_title">General</string>
-    <string name="notification_light_applist_title">Applications</string>
-    <string name="notification_light_default_value">Default</string>
-    <string name="notification_light_use_custom">Use custom values</string>
-    <string name="notification_light_enabled">Enabled</string>
-    <string name="notification_light_disabled">Disabled</string>
-
-    <!-- Notification light dialogs -->
-    <string name="edit_light_settings">Edit light settings</string>
-    <string name="pulse_speed_title">Pulse length and speed</string>
-    <string name="picker_arrow">→</string>
-    <string name="default_time">Normal</string>
-    <string name="custom_time">Custom</string>
-    <string name="dialog_test">Test</string>
-    <string name="dialog_delete_title">Delete</string>
-    <string name="dialog_delete_message">Remove selected item?</string>
-    <string name="dialog_test_message">Turn the screen off to see the selected notification in action or dismiss this dialog to stop the test</string>
-    <string name="dialog_test_button">Dismiss</string>
-
-    <!-- Add application dialog box title -->
-    <string name="profile_choose_app">Choose application</string>
-    <string name="profile_settings_header">Profile settings</string>
-    <string name="profiles_add">Add</string>
-
-    <!-- Values for the notification light pulse spinners -->
-    <string name="pulse_length_always_on">Always on</string>
-    <string name="pulse_length_very_short">Very short</string>
-    <string name="pulse_length_short">Short</string>
-    <string name="pulse_length_normal">Normal</string>
-    <string name="pulse_length_long">Long</string>
-    <string name="pulse_length_very_long">Very long</string>
-    <string name="pulse_speed_very_fast">Very fast</string>
-    <string name="pulse_speed_fast">Fast</string>
-    <string name="pulse_speed_normal">Normal</string>
-    <string name="pulse_speed_slow">Slow</string>
-    <string name="pulse_speed_very_slow">Very slow</string>
-
 
     <!-- Statusbar -->
     <string name="title_settings_behavior">Settings Behavior</string>
@@ -560,8 +521,7 @@
     <string name="dev_amplified_twitter">JacobVanCleve</string>
     <string name="dev_amplified_donate">http://bit.ly/H0ZFRV</string>
 
-    <!-- OpenRecoveryScript support -->
-    <string name="goo_im_title">Download ROMs</string>
+    <!-- Open Recovery -->
     <string name="open_recovery_cat_title">Versions found</string>
     <string name="request_download_description">Downloading: </string>
     <string name="request_download_title">Just relax and let it happen</string>
@@ -585,4 +545,5 @@
     <string name="verify_md5_with_gooim">verifying md5...</string>
     <string name="verify_md5_pass">Goo.im verified md5</string>
     <string name="verify_md5_fail">Goo.im failed to verify md5</string>
+
 </resources>

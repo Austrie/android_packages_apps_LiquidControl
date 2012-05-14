@@ -216,7 +216,7 @@ Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES, checked ? (1 | 2 | 4 | 8)
                             : (1 | 2 | 8));
-                  Integer.parseInt((String) newValue)); 
+        }         
            return true;
         } else if (preference == mRecentAppSwitcher) {
             int val = Integer.parseInt((String) newValue);

@@ -57,7 +57,13 @@
             android:id="@+id/led"
             android:title="@string/led_options"
             android:icon="@drawable/ic_led"
-            android:fragment="com.liquid.control.led.NotificationLightSettings" />
+            android:fragment="com.android.settings.notificationlight.NotificationLightSettings" />
+
+        <header
+            android:id="@+id/open_recovery"
+            android:title="@string/open_recovery_title"
+            android:icon="@drawable/ic_backup"
+            android:fragment="com.liquid.control.installer.OpenRecoveryScriptSupport" />
 
     <header
         android:title="@string/statusbar" />
@@ -102,6 +108,12 @@
             android:fragment="com.liquid.control.fragments.BackupRestore" />
 
         <header
+            android:id="@+id/goo_im"
+            android:title="@string/goo_im_title"
+            android:icon="@drawable/ic_startup"
+            android:fragment="com.liquid.control.installer.GooImSupport" />
+
+        <header
             android:id="@+id/performance"
             android:title="@string/pt_performance"
             android:icon="@drawable/ic_performance"
@@ -113,18 +125,6 @@
             android:icon="@drawable/ic_propmodder"
             android:fragment="com.liquid.control.fragments.PropModder" />
 
-        <header
-            android:id="@+id/goo_im"
-            android:title="@string/goo_im_title"
-            android:icon="@drawable/ic_backup"
-            android:fragment="com.liquid.control.installer.GooImSupport" />
-
-        <header
-            android:id="@+id/open_recovery"
-            android:title="@string/open_recovery_title"
-            android:icon="@drawable/ic_backup"
-            android:fragment="com.liquid.control.installer.OpenRecoveryScriptSupport" />
-
     <header
         android:title="@string/meet_the_team" />
 
@@ -133,4 +133,5 @@
             android:title="@string/about_title"
             android:icon="@drawable/ic_about"
             android:fragment="com.liquid.control.fragments.About" />
+
 </preference-headers>

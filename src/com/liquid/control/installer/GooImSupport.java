@@ -122,7 +122,7 @@ public class GooImSupport extends SettingsPreferenceFragment {
 
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpGet request = new HttpGet(JSON_PARSER);
+                HttpGet request = new HttpGet(LIQUID_JSON_PARSER);
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 JSONObject jsObject = new JSONObject(httpClient.execute(request, responseHandler));
                 JSONArray jsArray = new JSONArray(jsObject.getString("list"));

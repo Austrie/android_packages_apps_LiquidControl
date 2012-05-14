@@ -51,6 +51,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     private static final String PREF_ROTATION_ANIMATION = "rotation_animation_delay";
     private static final String PREF_180 = "rotate_180";
     private static final String PREF_DISABLE_SCREENSHOT_SOUND = "screenshot_sound";
+    private static final String PREF_RECENT_APP_SWITCHER = "recent_app_switcher";
 
     CheckBoxPreference mAllow180Rotation;
     ListPreference mAnimationRotationDelay;
@@ -59,11 +60,11 @@ public class UserInterface extends SettingsPreferenceFragment implements
     Preference mCustomLabel;
     CheckBoxPreference mDisableBootAnimation;
     CheckBoxPreference mDisableBugMailer;
-    CheckBoxPreference mHorizontalAppSwitcher;
     CheckBoxPreference mShowImeSwitcher;
     CheckBoxPreference mEnableVolumeOptions;
     CheckBoxPreference mLongPressAppTasker;
     CheckBoxPreference mDisableScreenshotSound;
+    ListPreference mRecentAppSwitcher;
     String mCustomLabelText = null;
 
     @Override
@@ -101,9 +102,11 @@ public class UserInterface extends SettingsPreferenceFragment implements
         mAllow180Rotation.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.ACCELEROMETER_ROTATION_ANGLES, (1 | 2 | 8)) == (1 | 2 | 4 | 8));
 
-        mHorizontalAppSwitcher = (CheckBoxPreference) findPreference("horizontal_recents_task_panel");
-        mHorizontalAppSwitcher.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
-                Settings.System.RECENT_APP_SWITCHER, 0) == 1);
+        mRecentAppSwitcher = (ListPreference) findPreference(PREF_RECENT_APP_SWITCHER);
+        mRecentAppSwitcher.setOnPreferenceChangeListener(this);
+        mRecentAppSwitcher.setValue(Integer.toString(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.RECENT_APP_SWITCHER,
+                0)));
 
         mDisableBootAnimation = (CheckBoxPreference) findPreference("disable_bootanimation");
         mDisableBootAnimation.setChecked(!new File("/system/media/bootanimation.zip").exists());
@@ -214,13 +217,6 @@ Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES, checked ? (1 | 2 | 4 | 8)
                             : (1 | 2 | 8));
             return true;
-        } else if (preference == mHorizontalAppSwitcher) {
-            boolean checked = ((CheckBoxPreference) preference).isChecked();
-            Settings.System.putInt(getActivity().getContentResolver(),
-                    Settings.System.RECENT_APP_SWITCHER, checked ? 1
-                            : 0);
-            Helpers.restartSystemUI();
-            return true;
         } else if (preference == mDisableBootAnimation) {
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             if (checked) {
@@ -252,6 +248,12 @@ Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.SCREENSHOT_CAMERA_SOUND, checked ? 1 : 0);
+            return true;
+        } else if (preference == mRecentAppSwitcher) {
+            int val = Integer.parseInt((String) newValue);
+            Settings.System.putInt(getActivity().getContentResolver(),
+                Settings.System.RECENT_APP_SWITCHER, val);
+            Helpers.restartSystemUI();
             return true;
         }
         /* DISABLED TILL WE SUPPORT WITH FRAMEWORKS

@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (C) 2012 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.liquid.control.fragments;
 
@@ -37,7 +37,7 @@ import android.widget.EditText;
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
 import com.liquid.control.util.CMDProcessor;
-import com.liquid.control.util.Helpers;    
+import com.liquid.control.util.Helpers;
 
 public class UserInterface extends SettingsPreferenceFragment implements
         OnPreferenceChangeListener {
@@ -53,7 +53,6 @@ public class UserInterface extends SettingsPreferenceFragment implements
     private static final String PREF_DISABLE_SCREENSHOT_SOUND = "screenshot_sound";
     private static final String PREF_RECENT_APP_SWITCHER = "recent_app_switcher";
 
-
     CheckBoxPreference mAllow180Rotation;
     ListPreference mAnimationRotationDelay;
     CheckBoxPreference mCrtOffAnimation;
@@ -61,6 +60,10 @@ public class UserInterface extends SettingsPreferenceFragment implements
     Preference mCustomLabel;
     CheckBoxPreference mDisableBootAnimation;
     CheckBoxPreference mDisableBugMailer;
+    CheckBoxPreference mShowImeSwitcher;
+    CheckBoxPreference mEnableVolumeOptions;
+    CheckBoxPreference mLongPressAppTasker;
+    CheckBoxPreference mDisableScreenshotSound;
     ListPreference mRecentAppSwitcher;
     String mCustomLabelText = null;
 
@@ -112,10 +115,10 @@ public class UserInterface extends SettingsPreferenceFragment implements
         mDisableBugMailer.setChecked(!new File("/system/bin/bugmailer.sh").exists());
 
         /* DISABLED TILL WE HAVE FRAMEWORKS SUPPORT
-        mLongPressAppTasker = (CheckBoxPreference) findPreference("longpress_app_tasker");
-        mLongPressAppTasker.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
-                Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
-        */
+mLongPressAppTasker = (CheckBoxPreference) findPreference("longpress_app_tasker");
+mLongPressAppTasker.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
+Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
+*/
 
         mDisableScreenshotSound = (CheckBoxPreference) findPreference(PREF_DISABLE_SCREENSHOT_SOUND);
         mDisableScreenshotSound.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
@@ -214,8 +217,12 @@ public class UserInterface extends SettingsPreferenceFragment implements
                     Settings.System.ACCELEROMETER_ROTATION_ANGLES, checked ? (1 | 2 | 4 | 8)
                             : (1 | 2 | 8));
             return true;
-
-
+        } else if (preference == mRecentAppSwitcher) {
+            int val = Integer.parseInt((String) newValue);
+            Settings.System.putInt(getActivity().getContentResolver(),
+                Settings.System.RECENT_APP_SWITCHER, val);
+            Helpers.restartSystemUI();
+            return true;
         } else if (preference == mDisableBootAnimation) {
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             if (checked) {
@@ -250,12 +257,12 @@ public class UserInterface extends SettingsPreferenceFragment implements
             return true;
         }
         /* DISABLED TILL WE SUPPORT WITH FRAMEWORKS
-        }  else if (preference == mLongPressAppTasker) {
-            boolean checked = ((CheckBoxPreference) preference).isChecked();
-            Settings.Secure.putInt(getActivity().getContentResolver(),
-                    Settings.Secure.LONGPRESS_APP_TASKER_INTENT, checked ? 1 : 0);
-            return true;
-        } */
+} else if (preference == mLongPressAppTasker) {
+boolean checked = ((CheckBoxPreference) preference).isChecked();
+Settings.Secure.putInt(getActivity().getContentResolver(),
+Settings.Secure.LONGPRESS_APP_TASKER_INTENT, checked ? 1 : 0);
+return true;
+} */
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
@@ -268,13 +275,6 @@ public class UserInterface extends SettingsPreferenceFragment implements
                     Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME,
                     Integer.parseInt((String) newValue));
             handled = true;
-            
-        } else if (preference == mRecentAppSwitcher) {
-            int val = Integer.parseInt((String) newValue);
-            Settings.System.putInt(getActivity().getContentResolver(),
-                Settings.System.RECENT_APP_SWITCHER, val);
-            Helpers.restartSystemUI();
-            return true;
         }
 
         //update our dynamic values and return if we handled

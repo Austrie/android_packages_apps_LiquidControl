@@ -256,8 +256,6 @@ Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
             Helpers.restartSystemUI();
             return true;
         }
-        return false;
-   }
         /* DISABLED TILL WE SUPPORT WITH FRAMEWORKS
 } else if (preference == mLongPressAppTasker) {
 boolean checked = ((CheckBoxPreference) preference).isChecked();

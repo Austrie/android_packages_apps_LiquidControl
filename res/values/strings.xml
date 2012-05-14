@@ -105,6 +105,9 @@
     <string name="screenshot_sound_title">Screenshot</string>
     <string name="screenshot_sound_summary">Disable sound when capturing screen</string>
     <string name="enable_volume_options">Volume Options</string>
+    <string name="disable_bootaudio_title">Disable boot audio</string>
+    <string name="disable_bootaudio_summary">Quiet.</string>
+    <string name="disable_bootaudio_summary_disabled">To enable boot audio, you must have an MP3 file at \n/system/media/boot_audio.mp3</string>
 
     <!-- Lockscreen -->
     <string name="title_pref_lockscreen_quad_targets">Quad Lockscreen</string>	

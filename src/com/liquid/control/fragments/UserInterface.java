@@ -51,6 +51,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     private static final String PREF_ROTATION_ANIMATION = "rotation_animation_delay";
     private static final String PREF_180 = "rotate_180";
     private static final String PREF_DISABLE_SCREENSHOT_SOUND = "screenshot_sound";
+    private static final String PREF_DISABLE_BOOT_AUDIO = "disable_bootaudio";
 
     CheckBoxPreference mAllow180Rotation;
     ListPreference mAnimationRotationDelay;
@@ -58,6 +59,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     CheckBoxPreference mCrtOnAnimation;
     Preference mCustomLabel;
     CheckBoxPreference mDisableBootAnimation;
+    CheckBoxPreference mDisableBootAudio;
     CheckBoxPreference mDisableBugMailer;
     CheckBoxPreference mHorizontalAppSwitcher;
     CheckBoxPreference mShowImeSwitcher;
@@ -132,6 +134,8 @@ public class UserInterface extends SettingsPreferenceFragment implements
             // can't get this working in ICS just yet
             ((PreferenceGroup) findPreference("crt")).removePreference(mCrtOnAnimation);
         }
+
+        mDisableBootAudio = (CheckBoxPreference) findPreference(PREF_DISABLE_BOOTAUDIO);        
 
         // update summeries that should be dynamic
         updateListPrefs();
@@ -235,6 +239,16 @@ public class UserInterface extends SettingsPreferenceFragment implements
                         .runWaitFor("mv /system/media/bootanimation.unicorn /system/media/bootanimation.zip");
                 Helpers.getMount("ro");
             }
+        } else if (preference == mDisableBootAudio) {
+            if (mDisableBootAudio.isChecked()) {
+                Helpers.getMount("rw");
+                new CMDProcessor().su.runWaitFor("mv /system/media/boot_audio.mp3 /system/media/boot_audio.unicorn");
+                Helpers.getMount("ro");
+            } else {
+                Helpers.getMount("rw");
+                new CMDProcessor().su.runWaitFor("mv /system/media/boot_audio.unicorn /system/media/boot_audio.mp3");
+                Helpers.getMount("ro");
+            }
         } else if (preference == mDisableBugMailer) {
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             if (checked) {
@@ -298,5 +312,8 @@ public class UserInterface extends SettingsPreferenceFragment implements
         int mRotate = Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.ACCELEROMETER_ROTATION_SETTLE_TIME, 200);
         mAnimationRotationDelay.setSummary(String.format("Current: %s", mRotate));
+
+        File audioFile = new File("/system/media/boot_audio.unicorn");
+        mDisableBootAudio.setChecked(audioFile.isFile());
     }
 }

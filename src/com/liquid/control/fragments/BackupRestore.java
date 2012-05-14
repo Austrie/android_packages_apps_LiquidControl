@@ -812,7 +812,7 @@ public class BackupRestore extends SettingsPreferenceFragment {
         // ints next
         // UserInterface
         settingsArray.add(Settings.System.ACCELEROMETER_ROTATION_ANGLES);
-        settingsArray.add(Settings.System.HORIZONTAL_RECENTS_TASK_PANEL);
+        settingsArray.add(Settings.System.RECENT_APP_SWITCHER);
         settingsArray.add(Settings.System.CRT_OFF_ANIMATION);
         settingsArray.add(Settings.System.SCREENSHOT_CAMERA_SOUND);
         settingsArray.add(Settings.System.SHOW_STATUSBAR_IME_SWITCHER);

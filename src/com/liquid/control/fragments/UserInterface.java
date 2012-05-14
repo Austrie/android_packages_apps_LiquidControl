@@ -103,7 +103,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
 
         mHorizontalAppSwitcher = (CheckBoxPreference) findPreference("horizontal_recents_task_panel");
         mHorizontalAppSwitcher.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
-                Settings.System.HORIZONTAL_RECENTS_TASK_PANEL, 0) == 1);
+                Settings.System.RECENT_APP_SWITCHER, 0) == 1);
 
         mDisableBootAnimation = (CheckBoxPreference) findPreference("disable_bootanimation");
         mDisableBootAnimation.setChecked(!new File("/system/media/bootanimation.zip").exists());
@@ -217,7 +217,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
         } else if (preference == mHorizontalAppSwitcher) {
             boolean checked = ((CheckBoxPreference) preference).isChecked();
             Settings.System.putInt(getActivity().getContentResolver(),
-                    Settings.System.HORIZONTAL_RECENTS_TASK_PANEL, checked ? 1
+                    Settings.System.RECENT_APP_SWITCHER, checked ? 1
                             : 0);
             Helpers.restartSystemUI();
             return true;

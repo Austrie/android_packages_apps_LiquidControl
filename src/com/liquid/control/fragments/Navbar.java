@@ -84,11 +84,9 @@ public class Navbar extends SettingsPreferenceFragment implements
     private static final String PREF_NAV_COLOR = "nav_button_color";
     private static final String PREF_NAV_GLOW_COLOR = "nav_button_glow_color";
     private static final String PREF_MENU_UNLOCK = "pref_menu_display";
-    private static final String PREF_HOME_LONGPRESS = "long_press_home";
     private static final String PREF_NAV_BACKGROUND_COLOR = "nav_button_background_color";
     private static final String PREF_LONGPRESS_TO_KILL = "longpress_to_kill";
     private static final String PREF_NAVBAR_QTY = "navbar_qty";
-
     public static final int REQUEST_PICK_CUSTOM_ICON = 200;
     public static final int REQUEST_PICK_LANDSCAPE_ICON = 201;
 

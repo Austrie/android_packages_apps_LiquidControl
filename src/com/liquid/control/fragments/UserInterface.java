@@ -53,6 +53,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     private static final String PREF_DISABLE_SCREENSHOT_SOUND = "screenshot_sound";
     private static final String PREF_DISABLE_BOOT_AUDIO = "disable_bootaudio";
     private static final String PREF_RECENT_APP_SWITCHER = "recent_app_switcher";
+    private static final String PREF_HOME_LONGPRESS = "long_press_home";
 
     CheckBoxPreference mAllow180Rotation;
     ListPreference mAnimationRotationDelay;
@@ -67,6 +68,7 @@ public class UserInterface extends SettingsPreferenceFragment implements
     CheckBoxPreference mLongPressAppTasker;
     CheckBoxPreference mDisableScreenshotSound;
     ListPreference mRecentAppSwitcher;
+    ListPreference mHomeLongpress;
     String mCustomLabelText = null;
 
     @Override
@@ -116,12 +118,6 @@ public class UserInterface extends SettingsPreferenceFragment implements
         mDisableBugMailer = (CheckBoxPreference) findPreference("disable_bugmailer");
         mDisableBugMailer.setChecked(!new File("/system/bin/bugmailer.sh").exists());
 
-        /* DISABLED TILL WE HAVE FRAMEWORKS SUPPORT
-mLongPressAppTasker = (CheckBoxPreference) findPreference("longpress_app_tasker");
-mLongPressAppTasker.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
-Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
-*/
-
         mDisableScreenshotSound = (CheckBoxPreference) findPreference(PREF_DISABLE_SCREENSHOT_SOUND);
         mDisableScreenshotSound.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.SCREENSHOT_CAMERA_SOUND, 0) == 1);
@@ -138,7 +134,16 @@ Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
             ((PreferenceGroup) findPreference("crt")).removePreference(mCrtOnAnimation);
         }
 
-        mDisableBootAudio = (CheckBoxPreference) findPreference(PREF_DISABLE_BOOT_AUDIO);        
+        mDisableBootAudio = (CheckBoxPreference) findPreference(PREF_DISABLE_BOOT_AUDIO);
+
+        mHomeLongpress = (ListPreference) findPreference(PREF_HOME_LONGPRESS);
+        mHomeLongpress.setOnPreferenceChangeListener(this);
+        mHomeLongpress.setValue(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.NAVIGATION_BAR_HOME_LONGPRESS, -1) + "");
+
+        if (!hasHardwareButtons) {
+            ((PreferenceGroup) findPreference("mics")).removePreference(mHomeLongpress);
+        }
 
         // update summeries that should be dynamic
         updateListPrefs();
@@ -264,7 +269,6 @@ Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
                     Settings.System.SCREENSHOT_CAMERA_SOUND, checked ? 1 : 0);
             return true;
         }
-
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
@@ -281,6 +285,11 @@ Settings.Secure.LONGPRESS_APP_TASKER_INTENT, 0) == 1));
             Settings.System.putInt(getActivity().getContentResolver(),
                 Settings.System.RECENT_APP_SWITCHER, val);
             Helpers.restartSystemUI();
+            return true;
+        } else if (preference == mHomeLongpress) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                Settings.System.NAVIGATION_BAR_HOME_LONGPRESS,
+                Integer.parseInt((String) newValue));
             return true;
         }
 

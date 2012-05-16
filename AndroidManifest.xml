@@ -85,13 +85,6 @@
                 <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.android.settings.notificationlight.NotificationLightSettings"
-            android:label="Led Options" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.lsr.control.SHORTCUT" />
-            </intent-filter>
-        </activity>
         <activity android:name=".fragments.StatusBarGeneral"
             android:label="General" >
             <intent-filter >

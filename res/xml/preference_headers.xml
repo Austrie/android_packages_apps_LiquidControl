@@ -13,7 +13,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header
@@ -48,16 +47,16 @@
         android:title="@string/functionality" />
 
         <header
+            android:id="@+id/goo_im"
+            android:title="@string/goo_im_title"
+            android:icon="@drawable/ic_startup"
+            android:fragment="com.liquid.control.installer.GooImSupport" />
+
+        <header
             android:id="@+id/power_saver"
             android:title="@string/power_saver"
             android:icon="@drawable/ic_powersaver"
             android:fragment="com.liquid.control.fragments.PowerSaver" />
-
-        <header
-            android:id="@+id/led"
-            android:title="@string/led_options"
-            android:icon="@drawable/ic_led"
-            android:fragment="com.android.settings.notificationlight.NotificationLightSettings" />
 
         <header
             android:id="@+id/open_recovery"
@@ -106,12 +105,6 @@
             android:title="@string/backup_string"
             android:icon="@drawable/ic_backup"
             android:fragment="com.liquid.control.fragments.BackupRestore" />
-
-        <header
-            android:id="@+id/goo_im"
-            android:title="@string/goo_im_title"
-            android:icon="@drawable/ic_startup"
-            android:fragment="com.liquid.control.installer.GooImSupport" />
 
         <header
             android:id="@+id/performance"

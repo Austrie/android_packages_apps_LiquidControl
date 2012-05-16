@@ -72,9 +72,9 @@ public class GooImSupport extends SettingsPreferenceFragment {
 
     private static final boolean DEBUG = true;
     private static final String TAG = "LC : GooImSupport";
-    private static final String BOARD_NAME = android.os.Build.BOARD;
+    private static final String DEVICE_NAME = android.os.Build.DEVICE;
 
-    public static final String LIQUID_JSON_PARSER = "http://goo.im/json2&path=/devs/teamliquid/vzw";
+    public static final String LIQUID_JSON_PARSER = "http://goo.im/json2&path=/devs/teamliquid/";
     public static final String JSON_PARSER = "http://goo.im/json2&path=/devs&ro_board=toro";
     private static final String FORMATED_JSON_PATH = "http://goo.im/json2&path=%s&ro_board=toro";
     private static final String PREF_VERSIONS = "version_preference_screens";
@@ -96,14 +96,14 @@ public class GooImSupport extends SettingsPreferenceFragment {
         mHandler = new Handler();
         addPreferencesFromResource(R.xml.open_recovery);
         mVersionViews = (PreferenceCategory) findPreference(PREF_VERSIONS);
-        Log.d(TAG, "Board name: " + BOARD_NAME);
+        Log.d(TAG, "Device name: " + android.os.Build.DEVICE);
         setHasOptionsMenu(true);
 
         // else if rotated while on another dev's
         // product list we reload our products page
         if (state == null) {
             GetAvailableVersions listPop = new GetAvailableVersions();
-            listPop.PARSER = LIQUID_JSON_PARSER;
+            listPop.PARSER = LIQUID_JSON_PARSER + (DEVICE_NAME.contains("toro") ? "vzw" : "gsm");
             listPop.execute();
         }
     }

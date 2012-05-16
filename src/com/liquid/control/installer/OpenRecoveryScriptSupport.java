@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 The LiquidSmoothROMs Project
- * author JBirdVegas 2012
+ * author JBirdVegas@gmail.com 2012
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -170,7 +170,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                 try {
                     File mZip = new File(ZIP_PATH);
                     String mbs = Long.toString(mZip.length() /  1024) + " MB";
-                    if (DEBUG) Log.d(TAG, String.format("file: %s size: %s", mbs, mZip.getAbsolutePath()));
+                    if (DEBUG) Log.d(TAG, String.format("file: %s size: %s", mZip.getAbsolutePath(), mbs));
                     mFileInfo.setTitle("File: " + mZip.getName());
                     mFileInfo.setSummary("Path: " + mZip.getAbsolutePath());
                     Log.d(TAG, "filepath found: adding md5 preference and begining md5 calculation");

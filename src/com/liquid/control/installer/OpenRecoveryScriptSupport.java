@@ -80,9 +80,6 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
     private static final String LINE_RETURN = "\n";
     private static final String MOUNT_SYSTEM = "mount system";
     private static final String UNMOUNT_SYSTEM = "unmount system";
-    private static final String FAIL = "fail";
-    private static final String PASS = "pass";
-    private static final String NEXT = "moving_on";
     private final CMDProcessor cmd = new CMDProcessor();
     private static String ZIP_PATH = null;
     private static final String LIQUID_JSON_PARSER = com.liquid.control.installer.GooImSupport.LIQUID_JSON_PARSER;

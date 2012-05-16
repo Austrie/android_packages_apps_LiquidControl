@@ -74,7 +74,8 @@ public class GooImSupport extends SettingsPreferenceFragment {
     private static final String TAG = "LC : GooImSupport";
     private static final String DEVICE_NAME = android.os.Build.DEVICE;
 
-    public static final String LIQUID_JSON_PARSER = "http://goo.im/json2&path=/devs/teamliquid/";
+    public static final String LIQUID_JSON_PARSER = "http://goo.im/json2&path=/devs/teamliquid/"
+            + (DEVICE_NAME.contains("toro") ? "vzw" : "gsm");
     public static final String JSON_PARSER = "http://goo.im/json2&path=/devs&ro_board=toro";
     private static final String FORMATED_JSON_PATH = "http://goo.im/json2&path=%s&ro_board=toro";
     private static final String PREF_VERSIONS = "version_preference_screens";
@@ -103,7 +104,7 @@ public class GooImSupport extends SettingsPreferenceFragment {
         // product list we reload our products page
         if (state == null) {
             GetAvailableVersions listPop = new GetAvailableVersions();
-            listPop.PARSER = LIQUID_JSON_PARSER + (DEVICE_NAME.contains("toro") ? "vzw" : "gsm");
+            listPop.PARSER = LIQUID_JSON_PARSER;
             listPop.execute();
         }
     }

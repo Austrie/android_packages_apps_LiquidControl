@@ -547,5 +547,10 @@
     <string name="verify_md5_fail">Goo.im failed to verify md5</string>
     <string name="other_devs_list">Goo.im devs list</string>
     <string name="other_gooim_devs_menu_title">Cheat on TeamLiquid</string>
-
+    <string name="username">Username: </string>
+    <string name="password">Password: </string>
+    <string name="gooim_supporters_menu_title">GooIm Supporters</string>
+    <string name="dev_list">Dev List</string>
+    <string name="button_ok">Ok</string>
+    <string name="button_cancel">Canecl</string>
 </resources>

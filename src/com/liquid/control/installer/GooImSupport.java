@@ -50,6 +50,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
@@ -488,6 +489,10 @@ public class GooImSupport extends SettingsPreferenceFragment {
 
                 // set password mode
                 password.setTransformationMethod(new android.text.method.PasswordTransformationMethod().getInstance());
+
+                // inform the user we use a cipher to store their password
+                Toast.makeText(mContext, getString(R.string.inform_user_about_cipher),
+                            Toast.LENGTH_LONG).show();
 
                 // set textviews
                 username_textview.setText(getString(R.string.username));

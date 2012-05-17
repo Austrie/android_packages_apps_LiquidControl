@@ -552,4 +552,5 @@
     <string name="dev_list">Dev List</string>
     <string name="button_ok">Ok</string>
     <string name="button_cancel">Canecl</string>
+    <string name="inform_user_about_cipher">LiquidControl stores your password using 128 bit AES encryption</string>
 </resources>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
+ * Copyright (C) 2012 The LiquidSmoothROMs Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,6 @@ import android.widget.TextView;
 public class LiquidActivity extends PreferenceActivity implements ButtonBarHandler {
 
     private static String TAG = "LiquidControl :LiquidActivity";
-    private static boolean hasNotificationLed;
-
     protected HashMap<Integer, Integer> mHeaderIndexMap = new HashMap<Integer, Integer>();
     private List<Header> mHeaders;
 
@@ -64,14 +62,6 @@ public class LiquidActivity extends PreferenceActivity implements ButtonBarHandl
     public void onCreate(Bundle savedInstanceState) {
 
         mTablet = Settings.System.getInt(getContentResolver(), Settings.System.IS_TABLET, 0) == 1;
-
-        try {
-            hasNotificationLed = getResources().getBoolean(R.bool.has_notification_led);
-        } catch (NullPointerException ne) {
-            // because users change shit we always play it safe
-            // and attempt to handle gracefully without user involvement
-            hasNotificationLed = false;
-        }
 
         mInLocalHeaderSwitch = true;
         super.onCreate(savedInstanceState);
@@ -161,11 +151,7 @@ public class LiquidActivity extends PreferenceActivity implements ButtonBarHandl
             // Ids are integers, so downcasting
             int id = (int) header.id;
 
-            if (id == R.id.led) {
-                if (!hasNotificationLed) {
-                    target.remove(header);
-                }
-            } else if (id == R.id.power_saver && mTablet)
+            if (id == R.id.power_saver && mTablet)
                 target.remove(header);
             else if (id == R.id.functionality & mTablet)
                 target.remove(header);

@@ -78,8 +78,6 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
     private static final String SHARED_BACKUP = "prev_backup";
     private static final String SHARED_BACKUP_COMPRESSION = "prev_backup_compression";
     private static final String LINE_RETURN = "\n";
-    private static final String MOUNT_SYSTEM = "mount system";
-    private static final String UNMOUNT_SYSTEM = "unmount system";
     private final CMDProcessor cmd = new CMDProcessor();
     private static String ZIP_PATH = null;
     private static final String LIQUID_JSON_PARSER = com.liquid.control.installer.GooImSupport.LIQUID_JSON_PARSER;
@@ -280,7 +278,6 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             // shouldn't happen but you never know...
             if (filePath_ == null) return;
             if (DEBUG) Log.d(TAG, "onPreExecute prepare for worker thread");
-            script.append(MOUNT_SYSTEM + LINE_RETURN);
             if (backup_) {
                 script.append("backup SDCB");
                 if (backupCompression_) script.append("O");
@@ -290,7 +287,6 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             if (wipeCache_) script.append("wipe dalvik" + LINE_RETURN);
             if (wipeDalvik_) script.append("wipe dalvik" + LINE_RETURN);
             script.append("install " + filePath_ + LINE_RETURN);
-            script.append(UNMOUNT_SYSTEM + LINE_RETURN);
             script_to_be_written_ = script.toString();
         }
 

@@ -44,6 +44,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -223,7 +224,7 @@ public class GooImSupport extends SettingsPreferenceFragment {
                     mVersionPresent.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference p) {
-                            PARSED_WEBSITE = JSONshort_url;
+                            PARSED_WEBSITE = "http://goo.im" + JSONpath;
                             showDialog(WEB_VIEW);
                             return true;
                         }
@@ -304,10 +305,10 @@ public class GooImSupport extends SettingsPreferenceFragment {
                         PreferenceScreen mDevsFiles = getPreferenceManager().createPreferenceScreen(mContext);
                         final String JSONfilename = obj_.getString("filename");
                         final String JSONid = obj_.getString("id");
-                        final String JSONpath = obj_.getString("path"); // unused right now
+                        final String JSONpath = obj_.getString("path");
                         final String JSONmd5 = obj_.getString("md5");
                         final String JSONtype = obj_.getString("type"); // unused right now
-                        final String JSONshort_url = obj_.getString("short_url");
+                        final String JSONshort_url = obj_.getString("short_url"); // unused right now
 
                         mDevsFiles.setKey(JSONid);
                         // TODO we should prob pull a version from this for the title
@@ -316,7 +317,7 @@ public class GooImSupport extends SettingsPreferenceFragment {
                         mDevsFiles.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                             @Override
                             public boolean onPreferenceClick(Preference p) {
-                                PARSED_WEBSITE = JSONshort_url;
+                                PARSED_WEBSITE = "http://goo.im" + JSONpath;
                                 showDialog(WEB_VIEW);
                                 return true;
                             }
@@ -433,22 +434,31 @@ public class GooImSupport extends SettingsPreferenceFragment {
             default:
             case WEB_VIEW:
                 String mAddress;
+                boolean mUseHash = false;
 
                 String hash = mSharedPrefs.getString(KEY_GOOIM_SUPPORTER_HASHCODE, null);
                 if (hash != null) {
                     mAddress = PARSED_WEBSITE + "&hash=" + hash;
+                    mUseHash = true;
                 } else {
                     mAddress = PARSED_WEBSITE;
+                    mUseHash = false;
                 }
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View customLayout = inflater.inflate(R.layout.webview_dialog, null);
 
                 AlertDialog.Builder mDownloadFile = new AlertDialog.Builder(getActivity());
-                mDownloadFile.setView(customLayout);
-                final WebView mWebView = (WebView) customLayout.findViewById(R.id.webview1);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View webview_layout = inflater.inflate(R.layout.webview_dialog, null);
+
+                final WebView mWebView = (WebView) webview_layout.findViewById(R.id.webview1);
+
                 mWebView.getSettings().setJavaScriptEnabled(true);
                 mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
                 mWebView.getSettings().setSupportMultipleWindows(false);
+
+                // passed website
+                if (DEBUG) Log.d(TAG, "addressing website: " + mAddress);
+
+                mDownloadFile.setView(webview_layout);
 
                 if (mAddress != null) mWebView.loadUrl(mAddress);
                 PARSED_WEBSITE = null;
@@ -458,7 +468,7 @@ public class GooImSupport extends SettingsPreferenceFragment {
                 // we remove the dialog that called the webview
                 // there is no public method to kill webviews
                 // so user must be exit on their own
-                Handler mKillDialog = new Handler();
+                Handler mKillDialogs = new Handler();
                 Runnable mReleaseDialog = new Runnable() {
                     public void run() {
                         mWebView.destroy();
@@ -471,8 +481,14 @@ public class GooImSupport extends SettingsPreferenceFragment {
                     }
                 };
 
-                mKillDialog.postDelayed(mReleaseWebView, 14 * 1000);
-                mKillDialog.postDelayed(mReleaseDialog, 2 * 1000);
+                if (mUseHash) {
+                    /* user shouldn't have delay so drop dialogs quicker */
+                    mKillDialogs.postDelayed(mReleaseWebView, 8 * 1000);
+                    mKillDialogs.postDelayed(mReleaseDialog, 5 * 1000);
+                } else {
+                    mKillDialogs.postDelayed(mReleaseWebView, 14 * 1000);
+                    mKillDialogs.postDelayed(mReleaseDialog, 9 * 1000);
+                }
                 return ad_0;
             case GOOIM_SUPPORTER_DIALOG:
                 LayoutInflater inflater_ = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);

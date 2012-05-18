@@ -212,6 +212,7 @@ public class GooImSupport extends SettingsPreferenceFragment {
                     final String JSONmd5 = JSONObject.getString("md5");
                     final String JSONtype = JSONObject.getString("type");
                     final String JSONshort_url = JSONObject.getString("short_url");
+                    final String JSONdownloads = JSONObject.getString("downloads");
 
                     // debug
                     String log_formatter = "filename:{%s}	id:{%s}	path:{%s}	md5:{%s}	type:{%s}	short_url:{%s}";
@@ -224,6 +225,8 @@ public class GooImSupport extends SettingsPreferenceFragment {
                     mVersionPresent.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference p) {
+                            Toast.makeText(mContext, "This file has been downloaded " + JSONdownloads + " + times",
+                                    Toast.LENGTH_LONG).show();
                             PARSED_WEBSITE = "http://goo.im" + JSONpath;
                             showDialog(WEB_VIEW);
                             return true;
@@ -307,6 +310,7 @@ public class GooImSupport extends SettingsPreferenceFragment {
                         final String JSONid = obj_.getString("id");
                         final String JSONpath = obj_.getString("path");
                         final String JSONmd5 = obj_.getString("md5");
+                        final String JSONdownloads = obj_.getString("downloads");
                         final String JSONtype = obj_.getString("type"); // unused right now
                         final String JSONshort_url = obj_.getString("short_url"); // unused right now
 
@@ -317,6 +321,8 @@ public class GooImSupport extends SettingsPreferenceFragment {
                         mDevsFiles.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                             @Override
                             public boolean onPreferenceClick(Preference p) {
+                                Toast.makeText(mContext, "This file has been downloaded " + JSONdownloads + " + times",
+                                    Toast.LENGTH_LONG).show();
                                 PARSED_WEBSITE = "http://goo.im" + JSONpath;
                                 showDialog(WEB_VIEW);
                                 return true;

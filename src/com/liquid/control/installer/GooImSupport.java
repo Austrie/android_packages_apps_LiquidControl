@@ -55,6 +55,7 @@ import android.widget.Toast;
 
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
+import com.liquid.control.widgets.GooImFile;
 import com.liquid.control.util.Crypto;
 
 import java.io.BufferedReader;
@@ -204,6 +205,7 @@ public class GooImSupport extends SettingsPreferenceFragment {
                 if (DEBUG) Log.d(TAG, "JSONArray.length() is: " + jsArray.length());
                 for (int i = 0; i < jsArray.length(); i++) {
                     PreferenceScreen mVersionPresent = getPreferenceManager().createPreferenceScreen(mContext);
+
                     // parse strings from JSONObject
                     JSONObject JSONObject = (JSONObject) jsArray.get(i);
                     final String JSONfilename = JSONObject.getString("filename");
@@ -212,21 +214,18 @@ public class GooImSupport extends SettingsPreferenceFragment {
                     final String JSONmd5 = JSONObject.getString("md5");
                     final String JSONtype = JSONObject.getString("type");
                     final String JSONshort_url = JSONObject.getString("short_url");
-                    final String JSONdownloads = JSONObject.getString("downloads");
+                    final int JSONdownloads = JSONObject.getInt("downloads");
 
                     // debug
                     String log_formatter = "filename:{%s}	id:{%s}	path:{%s}	md5:{%s}	type:{%s}	short_url:{%s}";
                     if (DEBUG) Log.d(TAG, String.format(log_formatter, JSONfilename, JSONid, JSONpath, JSONmd5, JSONtype, JSONshort_url));
 
-                    mVersionPresent.setKey(JSONid);
                     // TODO we should prob pull a version from this for the title
                     mVersionPresent.setTitle(JSONfilename);
-                    mVersionPresent.setSummary(JSONtype);
+                    mVersionPresent.setSummary("Downloads: " + JSONdownloads + "\nmd5: " + JSONmd5);
                     mVersionPresent.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference p) {
-                            Toast.makeText(mContext, "This file has been downloaded " + JSONdownloads + " + times",
-                                    Toast.LENGTH_LONG).show();
                             PARSED_WEBSITE = "http://goo.im" + JSONpath;
                             showDialog(WEB_VIEW);
                             return true;
@@ -317,12 +316,11 @@ public class GooImSupport extends SettingsPreferenceFragment {
                         mDevsFiles.setKey(JSONid);
                         // TODO we should prob pull a version from this for the title
                         mDevsFiles.setTitle(JSONfilename);
-                        mDevsFiles.setSummary(JSONtype);
+                        mDevsFiles.setSummary("Downloads: " + JSONdownloads + "\nmd5: " + JSONmd5);
+                        mDevsFiles.setKey(JSONid);
                         mDevsFiles.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                             @Override
                             public boolean onPreferenceClick(Preference p) {
-                                Toast.makeText(mContext, "This file has been downloaded " + JSONdownloads + " + times",
-                                    Toast.LENGTH_LONG).show();
                                 PARSED_WEBSITE = "http://goo.im" + JSONpath;
                                 showDialog(WEB_VIEW);
                                 return true;

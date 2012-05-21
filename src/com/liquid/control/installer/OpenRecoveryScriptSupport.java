@@ -357,7 +357,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
             try {
                 complete = MessageDigest.getInstance("MD5");
             } catch (NoSuchAlgorithmException noDice) {
-                noDice.printStackTrace(); //major error we should display stack trace
+                Log.e(TAG, "Couldn't find md5 Algorithm", noDice); //major error we should display stack trace
                 return null;
             }
             try {
@@ -441,7 +441,7 @@ public class OpenRecoveryScriptSupport extends SettingsPreferenceFragment {
                         foundit = true;
                         gooimChecksum = JSONmd5;
                         return null;
-                    }                    
+                    }  
                 }
 
                 // ^ we check our lists then check other

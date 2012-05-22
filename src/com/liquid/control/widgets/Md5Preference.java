@@ -3,7 +3,6 @@ package com.liquid.control.widgets;
 
 import android.content.Context;
 import android.preference.Preference;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.util.AttributeSet;
@@ -22,10 +21,7 @@ public class Md5Preference extends Preference {
 
     public Md5Preference(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public Md5Preference(Context context) {
-        super(context);
+        if (DEBUG) Log.d(TAG, "FileInfoPrefenece Object created");
     }
 
     LinearLayout widgetFrameView;
@@ -40,20 +36,14 @@ public class Md5Preference extends Preference {
     }
 
     public void isMatch(boolean match_) {
-        if (mView == null) {
-            Log.d(TAG, "mView is null returning...");
+        if (mView == null)
             return;
-        }
 
-        Log.d(TAG, "generating image");
         iView = new ImageView(getContext());
+        if (widgetFrameView == null)
+            return;
         widgetFrameView = ((LinearLayout) mView
                 .findViewById(android.R.id.widget_frame));
-
-        if (widgetFrameView == null) {
-            Log.d(TAG, "widgetFrameView is null returning...");
-            return;
-        }
 
         widgetFrameView.setVisibility(View.VISIBLE);
         widgetFrameView.setPadding(
@@ -67,10 +57,15 @@ public class Md5Preference extends Preference {
         if (count > 0) {
             widgetFrameView.removeViews(0, count);
         }
+
         widgetFrameView.setMinimumWidth(0);
         iView.setImageResource(match_ ? R.drawable.ors_match : R.drawable.ors_fail);
-        widgetFrameView.addView(iView);
 
-        Log.d(TAG, "image is child #" + count + "	total children:" + widgetFrameView.getChildCount());
+        // move pass/fail icon to the left else
+        // it gets pushed off the screen right
+        widgetFrameView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT, 0.0f));
+
+        widgetFrameView.addView(iView);
     }
 }

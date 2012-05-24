@@ -553,4 +553,24 @@
     <string name="button_ok">Ok</string>
     <string name="button_cancel">Canecl</string>
     <string name="inform_user_about_cipher">LiquidControl stores your password using 128 bit AES encryption</string>
+
+    <!-- Dynamic Changelog -->
+    <string name="dynamic_changelog">Dynamic ChangeLog</string>
+    <string name="initial_changelog_category_title">Changelog</string>
+    <string name="changelog_menu_branch_title">Branch</string>
+    <string name="changelog_menu_fav_projects_title">Favorite Projects</string>
+    <string name="changelog_menu_webview_title">WebView</string>
+    <string name="button_close">Close</string>
+    <string name="button_webview">WebView</string>
+    <string name="commit_extended_info_title">Extended Commit Info</string>
+    <string name="commit_message">Commit Message</string>
+    <string name="commit_date">Commit Date</string>
+    <string name="commit_sha">Commit SHA-1 Hash</string>
+    <string name="next_commits_page_title">More...</string>
+    <string name="next_commits_page_summary">display next 30 commits</string>
+    <string name="loading_commits">Loading commits...</string>
+    <string name="commits_title">Commits</string>
+    <string name="loading_projects">Loading projects list...</string>
+    <string name="org_projects">Organization projects</string>
+
 </resources>

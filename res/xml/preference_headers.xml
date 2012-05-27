@@ -31,12 +31,6 @@
             android:fragment="com.liquid.control.fragments.Navbar" />
 
         <header
-            android:id="@+id/lockscreens"
-            android:title="@string/lockscreen_options"
-            android:icon="@drawable/ic_lockscreens"
-            android:fragment="com.liquid.control.fragments.Lockscreens" />
-
-        <header
             android:id="@+id/power_menu"
             android:title="@string/power_menu_optons"
             android:icon="@drawable/ic_power_menu"

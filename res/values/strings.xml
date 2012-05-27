@@ -23,7 +23,6 @@
     <string name="general_ui">General</string>
     <string name="user_interface">Interface</string>
     <string name="light_levels_title">Light Levels</string>
-    <string name="lockscreen_options">Lockscreens</string>
     <string name="power_menu_optons">Powermenu</string>
     <string name="functionality">Functionality</string>
     <string name="power_saver">Powersaver</string>
@@ -108,47 +107,6 @@
     <string name="disable_bootaudio_title">Disable boot audio</string>
     <string name="disable_bootaudio_summary">Quiet.</string>
     <string name="disable_bootaudio_summary_disabled">To enable boot audio, you must have an MP3 file at \n/system/media/boot_audio.mp3</string>
-
-    <!-- Lockscreen -->
-    <string name="title_pref_lockscreen_quad_targets">Quad Lockscreen</string>	
-    <string name="summary_pref_lockscreen_quad_targets">Four shortcuts on lockscreen</string>
-    <string name="title_pref_lockscreen_octo_targets">Octo Lockscreen</string>	
-    <string name="summary_pref_lockscreen_octo_targets">Eight shortcuts on lockscreen</string>
-    <string name="title_pref_lockscreen_menu_unlock">Menu Unlock</string>
-    <string name="summary_pref_lockscreen_menu_unlock">Legacy menu icon unlocks screen</string>
-    <string name="title_lockscreen_user_timeout_override">Lockscreen Timeout</string>
-    <string name="summary_lockscreen_user_timeout_override">Default timeout after screen is off</string>
-    <string name="show_lock_before_unlock_title">Show Before Unlock</string>
-    <string name="show_lock_before_unlock_summary">Show lockscreen before secure unlock</string>
-    <string name="lockscreen_battery_title">Battery Percent</string>
-    <string name="lockscreen_battery_summary">Always show percentage on lockscreen</string>
-    <string name="volume_wake_title">Volume Wake</string>
-    <string name="volume_wake_summary">Tapping volume keys wakes phone</string>
-    <string name="volume_music_controls_title">Volume Controls</string>
-    <string name="volume_music_controls_summary">Longpress volume keys skips tracks</string>
-    <string name="lockscreen_show_nav_title">Navigation Bar</string>
-    <string name="lockscreen_show_nav_summary">Hide the navbar on the lockscreen</string>
-    <string name="lockscreen_text_color_title">Lockscreen Text Color</string>
-    
-    <!-- Targets -->
-    <string name="custom_app_n_dialog_title">Choose Action For %1$s</string>
-    <string name="custom_app_n">Custom Target %1$s</string>
-    <string name="lockscreen_targets">Lockscreen Targets</string>
-    <string name="lockscreen_action_unlock">Unlock</string>
-    <string name="lockscreen_action_sound">Sound</string>
-    <string name="lockscreen_action_camera">Camera</string>
-    <string name="lockscreen_action_phone">Phone</string>
-    <string name="lockscreen_action_mms">Messaging</string>
-    <string name="lockscreen_action_none">Nothing</string>
-    <string name="lockscreen_action_flashlight">Flashlight</string>
-    <string name="lockscreen_landscape_title">Horizontal Lockscreen</string>
-    <string name="lockscreen_landscape_summary">Enable horizontal lock orientation</string>
-    <string name="lockscreen_quick_unlock_control_title">Quick Unlock</string>
-    <string name="lockscreen_quick_unlock_control_summary">Unlock secure lock without enter</string>
-    <string name="enable_fast_torch_title">Fast Torch</string>
-    <string name="enable_fast_torch_summary">Screen is off, long-press power key</string>
-    <string name="lockscreen_wallpaper_title">Lockscreen Wallpaper</string>
-    <string name="lockscreen_wallpaper_summary">Remove wallpaper from menu above</string>
 
     <!-- Powermenu -->
     <string name="title_show_airplane">Show Airplane</string>

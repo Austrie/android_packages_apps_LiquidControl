@@ -592,9 +592,9 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 } else {
                     Toast.makeText(getActivity(), "Setting icon failed! Is your SD mounted?",
                             Toast.LENGTH_SHORT).show();
-                }
+                } */
 
-            } */
+            } 
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

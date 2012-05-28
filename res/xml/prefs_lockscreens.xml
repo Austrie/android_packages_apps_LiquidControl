@@ -27,11 +27,11 @@
         android:title="@string/lockscreen_text_color_title"
         android:defaultValue="#ffffffff" />
 
-	<ListPreference
+<!-- <ListPreference
 		android:entries="@array/pref_lockscreen_options_entries"
 		android:entryValues="@array/pref_lockscreen_options_values"
 		android:key="pref_lockscreen_layout"
-		android:title="Lockscreen Style" />
+		android:title="Lockscreen Style" /> -->
 
 	<CheckBoxPreference
 		android:key="pref_lockscreen_menu_unlock"
@@ -89,9 +89,9 @@
 
 	</PreferenceCategory>
 
-    <PreferenceCategory
+<!-- <PreferenceCategory
         android:key="lockscreen_targets"
         android:title="@string/lockscreen_targets">
-    </PreferenceCategory>
+    </PreferenceCategory> -->
 
 </PreferenceScreen>

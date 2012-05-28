@@ -77,7 +77,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
 
     private static final String PREF_MENU = "pref_lockscreen_menu_unlock";
     private static final String PREF_USER_OVERRIDE = "lockscreen_user_timeout_override";
-    private static final String PREF_LOCKSCREEN_LAYOUT = "pref_lockscreen_layout";
+    //private static final String PREF_LOCKSCREEN_LAYOUT = "pref_lockscreen_layout";
     private static final String PREF_VOLUME_WAKE = "volume_wake";
     private static final String PREF_VOLUME_MUSIC = "volume_music_controls";
     private static final String PREF_LOCKSCREEN_BATTERY = "lockscreen_battery";
@@ -85,14 +85,14 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     private static final String PREF_SHOW_LOCK_BEFORE_UNLOCK = "show_lock_before_unlock";
 
     public static final int REQUEST_PICK_WALLPAPER = 199;
-    public static final int REQUEST_PICK_CUSTOM_ICON = 200;
-    public static final int SELECT_ACTIVITY = 2;
+    //public static final int REQUEST_PICK_CUSTOM_ICON = 200;
+    //public static final int SELECT_ACTIVITY = 2;
     public static final int SELECT_WALLPAPER = 3;
     private static final String WALLPAPER_NAME = "lockscreen_wallpaper.jpg";
 
     CheckBoxPreference menuButtonLocation;
     CheckBoxPreference mLockScreenTimeoutUserOverride;
-    ListPreference mLockscreenOption;
+    //ListPreference mLockscreenOption;
     CheckBoxPreference mVolumeWake;
     CheckBoxPreference mVolumeMusic;
     CheckBoxPreference mLockscreenLandscape;
@@ -101,11 +101,11 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     ColorPickerPreference mLockscreenTextColor;
     CheckBoxPreference mShowLockBeforeUnlock;
 
-    private int currentIconIndex;
-    private Preference mCurrentCustomActivityPreference;
-    private String mCurrentCustomActivityString;
-    private ShortcutPickerHelper mPicker;
-    ArrayList<String> keys = new ArrayList<String>();
+    //private int currentIconIndex;
+    //private Preference mCurrentCustomActivityPreference;
+    //private String mCurrentCustomActivityString;
+    //private ShortcutPickerHelper mPicker;
+    //ArrayList<String> keys = new ArrayList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,10 +127,10 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         mLockScreenTimeoutUserOverride.setChecked(Settings.Secure.getInt(getActivity()
                 .getContentResolver(), Settings.Secure.LOCK_SCREEN_LOCK_USER_OVERRIDE, 0) == 1);
 
-        mLockscreenOption = (ListPreference) findPreference(PREF_LOCKSCREEN_LAYOUT);
-        mLockscreenOption.setOnPreferenceChangeListener(this);
-        mLockscreenOption.setValue(Settings.System.getInt(
-                getActivity().getContentResolver(), Settings.System.LOCKSCREEN_LAYOUT, 2) + "");
+        //mLockscreenOption = (ListPreference) findPreference(PREF_LOCKSCREEN_LAYOUT);
+        //mLockscreenOption.setOnPreferenceChangeListener(this);
+        //mLockscreenOption.setValue(Settings.System.getInt(
+                //getActivity().getContentResolver(), Settings.System.LOCKSCREEN_LAYOUT, 2) + "");
 
         mShowLockBeforeUnlock = (CheckBoxPreference) findPreference(PREF_SHOW_LOCK_BEFORE_UNLOCK);
         mShowLockBeforeUnlock.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
@@ -165,7 +165,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         mLockscreenTextColor = (ColorPickerPreference) findPreference(PREF_LOCKSCREEN_TEXT_COLOR);
         mLockscreenTextColor.setOnPreferenceChangeListener(this);
 
-        refreshSettings();
+        //refreshSettings();
         setHasOptionsMenu(true);
     }
 
@@ -181,7 +181,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             mLockscreenWallpaper
                     .setSummary("No external storage available (/sdcard)");
         }
-        refreshSettings();
+        //refreshSettings();
     }
 
     @Override
@@ -239,9 +239,9 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         } else if (keys.contains(preference.getKey())) {
             return Settings.System.putInt(getActivity().getContentResolver(), preference.getKey(),
                     ((CheckBoxPreference) preference).isChecked() ? 1 : 0);
-        } else if (preference.getKey().startsWith("lockscreen_icon")) {
-            return true;
-        } else if (preference.getKey().startsWith("lockscreen_target")) {
+        //} else if (preference.getKey().startsWith("lockscreen_icon")) {
+        //    return true;
+        //} else if (preference.getKey().startsWith("lockscreen_target")) {
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -271,7 +271,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         return new File(Environment.getExternalStorageDirectory(), WALLPAPER_NAME);
     }
 
-    private Uri getTempFileUri() {
+/*    private Uri getTempFileUri() {
         return Uri.fromFile(new File(Environment.getExternalStorageDirectory(),
                 "tmp_icon_" + currentIconIndex + ".png"));
     }
@@ -381,7 +381,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
         return new BitmapDrawable(mContext.getResources(), bitmapOrig);
     }
     
-    private Drawable getLockscreenIconImage(int index) {
+     private Drawable getLockscreenIconImage(int index) {
         String uri = Settings.System.getString(getActivity().getContentResolver(),
                 Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES[index]);
 
@@ -471,12 +471,12 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             mCurrentCustomActivityPreference.setSummary(friendlyName);
             refreshSettings();
         }
-    }
+    } */
 
     @Override
     public boolean onPreferenceChange(Preference pref, Object newValue) {
         boolean handled = false;
-        if (pref == mLockscreenOption) {
+    /*    if (pref == mLockscreenOption) {
             int val = Integer.parseInt((String) newValue);
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.LOCKSCREEN_LAYOUT, val);
@@ -496,7 +496,8 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 refreshSettings();
             }
             return true;
-        } else if (pref == mLockscreenTextColor) {
+        } else */
+        if (pref == mLockscreenTextColor) {
             String hex = ColorPickerPreference.convertToARGB(Integer.valueOf(String
                     .valueOf(newValue)));
             pref.setSummary(hex);
@@ -506,7 +507,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
             if (DEBUG)
                 Log.d(TAG, String.format("new color hex value: %d", intHex));
             return true;
-        } else if (pref.getKey().startsWith("lockscreen_target")) {
+      /*  } else if (pref.getKey().startsWith("lockscreen_target")) {
             int index = Integer.parseInt(pref.getKey().substring(
                     pref.getKey().lastIndexOf("_") + 1));
 
@@ -521,7 +522,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                         Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS[index], "");
                 refreshSettings();
             }
-            return true;
+            return true; */
         }
         return false;
     }
@@ -558,7 +559,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 if (galleryImage.exists())
                     galleryImage.delete();
 
-            } else if (requestCode == ShortcutPickerHelper.REQUEST_PICK_SHORTCUT
+           /* } else if (requestCode == ShortcutPickerHelper.REQUEST_PICK_SHORTCUT
                     || requestCode == ShortcutPickerHelper.REQUEST_PICK_APPLICATION
                     || requestCode == ShortcutPickerHelper.REQUEST_CREATE_SHORTCUT) {
                 mPicker.onActivityResult(requestCode, resultCode, data);
@@ -593,7 +594,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                             Toast.LENGTH_SHORT).show();
                 }
 
-            }
+            } */
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

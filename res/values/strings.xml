@@ -110,10 +110,6 @@
     <string name="disable_bootaudio_summary_disabled">To enable boot audio, you must have an MP3 file at \n/system/media/boot_audio.mp3</string>
 
     <!-- Lockscreen -->
-    <string name="title_pref_lockscreen_quad_targets">Quad Lockscreen</string>	
-    <string name="summary_pref_lockscreen_quad_targets">Four shortcuts on lockscreen</string>
-    <string name="title_pref_lockscreen_octo_targets">Octo Lockscreen</string>	
-    <string name="summary_pref_lockscreen_octo_targets">Eight shortcuts on lockscreen</string>
     <string name="title_pref_lockscreen_menu_unlock">Menu Unlock</string>
     <string name="summary_pref_lockscreen_menu_unlock">Legacy menu icon unlocks screen</string>
     <string name="title_lockscreen_user_timeout_override">Lockscreen Timeout</string>
@@ -129,18 +125,6 @@
     <string name="lockscreen_show_nav_title">Navigation Bar</string>
     <string name="lockscreen_show_nav_summary">Hide the navbar on the lockscreen</string>
     <string name="lockscreen_text_color_title">Lockscreen Text Color</string>
-    
-    <!-- Targets -->
-    <string name="custom_app_n_dialog_title">Choose Action For %1$s</string>
-    <string name="custom_app_n">Custom Target %1$s</string>
-    <string name="lockscreen_targets">Lockscreen Targets</string>
-    <string name="lockscreen_action_unlock">Unlock</string>
-    <string name="lockscreen_action_sound">Sound</string>
-    <string name="lockscreen_action_camera">Camera</string>
-    <string name="lockscreen_action_phone">Phone</string>
-    <string name="lockscreen_action_mms">Messaging</string>
-    <string name="lockscreen_action_none">Nothing</string>
-    <string name="lockscreen_action_flashlight">Flashlight</string>
     <string name="lockscreen_landscape_title">Horizontal Lockscreen</string>
     <string name="lockscreen_landscape_summary">Enable horizontal lock orientation</string>
     <string name="lockscreen_quick_unlock_control_title">Quick Unlock</string>

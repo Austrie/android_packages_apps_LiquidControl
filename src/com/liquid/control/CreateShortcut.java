@@ -60,6 +60,8 @@ public class CreateShortcut extends LauncherActivity {
             return R.drawable.ic_performance;
         else if (c.equals("Powersaver"))
             return R.drawable.ic_powersaver;
+        else if (c.equals("Lockscreens"))
+            return R.drawable.ic_lockscreens;
         else if (c.equals("Navigation"))
             return R.drawable.ic_navigation_bar;
         else if (c.equals("Powermenu"))

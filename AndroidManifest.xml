@@ -64,6 +64,13 @@
                 <category android:name="com.lsr.control.SHORTCUT" />
             </intent-filter>
         </activity>
+        <activity android:name=".fragments.Lockscreens"
+            android:label="Lockscreens" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.lsr.control.SHORTCUT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".fragments.PowerMenu"
             android:label="Powermenu" >
             <intent-filter>

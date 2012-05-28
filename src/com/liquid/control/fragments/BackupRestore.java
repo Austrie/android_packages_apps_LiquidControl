@@ -832,19 +832,19 @@ public class BackupRestore extends SettingsPreferenceFragment {
         settingsArray.add(Settings.System.NAVIGATION_BAR_BUTTONS_QTY);
         settingsArray.add(Settings.System.NAVIGATION_BAR_GLOW_TINT);
         // Lockscreen
-        //settingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_TEXT_COLOR);
-        //settingsArray.add(Settings.System.LOCKSCREEN_LAYOUT);
-        //settingsArray.add(Settings.System.LOCKSCREEN_ENABLE_MENU_KEY);
-        //settingsArray.add(Settings.Secure.LOCK_SCREEN_LOCK_USER_OVERRIDE);
-        //settingsArray.add(Settings.System.SHOW_LOCK_BEFORE_UNLOCK);
-        //settingsArray.add(Settings.System.LOCKSCREEN_BATTERY);
-        //settingsArray.add(Settings.System.VOLUME_WAKE_SCREEN);
-        //settingsArray.add(Settings.System.VOLUME_MUSIC_CONTROLS);
-        //settingsArray.add(Settings.System.LOCKSCREEN_HIDE_NAV);
-        //settingsArray.add(Settings.System.LOCKSCREEN_LANDSCAPE);
-        //settingsArray.add(Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL);
-        //settingsArray.add(Settings.System.ENABLE_FAST_TORCH);
-        //settingsArray.add(Settings.System.LOCKSCREEN_4TAB);
+        settingsArray.add(Settings.System.LOCKSCREEN_CUSTOM_TEXT_COLOR);
+        settingsArray.add(Settings.System.LOCKSCREEN_LAYOUT);
+        settingsArray.add(Settings.System.LOCKSCREEN_ENABLE_MENU_KEY);
+        settingsArray.add(Settings.Secure.LOCK_SCREEN_LOCK_USER_OVERRIDE);
+        settingsArray.add(Settings.System.SHOW_LOCK_BEFORE_UNLOCK);
+        settingsArray.add(Settings.System.LOCKSCREEN_BATTERY);
+        settingsArray.add(Settings.System.VOLUME_WAKE_SCREEN);
+        settingsArray.add(Settings.System.VOLUME_MUSIC_CONTROLS);
+        settingsArray.add(Settings.System.LOCKSCREEN_HIDE_NAV);
+        settingsArray.add(Settings.System.LOCKSCREEN_LANDSCAPE);
+        settingsArray.add(Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL);
+        settingsArray.add(Settings.System.ENABLE_FAST_TORCH);
+        settingsArray.add(Settings.System.LOCKSCREEN_4TAB);
         //settingsArray.add(Settings.System.LOCKSCREEN_LOW_BATTERY);
         // Powermenu
         settingsArray.add(Settings.System.POWER_DIALOG_SHOW_AIRPLANE);

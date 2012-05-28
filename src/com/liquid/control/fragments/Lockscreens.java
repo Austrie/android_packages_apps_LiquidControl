@@ -56,8 +56,6 @@ import android.widget.Toast;
 
 import com.liquid.control.R;
 import com.liquid.control.SettingsPreferenceFragment;
-import com.liquid.control.util.ShortcutPickerHelper;
-import com.liquid.control.widgets.LockscreenItemPreference;
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 import java.io.File;
@@ -70,7 +68,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class Lockscreens extends SettingsPreferenceFragment implements
-        ShortcutPickerHelper.OnPickListener, OnPreferenceChangeListener {
+                OnPreferenceChangeListener {
 
     private static final String TAG = "Lockscreens";
     private static final boolean DEBUG = false;
@@ -105,7 +103,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
     //private Preference mCurrentCustomActivityPreference;
     //private String mCurrentCustomActivityString;
     //private ShortcutPickerHelper mPicker;
-    //ArrayList<String> keys = new ArrayList<String>();
+    ArrayList<String> keys = new ArrayList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -149,7 +147,7 @@ public class Lockscreens extends SettingsPreferenceFragment implements
                 .getContentResolver(), Settings.System.LOCKSCREEN_BATTERY, 0) == 1);
 
         mLockscreenWallpaper = findPreference("wallpaper");
-        mPicker = new ShortcutPickerHelper(this, this);
+        //mPicker = new ShortcutPickerHelper(this, this);
 
         for (String key : keys) {
             try {

@@ -941,8 +941,8 @@ public class BackupRestore extends SettingsPreferenceFragment {
         }
 
         // add String[] to ArrayList<String[]>
-        arrayOfStrings.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS);
-        arrayOfStrings.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES);
+        //arrayOfStrings.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ICONS);
+        //arrayOfStrings.add(Settings.System.LOCKSCREEN_CUSTOM_APP_ACTIVITIES);
         arrayOfStrings.add(Settings.System.NAVIGATION_BAR_GLOW_DURATION);
         arrayOfStrings.add(Settings.System.NAVIGATION_CUSTOM_APP_ICONS);
         arrayOfStrings.add(Settings.System.NAVIGATION_CUSTOM_ACTIVITIES);

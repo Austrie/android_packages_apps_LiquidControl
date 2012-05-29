@@ -500,9 +500,12 @@
     <string name="dev_amplified_title">amplified</string>
     <string name="dev_amplified_twitter">JacobVanCleve</string>
     <string name="dev_amplified_donate">http://bit.ly/H0ZFRV</string>
-	<string name="dev_austrie_title">Austrie</string>
-	<string name="dev_austrie_twitter"></string>
-	<string name="dev_austrie_donate"></string>
+    <string name="dev_amplified_title">blueharford</string>
+    <string name="dev_amplified_twitter">blueharford</string>
+    <string name="dev_amplified_donate">http://bit.ly/KNIaZM</string>
+    <string name="dev_austrie_title">Austrie</string>
+    <string name="dev_austrie_twitter"></string>
+    <string name="dev_austrie_donate"></string>
 
     <!-- Open Recovery -->
     <string name="open_recovery_cat_title">Versions found</string>

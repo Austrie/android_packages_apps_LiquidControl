@@ -56,8 +56,14 @@
             liquid:twitterHandle="@string/dev_amplified_twitter"
             liquid:donateLink="@string/dev_amplified_donate"
             liquid:avatar="@drawable/avatar_amplified" />
-			
-		<com.liquid.control.widgets.DeveloperPreference
+	
+	<com.liquid.control.widgets.DeveloperPreference
+            android:title="@string/dev_blueharford_title"
+            liquid:twitterHandle="@string/dev_blueharford_twitter"
+            liquid:donateLink="@string/dev_blueharford_donate"
+            liquid:avatar="@drawable/avatar_blueharford" />
+		
+	<com.liquid.control.widgets.DeveloperPreference
             android:title="@string/dev_austrie_title"
             liquid:twitterHandle="@string/dev_austrie_twitter"
             liquid:donateLink="@string/dev_austrie_donate"

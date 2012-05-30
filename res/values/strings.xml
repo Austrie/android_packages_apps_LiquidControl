@@ -544,9 +544,8 @@
     <!-- Dynamic Changelog -->
     <string name="dynamic_changelog">Dynamic ChangeLog</string>
     <string name="initial_changelog_category_title">Changelog</string>
-    <string name="changelog_menu_branch_title">Branch</string>
-    <string name="changelog_menu_fav_projects_title">Favorite Projects</string>
-    <string name="changelog_menu_webview_title">WebView</string>
+    <string name="changelog_menu_projects_title">View Projects List</string>
+    <string name="changelog_menu_commitlog_title">View Most Recent Commits</string>
     <string name="button_close">Close</string>
     <string name="button_webview">WebView</string>
     <string name="commit_extended_info_title">Extended Commit Info</string>
@@ -559,5 +558,10 @@
     <string name="commits_title">Commits</string>
     <string name="loading_projects">Loading projects list...</string>
     <string name="org_projects">Organization projects</string>
-
+    <string name="author_title">Author</string>
+    <string name="commit_committer_title">Committer</string>
+    <string name="sort_commits_title">Sort</string>
+    <string name="sort_commits_message">Commits are now in order by repository, would you like to sort them by date regardless of which repository in which they exist?</string>
+    <string name="button_sort">Sort by date</string>
+    <string name="button_donot_sort">Do not sort</string>
 </resources>

@@ -33,6 +33,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="18sp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/author_title"
+                android:layout_gravity="center" />
+
             <LinearLayout
                 android:id="@+id/author_container"
                 android:layout_width="match_parent"
@@ -53,6 +61,48 @@
 
                 <TextView
                     android:id="@+id/commit_author"
+                    android:paddingLeft="7.25sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="18sp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/commit_committer_title"
+                android:layout_gravity="center" />
+
+            <LinearLayout
+                android:id="@+id/committer_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="14.5sp"
+                    android:paddingRight="3.75sp"
+                    android:src="@drawable/committer_arrow" />
+
+                <ImageView
+                    android:id="@+id/committer_avatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:paddingLeft="14.5sp"
+                    android:paddingRight="7.25sp"
+                    android:paddingTop="14.5sp"
+                    android:paddingBottom="14.5sp"
+                    android:layout_gravity="center" />
+
+                <TextView
+                    android:id="@+id/commit_committer"
                     android:paddingLeft="7.25sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

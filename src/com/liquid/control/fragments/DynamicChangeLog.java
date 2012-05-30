@@ -51,6 +51,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,8 +68,21 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.TreeSet;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.HttpEntity;
@@ -82,7 +96,7 @@ import org.json.JSONObject;
 
 public class DynamicChangeLog extends SettingsPreferenceFragment {
     private static final boolean DEBUG = true;
-    private static final boolean JSON_SPEW = true;
+    private static final boolean JSON_SPEW = false;
     private static final String TAG = "DynamicChangeLog";
 
     // example of commit list from parser
@@ -103,30 +117,40 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
     private static final String PREF_CAT = "version_preference_screens"; //TODO use a more generic blank screen with category
     private static final int DEFAULT_FLING_SPEED = 60;
 
-    // classwide variables
+    // classwide static variables
     private static String BRANCH;
     private static boolean ARE_IN_PROJECT_PATH;
-    private static String GRAVATAR_URL;
+    private static boolean REMOVE_AUTHOR_LAYOUT;
+    private static boolean REMOVE_COMMITTER_LAYOUT;
+    private static String AUTHOR_GRAVATAR_URL;
+    private static String COMMITTER_GRAVATAR_URL;
     private static String COMMIT_AUTHOR;
+    private static String COMMIT_COMMITTER;
     private static String COMMIT_MESSAGE;
     private static String COMMIT_DATE;
     private static String COMMIT_SHA;
     private static String COMMIT_URL;
     private static String PROJECT;
+    private static Date LAST_UPDATE;
 
     // Dialogs (1001+)
     private static final int COMMIT_INFO_DIALOG = 1001;
+    private static final int SORT_COMMITS = 1002;
 
     // Menu item ids (101+)
-    private static final int MENU_ID_BRANCH = 101;
-    private static final int MENU_ID_FAV_PROJECTS = 102;
-    private static final int MENU_ID_WEBVIEW = 103;
+    private static final int MENU_ID_PACKAGES = 101;
+    private static final int MENU_ID_COMMITLOG = 102;
 
     // classwide objects
     Context mContext;
     Handler mHandler;
+    // static in case we need it in another thread
     PreferenceCategory mCategory;
     SharedPreferences mSharedPrefs; //to hold default branches
+
+    // timers
+    long mStartTime;
+    long mStopTime;
 
     @Override
     public void onCreate(Bundle state) {
@@ -138,10 +162,10 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
         mSharedPrefs = mContext.getSharedPreferences("dynamic_changelogs", Context.MODE_PRIVATE);
 
         // disabled to I start the menu items
-        //setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
 
         // set defaults
-        ARE_IN_PROJECT_PATH = false;
+        ARE_IN_PROJECT_PATH = true;
 
         // load blank screen & set initial title
         addPreferencesFromResource(R.xml.open_recovery); //we can hijack this for our needs
@@ -152,8 +176,9 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
         // and be sure we don't waste bandwidth on silly rotation
         // if first run then the Bundle state will be null
         if (state == null) {
-            // populate the initial screen
+            // populate the initial screen with list of projects
             new DisplayProjectsList().execute();
+
         }
     }
 
@@ -165,15 +190,9 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
 
         // cant change branch if we are not viewing a project folder's commits
         if (ARE_IN_PROJECT_PATH)
-            menu.add(0, MENU_ID_BRANCH, 0, getString(R.string.changelog_menu_branch_title))
-                    .setIcon(R.drawable.new_file);
-        // we always want users to be able to access thier favs
-        menu.add(0, MENU_ID_FAV_PROJECTS, 0, getString(R.string.changelog_menu_fav_projects_title))
-                .setIcon(R.drawable.save);
-
-        // they should also be able to view the current project commit log in browser
-        menu.add(0, MENU_ID_WEBVIEW, 0, getString(R.string.changelog_menu_webview_title))
-                .setIcon(R.drawable.save_as);
+            menu.add(0, MENU_ID_COMMITLOG, 0, getString(R.string.changelog_menu_commitlog_title));
+        else 
+            menu.add(0, MENU_ID_PACKAGES, 0, getString(R.string.changelog_menu_projects_title));
     }
 
     @Override
@@ -186,15 +205,16 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
-            case MENU_ID_BRANCH:
-                // TODO DO WORK
+            case MENU_ID_PACKAGES:
+                new DisplayProjectsList().execute();
+                // reset menu tracker variable
+                ARE_IN_PROJECT_PATH = true;
                 return true;
-            case MENU_ID_FAV_PROJECTS:
-                // just show favs from shared prefs
+            case MENU_ID_COMMITLOG:
+                new generateCommitlog().execute();
+                ARE_IN_PROJECT_PATH = false;
                 return true;
-            case MENU_ID_WEBVIEW:
-                // display current github project commit list for current branch
-                return true;
+
             // This should never happen but just in case let the system handle the return
             default:
                 return super.onContextItemSelected(item);
@@ -202,7 +222,6 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
     }
 
     private class DisplayProjectsList extends AsyncTask<Void, Void, Void> {
-        // called when we create the AsyncTask object
         public DisplayProjectsList() {
         }
 
@@ -351,8 +370,13 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
 
                         // to grab the date we need to make a new object from
                         // the commit object and collect info from there
-                        JSONObject authorObject_ = (JSONObject) commitObject.getJSONObject("author");
+                        final JSONObject authorObject_ =
+                                (JSONObject) commitObject.getJSONObject("author");
+                        final JSONObject committerObject =
+                                (JSONObject) projectsObject.getJSONObject("committer");
                         final String commitDate = authorObject_.getString("date"); // commit date
+                        final String committerAvatar = committerObject.getString("avatar_url");
+                        final String committerName = committerObject.getString("login");
 
                         // apply info to our preference screen
                         mCommit.setKey(commitSsh + "");
@@ -362,7 +386,7 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                         mCommit.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                             @Override
                             public boolean onPreferenceClick(Preference p) {
-                                GRAVATAR_URL = authorAvatar;
+                                AUTHOR_GRAVATAR_URL = authorAvatar;
                                 PROJECT = PROJECT_;
                                 COMMIT_URL = commitWebPath;
                                 COMMIT_AUTHOR = authorName;
@@ -374,7 +398,8 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                             }
                         });
 
-                        mCategory.addPreference(mCommit);                        
+                        mCategory.addPreference(mCommit);
+
                     } catch (JSONException je) {
                         // no author found for commit
                         if (DEBUG) Log.d(TAG, "encountered a null value", je);
@@ -413,12 +438,157 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
         }
     }
 
+    private class GetCommitArray extends AsyncTask<Void, Void, Void> {
+        boolean LAST_PROJECT = false;
+        int PAGE_;
+        String PROJECT_;
+        int DATE_;
+        boolean foundTheEnd;
+
+        protected void onPreExecute() {
+            if (PAGE_ < 1)
+                PAGE_ = 1;
+
+            foundTheEnd = false;
+        }
+
+        protected Void doInBackground(Void... noused) {
+            String requestCommits = String.format(COMMITS_REQUEST_FORMAT, PROJECT_, PAGE_);
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpGet requestWebsite = new HttpGet(requestCommits);
+                ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                JSONArray projectCommitsArray = null;
+                try {
+                    projectCommitsArray = new JSONArray(httpClient.execute(requestWebsite, responseHandler));
+                } catch (HttpResponseException httpError) {
+                    foundTheEnd = true;
+                    return null;
+                }
+        
+                // debugging
+                if (DEBUG) Log.d(TAG, "projectCommitsArray.length() is: " + projectCommitsArray.length());
+                if (JSON_SPEW) Log.d(TAG, "projectCommitsArray.toString() is: " + projectCommitsArray.toString());
+
+                for (int i = 0; i < projectCommitsArray.length(); i++) {
+                    try {
+                        final JSONObject projectsObject =
+                                (JSONObject) projectCommitsArray.get(i);
+                        final PreferenceScreen gitCommitPref = getPreferenceManager()
+                                .createPreferenceScreen(mContext);
+
+                        final JSONObject commitObject =
+                                (JSONObject) projectsObject.getJSONObject("commit");
+
+                        final JSONObject commitAuthor = (JSONObject) commitObject.getJSONObject("author");
+                        final JSONObject commitCommitter = (JSONObject) commitObject.getJSONObject("committer");
+                        JSONObject authorObject;
+                        try {
+                            authorObject = (JSONObject) projectsObject.getJSONObject("author");
+                            AUTHOR_GRAVATAR_URL = authorObject.getString("avatar_url");
+                            REMOVE_AUTHOR_LAYOUT = false;
+                            // because null returns won't cause the correct failure
+                            if (AUTHOR_GRAVATAR_URL == null) REMOVE_AUTHOR_LAYOUT = true;
+                        } catch (JSONException je) {
+                            REMOVE_AUTHOR_LAYOUT  = true;
+                        }
+
+                        // not all projects have committers for and this will break finding
+                        // the most recent updates so we must check if committer is going to
+                        // return null
+                        JSONObject committerObject;
+                        try {
+                            committerObject = projectsObject.getJSONObject("committer");
+                            COMMITTER_GRAVATAR_URL = committerObject.getString("avatar_url");
+                            REMOVE_COMMITTER_LAYOUT = false;
+                            // because null returns won't cause the correct failure
+                            if (COMMITTER_GRAVATAR_URL == null) REMOVE_COMMITTER_LAYOUT = true;
+                        } catch (JSONException je) {
+                            REMOVE_COMMITTER_LAYOUT = true;
+                        }
+
+                        final String commitDate = commitAuthor.getString("date"); // commit date
+                        gitCommitPref.setKey(commitDate);
+                        // format the string for our date comparison inputted format: 2012-05-20T13:31:35-07:00
+                        TimeZone utc = TimeZone.getTimeZone("UTC");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        sdf.setTimeZone(utc);
+                        GregorianCalendar cal = new GregorianCalendar(utc);
+                        cal.setTime(sdf.parse(commitDate.substring(0, 10)));
+                        if (DEBUG) Log.d(TAG, "commit date: " + cal.getTime());
+                        Date timeStamp = cal.getTime();
+                        if (timeStamp.after(LAST_UPDATE)) {
+                            foundTheEnd = false;
+                            gitCommitPref.setTitle(commitObject.getString("message"));
+                            gitCommitPref.setSummary(PROJECT_);
+                            gitCommitPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                                @Override
+                                public boolean onPreferenceClick(Preference p) {
+                                    try {
+                                        PROJECT = PROJECT_;
+                                        COMMIT_URL = projectsObject.getString("url");
+                                        COMMIT_AUTHOR = commitAuthor.getString("name");
+                                        COMMIT_MESSAGE = commitObject.getString("message");
+                                        COMMIT_DATE = gitCommitPref.getKey();
+                                        COMMIT_COMMITTER = commitCommitter.getString("name");
+                                        COMMIT_SHA = projectsObject.getString("sha");
+                                        showDialog(COMMIT_INFO_DIALOG);
+                                    } catch (JSONException je) {
+                                        if (DEBUG) Log.e(TAG, "problem setting up on click for commit");
+                                    }
+                                    return true;
+                                }
+                            });
+
+                            mCategory.addPreference(gitCommitPref);
+                        } else {
+                            // before our time
+                            foundTheEnd = true;
+                            break;
+                        }
+                    } catch (ParseException pe) {
+                        if (DEBUG) Log.e(TAG, "failed to create calendar", pe);
+                    } catch (JSONException je) {
+                        if (DEBUG) Log.d(TAG, "bad json interaction while on webpage: " + requestCommits);
+                        if (DEBUG) je.printStackTrace();
+                    } catch (NullPointerException ne) {
+                        if (DEBUG) Log.e(TAG, "found null value", ne);
+                    }
+                }
+            } catch (JSONException je) {
+                if (DEBUG) Log.e(TAG, "Bad JSON interaction while making master array", je);
+            } catch (IOException ioe) {
+                if (DEBUG) Log.e(TAG, "IOException...", ioe);
+            } catch (NullPointerException ne) {
+                if (DEBUG) Log.e(TAG, "NullPointer...", ne);
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void unused) {
+            Log.i("HELLO______", "project:" + PROJECT_ + " page:" + PAGE_ + " last_project:" + LAST_PROJECT);
+            if (!foundTheEnd) {
+                GetCommitArray getMoreCommits = new GetCommitArray();
+                getMoreCommits.PAGE_ = PAGE_ + 1;
+                getMoreCommits.PROJECT_ = PROJECT_;
+                getMoreCommits.execute();
+            }
+
+            if (DEBUG) Log.d(TAG, "show sort commits? " + LAST_PROJECT);
+            if (LAST_PROJECT) showDialog(SORT_COMMITS);
+        }
+    }
+
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         // send String[] (url[0]) return Bitmap
         ImageView bmImage;
 
         public DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
+        }
+
+        protected void onPreExecute() {
+            bmImage.setVisibility(View.GONE);
         }
 
         protected Bitmap doInBackground(String... urls) {
@@ -436,6 +606,70 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
 
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
+            bmImage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private class generateCommitlog extends AsyncTask<Void, Void, Void> {
+        public generateCommitlog() {
+            mCategory.removeAll();
+        }
+
+        protected Void doInBackground(Void... no) {
+           try {
+                mStartTime = System.currentTimeMillis();
+                // first we need the date of the latest update on goo.im
+                String search = "http://goo.im/json2&action=search&query=teamliquid";
+                HttpClient httpClient = new DefaultHttpClient();
+                Log.i(TAG, "attempting to connect to: " + search);
+                HttpGet requestWebsite = new HttpGet(search);
+                ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                // we could link these commands into one array but
+                // it becomes complex quickly so one step at a time
+                JSONObject ourGooimObject = new JSONObject(httpClient.execute(requestWebsite, responseHandler));
+                JSONArray ourList = ourGooimObject.getJSONArray("search_result");
+                if (DEBUG) Log.d(TAG, "length of search result:" + ourList.length());
+                // we don't really need the whole list we just need the first one
+                JSONObject latestUpdate = ourList.getJSONObject(0);
+                long unixDate = latestUpdate.getLong("modified");
+                Date timeStamp = new Date((long) unixDate * 1000);
+                // give this date to the main thread so we can compare in other threads
+                LAST_UPDATE = timeStamp;
+                Log.i(TAG, "Latest update was{ unix:" + unixDate + "	formatted:"
+                        + timeStamp.toString() + " }");
+
+                // now we know when the last update was so lets try
+                // and find all the commits since that date we parse
+                // from our github org account
+                HttpClient http = new DefaultHttpClient();
+                Log.i(TAG, "attempting to connect to: " + REPO_URL);
+                HttpGet github = new HttpGet(REPO_URL);
+                ResponseHandler<String> strings = new BasicResponseHandler();
+                JSONArray ourGooimArray = new JSONArray(http.execute(github, strings));
+                for (int i = 0; ourGooimArray.length() > i; i++) {
+                    JSONObject commitObj = (JSONObject) ourGooimArray.get(i);
+                    GetCommitArray getCommits = new GetCommitArray();
+                    getCommits.PAGE_ = 1;
+                    getCommits.PROJECT_ = commitObj.getString("name");
+                    if (DEBUG) Log.d(TAG, "total repos:" + ourGooimArray.length() +
+                            " current index:" + i);
+                    getCommits.LAST_PROJECT = (ourGooimArray.length() == i + 1) ? true : false;
+                    getCommits.execute();
+                }
+            } catch (JSONException je) {
+                if (DEBUG) Log.e(TAG, "Bad json interaction...", je);
+            } catch (IOException ioe) {
+                if (DEBUG) Log.e(TAG, "IOException...", ioe);
+            } catch (NullPointerException ne) {
+                if (DEBUG) Log.e(TAG, "NullPointer...", ne);
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void unused) {
+            mStopTime = System.currentTimeMillis();
+            if (DEBUG) Log.d(TAG, "found: " + mCategory.getPreferenceCount() +
+                "commits in: " + (mStopTime - mStartTime)/1000 + "s");
         }
     }
 
@@ -454,17 +688,19 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                 scroller.setSmoothScrollingEnabled(true);
                 scroller.fling(DEFAULT_FLING_SPEED);
 
-
-                ImageView avatar = (ImageView) commitExtendedInfoLayout.findViewById(R.id.author_avatar);
-
-                // try to populate the image from gravatar
-                // @link http://stackoverflow.com/a/9288544
-                avatar.setVisibility(View.GONE);
-                new DownloadImageTask(avatar).execute(GRAVATAR_URL);
-                avatar.setVisibility(View.VISIBLE);
-
+                // gain object references
+                LinearLayout authorContainer = (LinearLayout) commitExtendedInfoLayout.findViewById
+                        (R.id.author_container);
+                LinearLayout committerContainer = (LinearLayout) commitExtendedInfoLayout.findViewById
+                        (R.id.committer_container);
+                ImageView authorAvatar = (ImageView) commitExtendedInfoLayout.findViewById
+                        (R.id.author_avatar);
+                ImageView committerAvatar = (ImageView) commitExtendedInfoLayout.findViewById
+                        (R.id.committer_avatar);
                 TextView author_tv = (TextView) commitExtendedInfoLayout.findViewById
                         (R.id.commit_author);
+                TextView committer_tv = (TextView) commitExtendedInfoLayout.findViewById
+                        (R.id.commit_committer);
                 TextView message_tv = (TextView) commitExtendedInfoLayout.findViewById
                         (R.id.commit_message);
                 TextView date_tv = (TextView) commitExtendedInfoLayout.findViewById
@@ -472,8 +708,38 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                 TextView sha_tv = (TextView) commitExtendedInfoLayout.findViewById
                         (R.id.commit_sha);
 
+                // remove any LinearLayouts we don't have values for
+                if (REMOVE_AUTHOR_LAYOUT) {
+                    authorContainer.setVisibility(View.GONE);
+                    // reset our watcher
+                    REMOVE_AUTHOR_LAYOUT = false;
+                } else {
+                    // since we have this value we don't hide and we load our images 
+                    // this way we don't waste bandwidth loading legacy values
+                    if (AUTHOR_GRAVATAR_URL != null)
+                        new DownloadImageTask(authorAvatar).execute(AUTHOR_GRAVATAR_URL);
+                    else
+                        // this is important because if we have null value
+                        // it won't fail till too late for us to use responsibly (sp? ...fuck it I don't care)
+                        REMOVE_AUTHOR_LAYOUT = true;
+                }
+
+                if (REMOVE_COMMITTER_LAYOUT) {
+                    committerContainer.setVisibility(View.GONE);
+                    // reset our watcher
+                    REMOVE_COMMITTER_LAYOUT = false;
+                } else {
+                    // try to populate the image from gravatar
+                    // @link http://stackoverflow.com/a/9288544
+                    if (COMMITTER_GRAVATAR_URL != null)
+                         new DownloadImageTask(committerAvatar).execute(COMMITTER_GRAVATAR_URL);
+                    else
+                         REMOVE_COMMITTER_LAYOUT = true;
+                }
+
                 // setText for TextViews
                 author_tv.setText(COMMIT_AUTHOR);
+                committer_tv.setText(COMMIT_COMMITTER);
                 message_tv.setText(COMMIT_MESSAGE);
                 date_tv.setText(COMMIT_DATE);
 
@@ -495,8 +761,8 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                 commitInfo.setView(commitExtendedInfoLayout);
 
                 // the order we place the buttons in is important
-                // standard is: | CANCEL | OK |
-                // per our needs we use: | CLOSE | WEBVIEW |
+                // standard is:			| CANCEL | OK |
+                // per our needs we use:	| CLOSE | WEBVIEW |
                 commitInfo.setNegativeButton(getString(R.string.button_close), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int button) {
                         // just let the dialog go
@@ -515,6 +781,69 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                 AlertDialog ad_commit = commitInfo.create();
                 ad_commit.show();
                 return ad_commit;
+
+            case SORT_COMMITS:
+                mStopTime = System.currentTimeMillis();
+                if (DEBUG) Log.d(TAG, "found: " + mCategory.getPreferenceCount() +
+                        "commits in: " + (mStopTime - mStartTime)/1000 + "s");
+                if (DEBUG) Log.d(TAG, "Should we sort commits?");
+                final AlertDialog.Builder sortDialog = new AlertDialog.Builder(getActivity());
+                sortDialog.setTitle(getString(R.string.sort_commits_title));
+                sortDialog.setMessage(getString(R.string.sort_commits_message));
+                sortDialog.setNegativeButton(getString(R.string.button_donot_sort), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface di, int button) {
+                        // already unsorted
+                    }
+                });
+                sortDialog.setPositiveButton(getString(R.string.button_sort), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface di, int button) {
+                        ArrayList<Preference> foundCommits = new ArrayList<Preference>();
+                        ArrayList<String> orderDates = new ArrayList<String>();
+                        for (int i = 0; mCategory.getPreferenceCount() > i; i++) {
+                            Preference p = mCategory.getPreference(i);
+                            foundCommits.add(p);
+                            orderDates.add(p.getKey());
+                        }
+                        if (DEBUG) Log.d(TAG, "presorted orderDates.toString() {" + orderDates.toString() + "}");
+                        // sort by date stamp
+                        Collections.sort(orderDates);
+                        // these are in the correct order (SHIT) hence a SUPER ANNOYING TODO: FIX SORTING!!!
+                        if (DEBUG) Log.d(TAG, "postsorted orderDates.toString() {" + orderDates.toString() + "}");
+
+                        // we must fill both the size and capacity or array constructor does size
+                        ArrayList<Preference> orderCommits = new ArrayList<Preference>(foundCommits.size());
+                        orderCommits.ensureCapacity(foundCommits.size());
+                        for (int i = 0; foundCommits.size() > i; i++) {
+                            Preference p_ = foundCommits.get(i);
+                            orderCommits.add(p_);
+                        }
+
+                        // it could be ^^here but I really think our problem is below
+                        for (int i = 0; foundCommits.size() > i; i++) {
+                            Preference pref = foundCommits.get(i);
+                            // we base our order off the keys (which are set by commitdate)
+                            int order = orderDates.lastIndexOf(pref.getKey());
+                            orderCommits.set(order, pref);
+                        }
+
+                        // sizes are correct but my ordering is not :(
+                        if (DEBUG) Log.d(TAG, "foundCommits.size():" + foundCommits.size() + "\norderCommits.size():" +
+                                orderCommits.size() + "\norderDates.size():" + orderCommits.size());
+
+                        // remove old unordered commits and repopulate
+                        // the category with our ordered commits
+                        mCategory.removeAll();
+                        for (int i = 0; orderCommits.size() > i; i++) {
+                            mCategory.addPreference(orderCommits.get(i));
+                        }
+
+                        /* SIDE NOTE: we may need to investigate the timezone differences as
+                                      the reason the sorting is failing... just an idea */
+                    }
+                });
+                AlertDialog ad_sort = sortDialog.create();
+                ad_sort.show();
+                return ad_sort;
         }
     }
 }

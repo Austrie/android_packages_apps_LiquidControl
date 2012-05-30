@@ -65,6 +65,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.Date;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -313,6 +314,11 @@ public class GooImSupport extends SettingsPreferenceFragment {
                         final String JSONdownloads = obj_.getString("downloads");
                         final String JSONtype = obj_.getString("type"); // unused right now
                         final String JSONshort_url = obj_.getString("short_url"); // unused right now
+
+                        // date fromatting test
+                        long unixDate = obj_.getLong("modified");
+                        Date date = new Date((long) unixDate * 1000);
+                        Log.i(TAG, "Latest update was{ unix:" + unixDate + "	formatted:" + date.toString() + " }");
 
                         mDevsFiles.setKey(JSONid);
                         // TODO we should prob pull a version from this for the title

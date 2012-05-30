@@ -119,18 +119,12 @@
             android:fragment="com.liquid.control.fragments.PropModder" />
 
     <header
-        android:title="@string/about_title" />
+        android:title="@string/meet_the_team" />
 
         <header
-            android:id="@+id/meet_the_team"
-            android:title="@string/meet_the_team"
+            android:id="@+id/about"
+            android:title="@string/about_title"
             android:icon="@drawable/ic_about"
             android:fragment="com.liquid.control.fragments.About" />
-
-        <header
-            android:id="@+id/changlog"
-            android:title="@string/dynamic_changelog"
-            android:icon="@drawable/ic_about"
-            android:fragment="com.liquid.control.fragments.DynamicChangeLog" />
 
 </preference-headers>

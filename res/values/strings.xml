@@ -564,4 +564,7 @@
     <string name="sort_commits_message">Commits are now in order by repository, would you like to sort them by date regardless of which repository in which they exist?</string>
     <string name="button_sort">Sort by date</string>
     <string name="button_donot_sort">Do not sort</string>
+    <string name="unknown_author">Unknown Author</string>
+    <string name="unknown_committer">Unknown Committer</string>
+    <string name="toast_commitlog_info" formatted="false">Found %d commits in %d seconds</string>
 </resources>

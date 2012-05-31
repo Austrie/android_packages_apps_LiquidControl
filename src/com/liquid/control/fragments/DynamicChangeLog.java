@@ -40,6 +40,7 @@ import android.preference.PreferenceScreen;
 import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -387,6 +388,8 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                             @Override
                             public boolean onPreferenceClick(Preference p) {
                                 AUTHOR_GRAVATAR_URL = authorAvatar;
+                                COMMITTER_GRAVATAR_URL = committerAvatar;
+                                COMMIT_COMMITTER = committerName;
                                 PROJECT = PROJECT_;
                                 COMMIT_URL = commitWebPath;
                                 COMMIT_AUTHOR = authorName;
@@ -471,43 +474,82 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                 if (JSON_SPEW) Log.d(TAG, "projectCommitsArray.toString() is: " + projectCommitsArray.toString());
 
                 for (int i = 0; i < projectCommitsArray.length(); i++) {
+                    final JSONObject projectsObject =
+                            (JSONObject) projectCommitsArray.get(i);
+                    final PreferenceScreen gitCommitPref = getPreferenceManager()
+                            .createPreferenceScreen(mContext);
+
+                    // some fields are just plain strings we can parse
+                    final String commitSha = projectsObject.getString("sha"); // for setKey
+
+                    final String commitWebPath = projectsObject.getString("url"); // JSON commit path
+
+                    // author could possible be null so use a try block to prevent failures
+                    // (merges have committers not authors, authors exist for the parent commits)
                     try {
-                        final JSONObject projectsObject =
-                                (JSONObject) projectCommitsArray.get(i);
-                        final PreferenceScreen gitCommitPref = getPreferenceManager()
-                                .createPreferenceScreen(mContext);
+                        // this is slightly different as we have many values for fields
+                        // therefor each of these fields will be an object to itself (for each commit)
+                        // author; committer; parents and commit
+                        JSONObject commitObject = (JSONObject) projectsObject.getJSONObject("commit");
 
-                        final JSONObject commitObject =
-                                (JSONObject) projectsObject.getJSONObject("commit");
-
-                        final JSONObject commitAuthor = (JSONObject) commitObject.getJSONObject("author");
-                        final JSONObject commitCommitter = (JSONObject) commitObject.getJSONObject("committer");
                         JSONObject authorObject;
                         try {
                             authorObject = (JSONObject) projectsObject.getJSONObject("author");
-                            AUTHOR_GRAVATAR_URL = authorObject.getString("avatar_url");
+                            if (JSON_SPEW) Log.d(TAG, "authorObject: " + authorObject.toString());
                             REMOVE_AUTHOR_LAYOUT = false;
-                            // because null returns won't cause the correct failure
-                            if (AUTHOR_GRAVATAR_URL == null) REMOVE_AUTHOR_LAYOUT = true;
                         } catch (JSONException je) {
-                            REMOVE_AUTHOR_LAYOUT  = true;
+                            // here is our problem we need to repopulate these if they are null
+                            try {
+                                JSONObject commitObjectAuthor = (JSONObject) commitObject
+                                        .getJSONObject("author");
+                                authorObject = new JSONObject();
+                                // try to repopulate null array
+                                authorObject.put("login", commitObjectAuthor.getString("name"));
+                                authorObject.put("avatar_url", "VOID");
+                            } catch (JSONException jse) {
+                                // we are out of alternatives so give up
+                                authorObject = new JSONObject();
+                                // try to repopulate null array
+                                authorObject.put("login", getString(R.string.unknown_author));
+                                authorObject.put("avatar_url", "VOID");
+                                REMOVE_AUTHOR_LAYOUT = true;
+                            }
                         }
 
-                        // not all projects have committers for and this will break finding
-                        // the most recent updates so we must check if committer is going to
-                        // return null
                         JSONObject committerObject;
                         try {
-                            committerObject = projectsObject.getJSONObject("committer");
-                            COMMITTER_GRAVATAR_URL = committerObject.getString("avatar_url");
+                            committerObject = (JSONObject) projectsObject.getJSONObject("committer");
                             REMOVE_COMMITTER_LAYOUT = false;
-                            // because null returns won't cause the correct failure
-                            if (COMMITTER_GRAVATAR_URL == null) REMOVE_COMMITTER_LAYOUT = true;
-                        } catch (JSONException je) {
-                            REMOVE_COMMITTER_LAYOUT = true;
+                        } catch (JSONException je_) {
+                            try {
+                                JSONObject commitObjectCommitter = (JSONObject) commitObject
+                                        .getJSONObject("author");
+                                // try to repopulate null array
+                                committerObject = new JSONObject();
+                                committerObject.put("login", commitObjectCommitter.getString("name"));
+                                committerObject.put("avatar_url", "VOID");
+                            } catch (JSONException jse_) {
+                                // give up
+                                committerObject = new JSONObject();
+                                committerObject.put("login", getString(R.string.unknown_committer));
+                                committerObject.put("avatar_url", "VOID");
+                                REMOVE_COMMITTER_LAYOUT = true;
+                            }
                         }
 
-                        final String commitDate = commitAuthor.getString("date"); // commit date
+                        // pull needed info from our new objects (for each commit)
+                        final String authorName = authorObject.getString("login"); // github screen name
+                        final String authorAvatar = authorObject.getString("avatar_url"); // author's avatar url
+                        final String commitMessage = commitObject.getString("message"); // commit message
+
+                        // to grab the date we need to make a new object from
+                        // the commit object and collect info from there
+                        final JSONObject authorObject_ =
+                                (JSONObject) commitObject.getJSONObject("author");
+                        final String commitDate = authorObject_.getString("date"); // commit date
+                        final String committerAvatar = committerObject.getString("avatar_url");
+                        final String committerName = committerObject.getString("login");
+
                         gitCommitPref.setKey(commitDate);
                         // format the string for our date comparison inputted format: 2012-05-20T13:31:35-07:00
                         TimeZone utc = TimeZone.getTimeZone("UTC");
@@ -519,23 +561,21 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                         Date timeStamp = cal.getTime();
                         if (timeStamp.after(LAST_UPDATE)) {
                             foundTheEnd = false;
-                            gitCommitPref.setTitle(commitObject.getString("message"));
+                            gitCommitPref.setTitle(commitMessage);
                             gitCommitPref.setSummary(PROJECT_);
                             gitCommitPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                                 @Override
                                 public boolean onPreferenceClick(Preference p) {
-                                    try {
-                                        PROJECT = PROJECT_;
-                                        COMMIT_URL = projectsObject.getString("url");
-                                        COMMIT_AUTHOR = commitAuthor.getString("name");
-                                        COMMIT_MESSAGE = commitObject.getString("message");
-                                        COMMIT_DATE = gitCommitPref.getKey();
-                                        COMMIT_COMMITTER = commitCommitter.getString("name");
-                                        COMMIT_SHA = projectsObject.getString("sha");
-                                        showDialog(COMMIT_INFO_DIALOG);
-                                    } catch (JSONException je) {
-                                        if (DEBUG) Log.e(TAG, "problem setting up on click for commit");
-                                    }
+                                    PROJECT = PROJECT_;
+                                    COMMIT_URL = commitWebPath;
+                                    COMMIT_AUTHOR = authorName;
+                                    COMMIT_MESSAGE = commitMessage;
+                                    COMMIT_DATE = gitCommitPref.getKey();
+                                    COMMIT_COMMITTER = committerName;
+                                    COMMIT_SHA = commitSha;
+                                    AUTHOR_GRAVATAR_URL = authorAvatar;
+                                    COMMITTER_GRAVATAR_URL = committerAvatar;
+                                    showDialog(COMMIT_INFO_DIALOG);
                                     return true;
                                 }
                             });
@@ -566,7 +606,7 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
         }
 
         protected void onPostExecute(Void unused) {
-            Log.i("HELLO______", "project:" + PROJECT_ + " page:" + PAGE_ + " last_project:" + LAST_PROJECT);
+            Log.i(TAG, "project:" + PROJECT_ + " page:" + PAGE_ + " last_project:" + LAST_PROJECT);
             if (!foundTheEnd) {
                 GetCommitArray getMoreCommits = new GetCommitArray();
                 getMoreCommits.PAGE_ = PAGE_ + 1;
@@ -575,7 +615,27 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
             }
 
             if (DEBUG) Log.d(TAG, "show sort commits? " + LAST_PROJECT);
-            if (LAST_PROJECT) showDialog(SORT_COMMITS);
+            if (LAST_PROJECT) {
+                mStopTime = System.currentTimeMillis();
+
+                // lets build this toast manually because its a lot to string
+                // and I want a custom layout
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View layout = inflater.inflate(R.layout.icon_toast_layout, null);
+
+                ImageView image = (ImageView) layout.findViewById(R.id.image);
+                image.setImageResource(R.drawable.octocat_class_act);
+                TextView text = (TextView) layout.findViewById(R.id.text);
+                text.setText(String.format(getString(R.string.toast_commitlog_info),
+                        mCategory.getPreferenceCount(), (mStopTime - mStartTime) / 1000));
+
+                Toast toast = new Toast(mContext);
+                toast.setGravity(Gravity.TOP, 0, 5);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+                showDialog(SORT_COMMITS);
+            }
         }
     }
 
@@ -697,6 +757,10 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                         (R.id.author_avatar);
                 ImageView committerAvatar = (ImageView) commitExtendedInfoLayout.findViewById
                         (R.id.committer_avatar);
+                TextView author_header = (TextView) commitExtendedInfoLayout.findViewById
+                        (R.id.author_header);
+                TextView committer_header = (TextView) commitExtendedInfoLayout.findViewById
+                        (R.id.committer_header);
                 TextView author_tv = (TextView) commitExtendedInfoLayout.findViewById
                         (R.id.commit_author);
                 TextView committer_tv = (TextView) commitExtendedInfoLayout.findViewById
@@ -711,6 +775,7 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                 // remove any LinearLayouts we don't have values for
                 if (REMOVE_AUTHOR_LAYOUT) {
                     authorContainer.setVisibility(View.GONE);
+                    author_header.setVisibility(View.GONE);
                     // reset our watcher
                     REMOVE_AUTHOR_LAYOUT = false;
                 } else {
@@ -726,6 +791,7 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
 
                 if (REMOVE_COMMITTER_LAYOUT) {
                     committerContainer.setVisibility(View.GONE);
+                    committer_header.setVisibility(View.GONE);
                     // reset our watcher
                     REMOVE_COMMITTER_LAYOUT = false;
                 } else {
@@ -802,43 +868,55 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
                         for (int i = 0; mCategory.getPreferenceCount() > i; i++) {
                             Preference p = mCategory.getPreference(i);
                             foundCommits.add(p);
-                            orderDates.add(p.getKey());
+                            String stamp = p.getKey();
+                            // format the date using unix code for accutate sorting
+                            Calendar commitTimeStamp = GregorianCalendar.getInstance();
+                            // how substrings are derived (example format, account for 0 offset)
+                            // 2012-05-27T22:16:56-07:00
+                            // 012345678901234567890
+                            // 0         1         2
+                            try {
+                                final int year = Integer.parseInt(stamp.substring(0, 4));
+                                final int month = Integer.parseInt(stamp.substring(5, 7));
+                                final int day = Integer.parseInt(stamp.substring(8, 10));
+                                final int hours = Integer.parseInt(stamp.substring(11, 13));
+                                final int mins = Integer.parseInt(stamp.substring(14, 16));
+                                final int secs = Integer.parseInt(stamp.substring(17, 19));
+                                commitTimeStamp.set(year, month, day, hours, mins, secs);
+                                long unix = commitTimeStamp.getTimeInMillis();
+                                if (DEBUG) Log.d(TAG, String.format("adding value: %d", unix));
+                                orderDates.add(String.format("%d", unix));
+                            } catch (NumberFormatException badDate) {
+                                badDate.printStackTrace();
+                            }
                         }
                         if (DEBUG) Log.d(TAG, "presorted orderDates.toString() {" + orderDates.toString() + "}");
-                        // sort by date stamp
+                        // sort by date stamp in unix
+
+                        // use clone to find positions of numbers before sorting we
+                        // use that number to index where our preference *SHOULD* be
+                        ArrayList<String> clone = new ArrayList<String>(orderDates);
+
                         Collections.sort(orderDates);
                         // these are in the correct order (SHIT) hence a SUPER ANNOYING TODO: FIX SORTING!!!
                         if (DEBUG) Log.d(TAG, "postsorted orderDates.toString() {" + orderDates.toString() + "}");
 
-                        // we must fill both the size and capacity or array constructor does size
-                        ArrayList<Preference> orderCommits = new ArrayList<Preference>(foundCommits.size());
-                        orderCommits.ensureCapacity(foundCommits.size());
-                        for (int i = 0; foundCommits.size() > i; i++) {
-                            Preference p_ = foundCommits.get(i);
-                            orderCommits.add(p_);
-                        }
-
-                        // it could be ^^here but I really think our problem is below
-                        for (int i = 0; foundCommits.size() > i; i++) {
-                            Preference pref = foundCommits.get(i);
-                            // we base our order off the keys (which are set by commitdate)
-                            int order = orderDates.lastIndexOf(pref.getKey());
-                            orderCommits.set(order, pref);
-                        }
-
-                        // sizes are correct but my ordering is not :(
-                        if (DEBUG) Log.d(TAG, "foundCommits.size():" + foundCommits.size() + "\norderCommits.size():" +
-                                orderCommits.size() + "\norderDates.size():" + orderCommits.size());
-
-                        // remove old unordered commits and repopulate
-                        // the category with our ordered commits
+                        // clear the screen and repopulate with ordered commits
                         mCategory.removeAll();
-                        for (int i = 0; orderCommits.size() > i; i++) {
-                            mCategory.addPreference(orderCommits.get(i));
+                        for (int i = 0; orderDates.size() > i; i++) {
+                            int prevPosition = clone.lastIndexOf(orderDates.get(i));
+                            Preference pref = foundCommits.get(prevPosition);
+                            // since we are scrolling through the ordered times
+                            // we can just add as we see them and not worry about
+                            // size or compacity of the ArrayLists
+                            if (DEBUG) Log.d(TAG, "Moving from " + prevPosition + " mCategory[index] " + i);
+                            mCategory.addPreference(pref);
                         }
 
-                        /* SIDE NOTE: we may need to investigate the timezone differences as
-                                      the reason the sorting is failing... just an idea */
+                        if (DEBUG) {
+                            Log.d(TAG, "foundCommits.size():" + foundCommits.size() + "\nclone.size():" +
+                                    clone.size() + "\norderDates.size():" + orderDates.size());
+                        }
                     }
                 });
                 AlertDialog ad_sort = sortDialog.create();

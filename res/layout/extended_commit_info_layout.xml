@@ -34,6 +34,7 @@
             android:orientation="vertical" >
 
             <TextView
+                android:id="@+id/author_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="18sp"
@@ -69,6 +70,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/committer_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="18sp"
@@ -86,9 +88,10 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="14.5sp"
+                    android:paddingLeft="7.25sp"
                     android:paddingRight="3.75sp"
-                    android:src="@drawable/committer_arrow" />
+                    android:src="@drawable/committer_arrow"
+                    android:layout_gravity="center|right" />
 
                 <ImageView
                     android:id="@+id/committer_avatar"

@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemProperties;
@@ -130,9 +131,6 @@ public class PropModder extends PreferenceFragment implements
     private static final String TCP_STACK_PROP_3 = "net.tcp.buffersize.gprs";
     private static final String TCP_STACK_PROP_4 = "net.tcp.buffersize.edge";
     private static final String TCP_STACK_BUFFER = "4096,87380,256960,4096,16384,256960";
-    private static final String JIT_PREF = "pref_jit";
-    private static final String JIT_PERSIST_PROP = "persist_jit";
-    private static final String JIT_PROP = "dalvik.vm.execution-mode";
     private static final String CHECK_IN_PREF = "pref_check_in";
     private static final String CHECK_IN_PERSIST_PROP = "persist_check_in";
     private static final String CHECK_IN_PROP = "ro.config.nocheckin";
@@ -161,7 +159,6 @@ public class PropModder extends PreferenceFragment implements
 
     private String placeholder;
     private String tcpstack0;
-    private String jitVM;
 
     private String ModPrefHolder = SystemProperties.get(MOD_VERSION_PERSIST_PROP,
                 SystemProperties.get(MOD_VERSION_PROP, MOD_VERSION_DEFAULT));
@@ -183,7 +180,6 @@ public class PropModder extends PreferenceFragment implements
     private EditTextPreference mModVersionPref;
     private ListPreference mSleepPref;
     private CheckBoxPreference mTcpStackPref;
-    private CheckBoxPreference mJitPref;
     private CheckBoxPreference mCheckInPref;
     private ListPreference mSdcardBufferPref;
     private CheckBoxPreference m3gSpeedPref;
@@ -204,6 +200,7 @@ public class PropModder extends PreferenceFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "asking for SU premission " + cmd.su.runWaitFor("echo PROPMODDER").success());
 
         addPreferencesFromResource(R.xml.propmodder);
         prefSet = getPreferenceScreen();
@@ -239,8 +236,6 @@ public class PropModder extends PreferenceFragment implements
 
         mTcpStackPref = (CheckBoxPreference) prefSet.findPreference(TCP_STACK_PREF);
 
-        mJitPref = (CheckBoxPreference) prefSet.findPreference(JIT_PREF);
-
         mModVersionPref = (EditTextPreference) prefSet.findPreference(MOD_VERSION_PREF);
         String mod = Helpers.findBuildPropValueOf(MOD_VERSION_PROP);
         if (mModVersionPref != null) {
@@ -269,7 +264,7 @@ public class PropModder extends PreferenceFragment implements
 
         mVvmailPref = (CheckBoxPreference) prefSet.findPreference(VVMAIL_PREF);
 
-        updateScreen();
+        new UpdateScreen().execute();
 
         Handler mHandlerOnCreate = new Handler();
         final Runnable mCheckForDirectories = new Runnable() {
@@ -337,10 +332,6 @@ public class PropModder extends PreferenceFragment implements
                     && doMod(null, TCP_STACK_PROP_2, String.valueOf(value ? TCP_STACK_BUFFER : DISABLE))
                     && doMod(null, TCP_STACK_PROP_3, String.valueOf(value ? TCP_STACK_BUFFER : DISABLE))
                     && doMod(TCP_STACK_PERSIST_PROP, TCP_STACK_PROP_4, String.valueOf(value ? TCP_STACK_BUFFER : DISABLE));
-        } else if (preference == mJitPref) {
-            Log.d(TAG, "mJitPref.onPreferenceTreeClick()");
-            value = mJitPref.isChecked();
-            return doMod(JIT_PERSIST_PROP, JIT_PROP, String.valueOf(value ? "int:fast" : "int:jit"));
         } else if (preference == mCheckInPref) {
             value = mCheckInPref.isChecked();
             return doMod(null, CHECK_IN_PROP_HTC, String.valueOf(value ? 1 : DISABLE))
@@ -451,7 +442,7 @@ public class PropModder extends PreferenceFragment implements
                     if (!success) {
                         restoreBuildProp();
                     } else {
-                        updateScreen();
+                        new UpdateScreen().execute();
                     }
                 } finally {
                     mount("ro");
@@ -543,116 +534,135 @@ public class PropModder extends PreferenceFragment implements
         return cmd.su.runWaitFor("cp /system/tmp/pm_build.prop /system/build.prop").success();
     }
 
-    public void updateScreen() {
-        Handler mUpdateScreen = new Handler();
-        Runnable mFindValues = new Runnable() {
-            public void run() {
+    private class UpdateScreen extends AsyncTask<Void, Void, Void> {
+        String wifi;
+        String lcd;
+        String maxE;
+        String ring;
+        String vm;
+        String fast;
+        String prox;
+        String sleep;
+        String tcp;
+        String mod;
+        String chk;
+        String g0;
+        String g3;
+        String g6;
+        String gpu;
+        String vvmail0;
+        String vvmail1;
 
-                //update all the summaries
-                String wifi = Helpers.findBuildPropValueOf(WIFI_SCAN_PROP);
-                if (!wifi.equals(DISABLE)) {
-                    mWifiScanPref.setValue(wifi);
-                    mWifiScanPref.setSummary(String.format(getString(R.string.pref_wifi_scan_alt_summary), wifi));
-                } else {
-                    mWifiScanPref.setValue(WIFI_SCAN_DEFAULT);
-                }
-                String lcd = Helpers.findBuildPropValueOf(LCD_DENSITY_PROP);
-                if (!lcd.equals(DISABLE)) {
-                    mLcdDensityPref.setValue(lcd);
-                    mLcdDensityPref.setSummary(String.format(getString(R.string.pref_lcd_density_alt_summary), lcd));
-                } else {
-                    mLcdDensityPref.setValue(LCD_DENSITY_DEFAULT);
-                }
-                String maxE = Helpers.findBuildPropValueOf(MAX_EVENTS_PROP);
-                if (!maxE.equals(DISABLE)) {
-                    mMaxEventsPref.setValue(maxE);
-                    mMaxEventsPref.setSummary(String.format(getString(R.string.pref_max_events_alt_summary), maxE));
-                } else {
-                    mMaxEventsPref.setValue(MAX_EVENTS_DEFAULT);
-                }
-                String ring = Helpers.findBuildPropValueOf(RING_DELAY_PROP);
-                if (!ring.equals(DISABLE)) {
-                    mRingDelayPref.setValue(ring);
-                    mRingDelayPref.setSummary(String.format(getString(R.string.pref_ring_delay_alt_summary), ring));
-                } else {
-                    mRingDelayPref.setValue(RING_DELAY_DEFAULT);
-                }
-                String vm = Helpers.findBuildPropValueOf(VM_HEAPSIZE_PROP);
-                if (!vm.equals(DISABLE)) {
-                    mVmHeapsizePref.setValue(vm);
-                    mVmHeapsizePref.setSummary(String.format(getString(R.string.pref_vm_heapsize_alt_summary), vm));
-                } else {
-                    mVmHeapsizePref.setValue(VM_HEAPSIZE_DEFAULT);
-                }
-                String fast = Helpers.findBuildPropValueOf(FAST_UP_PROP);
-                if (!fast.equals(DISABLE)) {
-                    mFastUpPref.setValue(fast);
-                    mFastUpPref.setSummary(String.format(getString(R.string.pref_fast_up_alt_summary), fast));
-                } else {
-                    mFastUpPref.setValue(FAST_UP_DEFAULT);
-                }
-                String prox = Helpers.findBuildPropValueOf(PROX_DELAY_PROP);
-                if (!prox.equals(DISABLE)) {
-                    mProxDelayPref.setValue(prox);
-                    mProxDelayPref.setSummary(String.format(getString(R.string.pref_prox_delay_alt_summary), prox));
-                } else {
-                    mProxDelayPref.setValue(PROX_DELAY_DEFAULT);
-                }
-                String sleep = Helpers.findBuildPropValueOf(SLEEP_PROP);
-                if (!sleep.equals(DISABLE)) {
-                    mSleepPref.setValue(sleep);
-                    mSleepPref.setSummary(String.format(getString(R.string.pref_sleep_alt_summary), sleep));
-                } else {
-                    mSleepPref.setValue(SLEEP_DEFAULT);
-                }
-                String tcp = Helpers.findBuildPropValueOf(TCP_STACK_PROP_0);
-                if (tcp.equals(TCP_STACK_BUFFER)) {
-                    mTcpStackPref.setChecked(true);
-                } else {
-                    mTcpStackPref.setChecked(false);
-                }
-                String jit = Helpers.findBuildPropValueOf(JIT_PROP);
-                if (jit.equals("int:jit")) {
-                    mJitPref.setChecked(true);
-                } else {
-                    mJitPref.setChecked(false);
-                }
-                String mod = Helpers.findBuildPropValueOf(MOD_VERSION_PROP);
-                mModVersionPref.setSummary(String.format(getString(R.string.pref_mod_version_alt_summary), mod));
-                String chk = Helpers.findBuildPropValueOf(CHECK_IN_PROP);
-                if (!chk.equals(DISABLE)) {
-                    mCheckInPref.setChecked(true);
-                } else {
-                    mCheckInPref.setChecked(false);
-                }
-                String g0 = Helpers.findBuildPropValueOf(THREE_G_PROP_0);
-                String g3 = Helpers.findBuildPropValueOf(THREE_G_PROP_3);
-                String g6 = Helpers.findBuildPropValueOf(THREE_G_PROP_6);
-                if (g0.equals("1") && g3.equals("1") && g6.equals("1")) {
-                    m3gSpeedPref.setChecked(true);
-                } else {
-                    m3gSpeedPref.setChecked(false);
-                }
-                String gpu = Helpers.findBuildPropValueOf(GPU_PROP);
-                if (!gpu.equals(DISABLE)) {
-                    mGpuPref.setChecked(true);
-                } else {
-                    mGpuPref.setChecked(false);
-                }
-                String vvmail0 = Helpers.findBuildPropValueOf(VVMAIL_PROP_0);
-                String vvmail1 = Helpers.findBuildPropValueOf(VVMAIL_PROP_1);
-                if (!vvmail0.equals(DISABLE) && !vvmail1.equals(DISABLE)) {
-                    mVvmailPref.setChecked(true);
-                } else {
-                    mVvmailPref.setChecked(false);
-                }
-                if (initScriptLogcat.isFile()) {
-                    mLogcatPref.setChecked(true);
-                } else {
-                    mLogcatPref.setChecked(false);
-                }
+        public UpdateScreen() {
+        }
+
+        protected void onPreExecute() {
+        }
+
+        protected Void doInBackground(Void... noNeed) {
+            // accessing storage is slow so don't block the main
+            // thread while updating values from build.prop
+            wifi = Helpers.findBuildPropValueOf(WIFI_SCAN_PROP);
+            lcd = Helpers.findBuildPropValueOf(LCD_DENSITY_PROP);
+            maxE = Helpers.findBuildPropValueOf(MAX_EVENTS_PROP);
+            ring = Helpers.findBuildPropValueOf(RING_DELAY_PROP);
+            vm = Helpers.findBuildPropValueOf(VM_HEAPSIZE_PROP);
+            fast = Helpers.findBuildPropValueOf(FAST_UP_PROP);
+            prox = Helpers.findBuildPropValueOf(PROX_DELAY_PROP);
+            sleep = Helpers.findBuildPropValueOf(SLEEP_PROP);
+            tcp = Helpers.findBuildPropValueOf(TCP_STACK_PROP_0);
+            mod = Helpers.findBuildPropValueOf(MOD_VERSION_PROP);
+            chk = Helpers.findBuildPropValueOf(CHECK_IN_PROP);
+            g0 = Helpers.findBuildPropValueOf(THREE_G_PROP_0);
+            g3 = Helpers.findBuildPropValueOf(THREE_G_PROP_3);
+            g6 = Helpers.findBuildPropValueOf(THREE_G_PROP_6);
+            gpu = Helpers.findBuildPropValueOf(GPU_PROP);
+            vvmail0 = Helpers.findBuildPropValueOf(VVMAIL_PROP_0);
+            vvmail1 = Helpers.findBuildPropValueOf(VVMAIL_PROP_1);
+            return null;
+        }
+
+        protected void onPostExecute(Void no) {
+            //update all the summaries
+            if (!wifi.equals(DISABLE)) {
+                mWifiScanPref.setValue(wifi);
+                mWifiScanPref.setSummary(String.format(getString(R.string.pref_wifi_scan_alt_summary), wifi));
+            } else {
+                mWifiScanPref.setValue(WIFI_SCAN_DEFAULT);
             }
-        };
-        mUpdateScreen.post(mFindValues);
+            if (!lcd.equals(DISABLE)) {
+                mLcdDensityPref.setValue(lcd);
+                mLcdDensityPref.setSummary(String.format(getString(R.string.pref_lcd_density_alt_summary), lcd));
+            } else {
+                mLcdDensityPref.setValue(LCD_DENSITY_DEFAULT);
+            }
+            if (!maxE.equals(DISABLE)) {
+                mMaxEventsPref.setValue(maxE);
+                mMaxEventsPref.setSummary(String.format(getString(R.string.pref_max_events_alt_summary), maxE));
+            } else {
+                mMaxEventsPref.setValue(MAX_EVENTS_DEFAULT);
+            }
+            if (!ring.equals(DISABLE)) {
+                mRingDelayPref.setValue(ring);
+                mRingDelayPref.setSummary(String.format(getString(R.string.pref_ring_delay_alt_summary), ring));
+            } else {
+                mRingDelayPref.setValue(RING_DELAY_DEFAULT);
+            }
+            if (!vm.equals(DISABLE)) {
+                mVmHeapsizePref.setValue(vm);
+                mVmHeapsizePref.setSummary(String.format(getString(R.string.pref_vm_heapsize_alt_summary), vm));
+            } else {
+                mVmHeapsizePref.setValue(VM_HEAPSIZE_DEFAULT);
+            }
+            if (!fast.equals(DISABLE)) {
+                mFastUpPref.setValue(fast);
+                mFastUpPref.setSummary(String.format(getString(R.string.pref_fast_up_alt_summary), fast));
+            } else {
+                mFastUpPref.setValue(FAST_UP_DEFAULT);
+            }
+            if (!prox.equals(DISABLE)) {
+                mProxDelayPref.setValue(prox);
+                mProxDelayPref.setSummary(String.format(getString(R.string.pref_prox_delay_alt_summary), prox));
+            } else {
+                mProxDelayPref.setValue(PROX_DELAY_DEFAULT);
+            }
+            if (!sleep.equals(DISABLE)) {
+                mSleepPref.setValue(sleep);
+                mSleepPref.setSummary(String.format(getString(R.string.pref_sleep_alt_summary), sleep));
+            } else {
+                mSleepPref.setValue(SLEEP_DEFAULT);
+            }
+            if (tcp.equals(TCP_STACK_BUFFER)) {
+                mTcpStackPref.setChecked(true);
+            } else {
+                mTcpStackPref.setChecked(false);
+            }
+            mModVersionPref.setSummary(String.format(getString(R.string.pref_mod_version_alt_summary), mod));
+            if (!chk.equals(DISABLE)) {
+                mCheckInPref.setChecked(true);
+            } else {
+                mCheckInPref.setChecked(false);
+            }
+            if (g0.equals("1") && g3.equals("1") && g6.equals("1")) {
+                m3gSpeedPref.setChecked(true);
+            } else {
+                m3gSpeedPref.setChecked(false);
+            }
+            if (!gpu.equals(DISABLE)) {
+                mGpuPref.setChecked(true);
+            } else {
+                mGpuPref.setChecked(false);
+            }
+            if (!vvmail0.equals(DISABLE) && !vvmail1.equals(DISABLE)) {
+                mVvmailPref.setChecked(true);
+            } else {
+                mVvmailPref.setChecked(false);
+            }
+            if (initScriptLogcat.isFile()) {
+                mLogcatPref.setChecked(true);
+            } else {
+                mLogcatPref.setChecked(false);
+            }
+        }
     }
 }

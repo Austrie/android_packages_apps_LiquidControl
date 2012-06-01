@@ -108,11 +108,6 @@
             android:summary="@string/pref_tcp_stack_summary"
             android:persistent="true" />
 
-        <CheckBoxPreference android:key="pref_jit"
-            android:title="@string/pref_jit_title"
-            android:summary="@string/pref_jit_summary"
-            android:persistent="true" />
-
         <CheckBoxPreference android:key="pref_check_in"
             android:title="@string/pref_check_in_title"
             android:summary="@string/pref_check_in_summary"

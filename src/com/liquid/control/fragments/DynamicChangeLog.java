@@ -903,14 +903,21 @@ public class DynamicChangeLog extends SettingsPreferenceFragment {
 
                         // clear the screen and repopulate with ordered commits
                         mCategory.removeAll();
+                        if (DEBUG) Log.d(TAG, "population of mCategory should be zero... mCategory.getPreferenceCount(): "
+                                 + mCategory.getPreferenceCount());
+                        ArrayList<Preference> commitsOrdered = new ArrayList<Preference>();
                         for (int i = 0; orderDates.size() > i; i++) {
                             int prevPosition = clone.lastIndexOf(orderDates.get(i));
                             Preference pref = foundCommits.get(prevPosition);
                             // since we are scrolling through the ordered times
                             // we can just add as we see them and not worry about
                             // size or compacity of the ArrayLists
-                            if (DEBUG) Log.d(TAG, "Moving from " + prevPosition + " mCategory[index] " + i);
-                            mCategory.addPreference(pref);
+                            if (DEBUG) Log.d(TAG, "Moving from " + prevPosition + " to mCategory[index] " + i);
+                            commitsOrdered.add(pref);
+                        }
+
+                        for (int i = 0; commitsOrdered.size() > i; i++) {
+                            mCategory.addPreference(commitsOrdered.get(i));
                         }
 
                         if (DEBUG) {
